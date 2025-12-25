@@ -1,0 +1,273 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  مرکز مشاوره | رویا سازان جوان
+{% endblock %}
+
+{% block content %}
+  <!-- Page Title -->
+  <div class="page-title light-background">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+      <h1 class="mb-2 mb-lg-0">راهنمایی و پشتیبانی</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li>
+            <a href="{% url 'website:index' %}">صفحه اصلی</a>
+          </li>
+          <li class="current">راهنمایی و پشتیبانی</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <!-- End Page Title -->
+
+  <!-- Support Section -->
+  <section id="support" class="support section">
+    <div class="container" data-aos="fade-up">
+      <!-- Support Header -->
+      <div class="support-header" data-aos="fade-up">
+        <div class="header-content">
+          <h2>مرکز راهنمایی، پشتیبانی و مشاوره رایگان</h2>
+          <p>ارائه مشاوره‌های مالیاتی و آموزشی، پاسخ‌گویی به پرسش‌ها و ارائه آموزش‌ها و خدمات پشتیبانی</p>
+        </div>
+      </div>
+
+      <!-- Quick Support Actions -->
+      <div class="quick-support" data-aos="fade-up" data-aos-delay="100">
+        <div class="action-item live-chat">
+          <div class="action-content">
+            <i class="bi bi-chat-text"></i>
+            <h4>چت زنده</h4>
+            <p>با تیم پشتیبانی ما چت کنید</p>
+            <a href="#" class="action-button">درخواست چت</a>
+          </div>
+        </div>
+
+        <div class="action-item phone">
+          <div class="action-content">
+            <i class="bi bi-telephone"></i>
+            <h4>با ما تماس بگیرید</h4>
+            <p>خط پشتیبانی | ساعت ۱۰ تا ۱۹</p>
+            <a href="tel:+989037953318" class="action-button">09037953318</a>
+          </div>
+        </div>
+
+        <div class="action-item email">
+          <div class="action-content">
+            <i class="bi bi-geo-alt-fill"></i>
+            <h4>حضوری</h4>
+            <p>ملاقات حضوری با کارشناسان ما</p>
+            <a href="#" class="action-button">رزرو وقت مشاوره حضوری</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Help Topics -->
+      <div class="help-categories" data-aos="fade-up" data-aos-delay="200">
+        <h3>مباحث راهنمایی محبوب</h3>
+        <div class="category-cards">
+          <a href="#" class="category-card" data-aos="zoom-in" data-aos-delay="100">
+            <span class="icon"><i class="bi bi-box-seam"></i></span>
+            <h5>سفارش‌ها و ارسال</h5>
+            <ul>
+              <li>پیگیری سفارش</li>
+              <li>روش‌های ارسال</li>
+              <li>مرجوعی و تعویض</li>
+            </ul>
+            <span class="arrow"><i class="bi bi-arrow-right"></i></span>
+          </a>
+
+          <a href="#" class="category-card" data-aos="zoom-in" data-aos-delay="200">
+            <span class="icon"><i class="bi bi-wallet2"></i></span>
+            <h5>صورتحساب و پرداخت‌ها</h5>
+            <ul>
+              <li>روش‌های پرداخت</li>
+              <li>فاکتورها</li>
+              <li>وضعیت بازپرداخت</li>
+            </ul>
+            <span class="arrow"><i class="bi bi-arrow-right"></i></span>
+          </a>
+
+          <a href="#" class="category-card" data-aos="zoom-in" data-aos-delay="300">
+            <span class="icon"><i class="bi bi-person-gear"></i></span>
+            <h5>تنظیمات حساب کاربری</h5>
+            <ul>
+              <li>مالیات مستقیم و غیرمستقیم</li>
+              <li>اظهارنامه مالیاتی چیست</li>
+              <li>مالیات بر ارزش افزوده</li>
+            </ul>
+            <span class="arrow"><i class="bi bi-arrow-right"></i></span>
+          </a>
+
+          <a href="#" class="category-card" data-aos="zoom-in" data-aos-delay="400">
+            <span class="icon"><i class="bi bi-shield-check"></i></span>
+            <h5>مشاور مالیاتی</h5>
+            <ul>
+              <li>اظهارنامه مالیاتی</li>
+              <li>مالیات مستقیم و غیرمستقیم</li>
+              <li>معافیت‌های مالیاتی</li>
+            </ul>
+            <span class="arrow"><i class="bi bi-arrow-right"></i></span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Self Help -->
+      <div class="self-help" data-aos="fade-up" data-aos-delay="300">
+        <div class="row align-items-center">
+          <div class="col-lg-6">
+            <div class="content-box">
+              <h3>منابع آموزشی</h3>
+              <p class="subtitle">با استفاده از منابع جامع ما، پاسخ‌های خود را سریع پیدا کنید</p>
+              <div class="resource-links">
+                <a href="#" class="resource-link">
+                  <i class="bi bi-play-circle"></i>
+                  <div class="link-content">
+                    <h6>آموزش‌های ویدیویی</h6>
+                  </div>
+                </a>
+                <a href="#" class="resource-link">
+                  <i class="bi bi-file-text"></i>
+                  <div class="link-content">
+                    <h6>مقالات</h6>
+                  </div>
+                </a>
+                <a href="{% url 'website:faq' %}" class="resource-link">
+                  <i class="bi bi-info-circle"></i>
+                  <div class="link-content">
+                    <h6>سؤالات متداول</h6>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="faq-section">
+              <h4>سؤالات متداول</h4>
+              <div class="faq-list">
+                <div class="faq-item">
+                  <h3>
+                    اظهارنامه مالیاتی چیست و مهلت ارسال آن؟
+                    <i class="bi bi-plus faq-toggle"></i>
+                  </h3>
+                  <div class="faq-answer">
+                    <p>گزارش عملکرد مالی سالانه است که معمولاً تا پایان تیرماه ارسال می‌شود.</p>
+                  </div>
+                </div>
+
+                <div class="faq-item">
+                  <h3>
+                    تفاوت مالیات مستقیم و غیرمستقیم چیست؟
+                    <i class="bi bi-plus faq-toggle"></i>
+                  </h3>
+                  <div class="faq-answer">
+                    <p>مستقیم از درآمد یا دارایی شخص گرفته می‌شود؛ غیرمستقیم روی کالا و خدمات است.</p>
+                  </div>
+                </div>
+
+                <div class="faq-item">
+                  <h3>
+                    چگونه از معافیت‌های مالیاتی استفاده کنیم؟
+                    <i class="bi bi-plus faq-toggle"></i>
+                  </h3>
+                  <div class="faq-answer">
+                    <p>با ثبت صحیح اسناد، ارسال به‌موقع اظهارنامه و رعایت قوانین مربوطه.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- /Support Section -->
+
+  <!-- Contact 2 Section -->
+  <section id="contact-2" class="contact-2 section">
+
+    <!-- Google Maps (Full Width) -->
+    <div class="map-section"></div>
+
+    <!-- Contact Form Section (Overlapping) -->
+    <div class="container form-container-overlap">
+      <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="300">
+        <div class="col-lg-10">
+          <div class="contact-form-wrapper">
+            <h2 class="text-center mb-4">درخواست مشاوره</h2>
+            <form action="{% url 'website:support' %}" method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <div class="input-with-icon">
+                      <i class="bi bi-person"></i>
+                      <input type="text" class="form-control" name="name" placeholder="نام و نام خانوادگی" required="" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <div class="input-with-icon">
+                      <i class="bi bi-envelope"></i>
+                      <input type="email" class="form-control" name="email" placeholder="ایمیل" required="" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <div class="input-with-icon">
+                      <i class="bi bi-telephone"></i>
+                      <input type="tel" class="form-control" name="phone" placeholder="شماره تلفن" required="" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <div class="input-with-icon">
+                      <i class="bi bi-chat-square-dots"></i>
+                      <select class="form-control" name="consultation_type" required>
+                        <option value="" disabled selected>نوع مشاوره</option>
+                        <option value="online">آنلاین</option>
+                        <option value="in_person">حضوری</option>
+                        <option value="phone">تلفنی</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <div class="input-with-icon">
+                      <i class="bi bi-text-left"></i>
+                      <input type="text" class="form-control" name="subject" placeholder="موضوع مشاوره" required="" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <div class="form-group">
+                    <div class="input-with-icon">
+                      <i class="bi bi-chat-dots message-icon"></i>
+                      <textarea class="form-control" name="message" placeholder="متن پیام" style="height: 120px" required=""></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-12 text-center">
+                  <button type="submit" class="btn btn-primary btn-submit">ارسال رزومه</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- /Contact 2 Section -->
+{% endblock %}

@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  همکاری با ما | رویا سازان جوان
+{% endblock %}
+
+{% block content %}
+  <!-- Page Title -->
+  <div class="page-title light-background">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+      <h1 class="mb-2 mb-lg-0">همکاری با ما</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li>
+            <a href="{% url 'website:index' %}">صفحه اصلی</a>
+          </li>
+          <li class="current">همکاری با ما</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <!-- End Page Title -->
+
+  <!-- Contact 2 Section -->
+  <section id="contact-2" class="contact-2 section">
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+      <!-- Contact Info Boxes -->
+      <div class="row gy-4 mb-5">
+        <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+          <div class="contact-info-box">
+            <div class="icon-box">
+              <i class="bi bi-geo-alt"></i>
+            </div>
+            <div class="info-content">
+              <h4>آدرس ما</h4>
+              <p>تهران، پاکدشت، دوراهی یبر، طبقه فوقانی بانک ملی ایران، واحد 95</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+          <div class="contact-info-box">
+            <div class="icon-box">
+              <i class="bi bi-envelope"></i>
+            </div>
+            <div class="info-content">
+              <h4>آدرس ایمیل</h4>
+              <p>royasazanjavan@gmail.com</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
+          <div class="contact-info-box">
+            <div class="icon-box">
+              <i class="bi bi-headset"></i>
+            </div>
+            <div class="info-content">
+              <h4>ساعات کاری</h4>
+              <p>شنبه تا پنج‌شنبه | ساعت ۱۰ تا ۱۹</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Google Maps (Full Width) -->
+    <div class="map-section"></div>
+
+    <!-- Contact Form Section (Overlapping) -->
+    <div class="container form-container-overlap">
+      <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="300">
+        <div class="col-lg-10">
+          <div class="contact-form-wrapper">
+            <h2 class="text-center mb-4">ارسال روزمه</h2>
+            <form action="{% url 'website:job-application' %}" method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <div class="input-with-icon">
+                      <i class="bi bi-person"></i>
+                      <input type="text" class="form-control" name="name" placeholder="نام و نام خانوادگی" required="" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <div class="input-with-icon">
+                      <i class="bi bi-envelope"></i>
+                      <input type="email" class="form-control" name="email" placeholder="ایمیل" required="" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <div class="input-with-icon">
+                      <i class="bi bi-telephone"></i>
+                      <input type="tel" class="form-control" name="phone" placeholder="شماره تلفن" required="" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <div class="input-with-icon">
+                      <i class="bi bi-gender-ambiguous"></i>
+                      <select class="form-control" name="gender" required>
+                        <option value="" disabled selected>انتخاب جنسیت</option>
+                        <option value="male">مذکر</option>
+                        <option value="female">مونث</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <div class="input-with-icon">
+                      <i class="bi bi-mortarboard"></i>
+                      <select class="form-control" name="education" required>
+                        <option value="" disabled selected>مدرک تحصیلی</option>
+                        <option value="diploma">دیپلم</option>
+                        <option value="associate">فوق دیپلم</option>
+                        <option value="bachelor">لیسانس</option>
+                        <option value="master">فوق لیسانس</option>
+                        <option value="phd">دکتری</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <div class="input-with-icon">
+                      <i class="bi bi-heart"></i>
+                      <select class="form-control" name="marital_status" required>
+                        <option value="" disabled selected>وضعیت تاهل</option>
+                        <option value="single">مجرد</option>
+                        <option value="married">متاهل</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="mb-2 ms-2" style="font-size: 0.9rem; color: #666;">نرم‌افزارهای مورد تسلط (نگه داشتن Ctrl برای انتخاب چندگانه):</label>
+                    <div class="input-with-icon">
+                      <i class="bi bi-cpu"></i>
+                      <select class="form-control" name="software_skills" multiple style="height: auto;">
+                        <option value="sepidar">سپیدار</option>
+                        <option value="holoo">هلو</option>
+                        <option value="ghiyas">قیاس</option>
+                        <option value="mahak">محک</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="mb-2 ms-2" style="font-size: 0.9rem; color: #666;">آپلود فایل رزومه:</label>
+                    <div class="input-with-icon">
+                      <i class="bi bi-file-earmark-arrow-up"></i>
+                      <input type="file" class="form-control" name="resume" accept=".pdf,.doc,.docx" required />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <div class="input-with-icon">
+                      <i class="bi bi-text-left"></i>
+                      <input type="text" class="form-control" name="subject" placeholder="موضوع" required="" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <div class="form-group">
+                    <div class="input-with-icon">
+                      <i class="bi bi-chat-dots message-icon"></i>
+                      <textarea class="form-control" name="message" placeholder="متن پیام" style="height: 120px" required=""></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-12 text-center">
+                  <button type="submit" class="btn btn-primary btn-submit">ارسال رزومه</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- /Contact 2 Section -->
+{% endblock %}

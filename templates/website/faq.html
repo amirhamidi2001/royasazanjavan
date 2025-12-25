@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  سوالات متداول | رویا سازان جوان
+{% endblock %}
+
+{% block content %}
+  <!-- Page Title -->
+  <div class="page-title light-background">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+      <h1 class="mb-2 mb-lg-0">سوالات متداول</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li>
+            <a href="{% url 'website:index' %}">صفحه اصلی</a>
+          </li>
+          <li class="current">سوالات متداول</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <!-- End Page Title -->
+
+  <!-- Faq Section -->
+  <section id="faq" class="faq section">
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+      <div class="row gy-4 justify-content-between">
+        <div class="col-lg-8">
+          <div class="faq-list">
+            <div class="faq-item faq-active" data-aos="fade-up" data-aos-delay="100">
+              <h3>تفاوت حسابداری نقدی و تعهدی چیست؟</h3>
+              <div class="faq-content">
+                <p>در نقدی، درآمد و هزینه هنگام دریافت/پرداخت ثبت می‌شود؛ در تعهدی، هنگام تحقق، حتی بدون وجه نقد.</p>
+              </div>
+              <i class="bi bi-plus faq-toggle"></i>
+            </div>
+            <!-- End FAQ Item -->
+
+            <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
+              <h3>دارایی، بدهی و سرمایه چه تفاوتی دارند؟</h3>
+              <div class="faq-content">
+                <p>دارایی منابع شرکت، بدهی تعهدات شرکت و سرمایه حق مالک است؛ دارایی = بدهی + سرمایه.</p>
+              </div>
+              <i class="bi bi-plus faq-toggle"></i>
+            </div>
+            <!-- End FAQ Item -->
+
+            <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
+              <h3>کدینگ حسابداری چیست و چگونه طراحی می‌شود؟</h3>
+              <div class="faq-content">
+                <p>سیستم شماره‌گذاری حساب‌هاست که برای نظم‌دهی و گزارش‌گیری دقیق طراحی می‌شود.</p>
+              </div>
+              <i class="bi bi-plus faq-toggle"></i>
+            </div>
+            <!-- End FAQ Item -->
+
+            <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
+              <h3>ماهیت حساب‌ها (بدهکار/بستانکار) چگونه تشخیص داده می‌شود؟</h3>
+              <div class="faq-content">
+                <p>دارایی و هزینه بدهکار، بدهی و درآمد بستانکار، سرمایه معمولاً بستانکار است.</p>
+              </div>
+              <i class="bi bi-plus faq-toggle"></i>
+            </div>
+            <!-- End FAQ Item -->
+
+            <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
+              <h3>تفاوت مالیات مستقیم و غیرمستقیم چیست؟</h3>
+              <div class="faq-content">
+                <p>مستقیم از درآمد یا دارایی شخص گرفته می‌شود؛ غیرمستقیم روی کالا و خدمات است.</p>
+              </div>
+              <i class="bi bi-plus faq-toggle"></i>
+            </div>
+            <!-- End FAQ Item -->
+
+            <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
+              <h3>اظهارنامه مالیاتی چیست و مهلت ارسال آن؟</h3>
+              <div class="faq-content">
+                <p>گزارش عملکرد مالی سالانه است که معمولاً تا پایان تیرماه ارسال می‌شود.</p>
+              </div>
+              <i class="bi bi-plus faq-toggle"></i>
+            </div>
+            <!-- End FAQ Item -->
+
+            <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
+              <h3>مالیات بر ارزش افزوده چگونه محاسبه می‌شود و معافیت‌ها؟</h3>
+              <div class="faq-content">
+                <p>مالیات فروش منهای مالیات خرید؛ برخی کالاهای اساسی و خدمات خاص معاف‌اند.</p>
+              </div>
+              <i class="bi bi-plus faq-toggle"></i>
+            </div>
+            <!-- End FAQ Item -->
+
+            <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
+              <h3>چگونه از معافیت‌های مالیاتی استفاده کنیم؟</h3>
+              <div class="faq-content">
+                <p>با ثبت صحیح اسناد، ارسال به‌موقع اظهارنامه و رعایت قوانین مربوطه.</p>
+              </div>
+              <i class="bi bi-plus faq-toggle"></i>
+            </div>
+            <!-- End FAQ Item -->
+
+            <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
+              <h3>جریمه عدم ارسال اظهارنامه یا گزارش فصلی چقدر است؟</h3>
+              <div class="faq-content">
+                <p>معمولاً درصدی از مالیات یا معاملات، غیرقابل بخشش در برخی موارد.</p>
+              </div>
+              <i class="bi bi-plus faq-toggle"></i>
+            </div>
+            <!-- End FAQ Item -->
+
+            <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
+              <h3>محاسبه مالیات حقوق چگونه است؟</h3>
+              <div class="faq-content">
+                <p>پس از کسر معافیت، مازاد طبق نرخ‌های پلکانی مشمول مالیات می‌شود.</p>
+              </div>
+              <i class="bi bi-plus faq-toggle"></i>
+            </div>
+            <!-- End FAQ Item -->
+
+            <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
+              <h3>سقف معافیت مالیات حقوق چقدر است؟</h3>
+              <div class="faq-content">
+                <p>هر سال توسط قانون بودجه تعیین و اعلام می‌شود.</p>
+              </div>
+              <i class="bi bi-plus faq-toggle"></i>
+            </div>
+            <!-- End FAQ Item -->
+
+            <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
+              <h3>حق بیمه سهم کارگر و کارفرما؟</h3>
+              <div class="faq-content">
+                <p>۳۰٪ حقوق مشمول بیمه؛ ۷٪ کارگر و ۲۳٪ کارفرما.</p>
+              </div>
+              <i class="bi bi-plus faq-toggle"></i>
+            </div>
+            <!-- End FAQ Item -->
+
+            <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
+              <h3>آیا عیدی و سنوات مالیات دارند؟</h3>
+              <div class="faq-content">
+                <p>تا سقف مشخص معاف‌اند و مازاد آن مشمول مالیات می‌شود.</p>
+              </div>
+              <i class="bi bi-plus faq-toggle"></i>
+            </div>
+            <!-- End FAQ Item -->
+
+            <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
+              <h3>شروع یادگیری حسابداری از کجاست؟</h3>
+              <div class="faq-content">
+                <p>از مفاهیم پایه، ثبت حساب‌ها و کار با نرم‌افزار حسابداری.</p>
+              </div>
+              <i class="bi bi-plus faq-toggle"></i>
+            </div>
+            <!-- End FAQ Item -->
+
+            <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
+              <h3>بهترین نرم‌افزارهای حسابداری؟</h3>
+              <div class="faq-content">
+                <p>بسته به بازار کار: سپیدار، هلو، پارسیان، راهکاران.</p>
+              </div>
+              <i class="bi bi-plus faq-toggle"></i>
+            </div>
+            <!-- End FAQ Item -->
+
+            <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
+              <h3>تفاوت حسابداری مالی و مالیاتی؟</h3>
+              <div class="faq-content">
+                <p>مالی برای گزارش به مدیریت؛ مالیاتی برای محاسبه و گزارش به اداره مالیات.</p>
+              </div>
+              <i class="bi bi-plus faq-toggle"></i>
+            </div>
+            <!-- End FAQ Item -->
+
+            <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
+              <h3>آیا بدون مدرک دانشگاهی می‌توان حسابدار شد؟</h3>
+              <div class="faq-content">
+                <p>بله، با آموزش عملی، تجربه و تسلط بر نرم‌افزار.</p>
+              </div>
+              <i class="bi bi-plus faq-toggle"></i>
+            </div>
+            <!-- End FAQ Item -->
+
+            <div class="faq-item" data-aos="fade-up" data-aos-delay="300">
+              <h3>آیا گواهی معتبر داده می‌شود؟</h3>
+              <div class="faq-content">
+                <p>بله؛ گواهینامه معتبر علوم و فنون با قابلیت ترجمه رسمی و اعتبار بین‌المللی اعطا می‌شود.</p>
+              </div>
+              <i class="bi bi-plus faq-toggle"></i>
+            </div>
+            <!-- End FAQ Item -->
+
+            <div class="faq-item" data-aos="fade-up" data-aos-delay="400">
+              <h3>آیا پشتیبانی دارد؟</h3>
+              <div class="faq-content">
+                <p>بله؛ تمامی شرکت‌کنندگان از پشتیبانی کامل و مستقیم آموزشی جهت رفع اشکال بهره‌مند می‌شوند.</p>
+              </div>
+              <i class="bi bi-plus faq-toggle"></i>
+            </div>
+            <!-- End FAQ Item -->
+
+            <div class="faq-item" data-aos="fade-up" data-aos-delay="500">
+              <h3>آموزش‌ها پروژه‌محور و به‌روز هستند؟</h3>
+              <div class="faq-content">
+                <p>بله؛ آموزش‌ها کاملاً پروژه‌محور و منطبق بر آخرین اطلاعات مالی واقعی شرکت‌ها طراحی شده است.</p>
+              </div>
+              <i class="bi bi-plus faq-toggle"></i>
+            </div>
+            <!-- End FAQ Item -->
+          </div>
+        </div>
+
+        <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+          <div class="faq-card">
+            <i class="bi bi-chat-dots-fill"></i>
+            <h3>پاسخ سوال خود را پیدا نمی‌کنید؟</h3>
+            <p>تیم پشتیبانی رویا سازان جوان همیشه و در تمام مراحل آماده پاسخگویی به سوالات و راهنمایی شماست. بدون تردید با ما تماس بگیرید.</p>
+            <a href="{% url 'website:contact' %}" class="btn btn-primary">با ما تماس بگیرید</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- /Faq Section -->
+{% endblock %}

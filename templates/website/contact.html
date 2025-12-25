@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  ارتباط با ما | رویا سازان جوان
+{% endblock %}
+
+{% block content %}
+  <!-- Page Title -->
+  <div class="page-title light-background">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+      <h1 class="mb-2 mb-lg-0">ارتباط با ما</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li>
+            <a href="{% url 'website:index' %}">صفحه اصلی</a>
+          </li>
+          <li class="current">ارتباط با ما</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <!-- End Page Title -->
+
+  <!-- Contact 2 Section -->
+  <section id="contact-2" class="contact-2 section">
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+      <!-- Contact Info Boxes -->
+      <div class="row gy-4 mb-5">
+        <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+          <div class="contact-info-box">
+            <div class="icon-box">
+              <i class="bi bi-geo-alt"></i>
+            </div>
+            <div class="info-content">
+              <h4>آدرس ما</h4>
+              <p>تهران، پاکدشت، دوراهی یبر، طبقه فوقانی بانک ملی ایران، واحد 95</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+          <div class="contact-info-box">
+            <div class="icon-box">
+              <i class="bi bi-envelope"></i>
+            </div>
+            <div class="info-content">
+              <h4>آدرس ایمیل</h4>
+              <p>royasazanjavan@gmail.com</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
+          <div class="contact-info-box">
+            <div class="icon-box">
+              <i class="bi bi-headset"></i>
+            </div>
+            <div class="info-content">
+              <h4>ساعات کاری</h4>
+              <p>شنبه تا پنج‌شنبه | ساعت ۱۰ تا ۱۹</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Google Maps (Full Width) -->
+    <div class="map-section"></div>
+
+    <!-- Contact Form Section (Overlapping) -->
+    <div class="container form-container-overlap">
+      <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="300">
+        <div class="col-lg-10">
+          <div class="contact-form-wrapper">
+            <h2 class="text-center mb-4">ارسال پیام</h2>
+
+            <form action="{% url 'website:contact' %}" method="post">
+              {% csrf_token %}
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <div class="input-with-icon">
+                      <i class="bi bi-person"></i>
+                      <input type="text" class="form-control" name="name" placeholder="نام و نام خانوادگی" required="" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <div class="input-with-icon">
+                      <i class="bi bi-envelope"></i>
+                      <input type="email" class="form-control" name="email" placeholder="ایمیل" required="" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <div class="input-with-icon">
+                      <i class="bi bi-text-left"></i>
+                      <input type="text" class="form-control" name="subject" placeholder="موضوع" required="" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <div class="form-group">
+                    <div class="input-with-icon">
+                      <i class="bi bi-chat-dots message-icon"></i>
+                      <textarea class="form-control" name="message" placeholder="متن پیام" style="height: 180px" required=""></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-12 text-center">
+                  <button type="submit" class="btn btn-primary btn-submit">ارسال پیام</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- /Contact 2 Section -->
+{% endblock %}
