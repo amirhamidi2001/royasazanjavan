@@ -1,0 +1,343 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  {{ article.title }} | رویا سازان جوان
+{% endblock %}
+
+{% block extra_css %}
+  <link href="{% static 'assets/css/blog.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+  <!-- Page Title -->
+  <div class="page-title light-background">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+      <h1 class="mb-2 mb-lg-0">جزئیات مقاله</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li>
+            <a href="{% url 'website:index' %}">صفحه اصلی</a>
+          </li>
+          <li>
+            <a href="{% url 'articles:article_list' %}">مقالات</a>
+          </li>
+          <li class="current">{{ article.title|truncatewords:5 }}</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <!-- End Page Title -->
+
+  <!-- Blog Details Section -->
+  <section id="blog-details" class="blog-details section">
+    <div class="container" data-aos="fade-up">
+      <article class="article">
+        <div class="article-header">
+          <div class="meta-categories" data-aos="fade-up">
+            {% for category in article.categories.all %}
+              <a href="{% url 'articles:category_list' category.slug %}" class="category">{{ category.name }}</a>
+            {% endfor %}
+          </div>
+
+          <h1 class="title" data-aos="fade-up" data-aos-delay="100">{{ article.title }}</h1>
+
+          <div class="article-meta" data-aos="fade-up" data-aos-delay="200">
+            <div class="author">
+              {% if article.author.profile.avatar %}
+                <img src="{{ article.author.profile.avatar.url }}" alt="{{ article.author.get_full_name }}" class="author-img" />
+              {% else %}
+                <img src="{% static 'assets/img/person/default-avatar.webp' %}" alt="{{ article.author.get_full_name }}" class="author-img" />
+              {% endif %}
+              <div class="author-info">
+                <a href="{% url 'articles:author_list' article.author.id %}"><h4>{{ article.author.get_full_name|default:article.author.username }}</h4></a>
+                <span>نویسنده</span>
+              </div>
+            </div>
+            <div class="post-info">
+              <span><i class="bi bi-calendar4-week"></i> {{ article.published_at|date:'j F Y' }}</span>
+              <span><i class="bi bi-clock"></i> {{ reading_time }} دقیقه مطالعه</span>
+              <span><i class="bi bi-chat-square-text"></i> {{ comment_count }} نظر</span>
+              <span><i class="bi bi-eye"></i> {{ article.view_count }} بازدید</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="article-featured-image" data-aos="zoom-in">
+          <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="img-fluid" />
+        </div>
+
+        <div class="article-wrapper">
+          <aside class="table-of-contents" data-aos="fade-left">
+            <h3>فهرست مطالب</h3>
+            <nav>
+              <ul>
+                <li>
+                  <a href="#introduction" class="active">مقدمه</a>
+                </li>
+                <!-- می‌توانید TOC را به‌صورت داینامیک از content تولید کنید -->
+              </ul>
+            </nav>
+          </aside>
+
+          <div class="article-content">
+            <div class="content-section" id="introduction" data-aos="fade-up">
+              <p class="lead">{{ article.excerpt }}</p>
+
+              <!-- محتوای اصلی مقاله -->
+              {{ article.content|safe }}
+            </div>
+          </div>
+        </div>
+
+        <div class="article-footer" data-aos="fade-up">
+          <div class="share-article">
+            <h4>اشتراک‌گذاری مقاله</h4>
+            <div class="share-buttons">
+              <a href="https://twitter.com/intent/tweet?text={{ article.title|urlencode }}&url={{ request.build_absolute_uri }}" target="_blank" class="share-button twitter">
+                <i class="bi bi-twitter-x"></i>
+                <span>اشتراک در X</span>
+              </a>
+              <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="share-button facebook">
+                <i class="bi bi-facebook"></i>
+                <span>اشتراک در Facebook</span>
+              </a>
+              <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" target="_blank" class="share-button linkedin">
+                <i class="bi bi-linkedin"></i>
+                <span>اشتراک در LinkedIn</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="article-tags">
+            <h4>برچسب‌های مرتبط</h4>
+            <div class="tags">
+              {% for tag in article.tags.all %}
+                <a href="{% url 'articles:tag_list' tag.slug %}" class="tag">{{ tag.name }}</a>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+  <!-- /Blog Details Section -->
+
+  <!-- Blog Comments Section -->
+  <section id="blog-comments" class="blog-comments section">
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+      <div class="blog-comments-4">
+        <div class="comments-header">
+          <h3 class="title">نظرات کاربران</h3>
+          <div class="comments-stats">
+            <span class="count">{{ comment_count }}</span>
+            <span class="label">نظر</span>
+          </div>
+        </div>
+
+        {% if comments %}
+          <div class="comments-container">
+            {% for comment in comments %}
+              <!-- Comment Thread -->
+              <div class="comment-thread">
+                <div class="comment-box">
+                  <div class="comment-wrapper">
+                    <div class="avatar-wrapper">
+                      <img src="{% static 'assets/img/person/default-avatar.webp' %}" alt="{{ comment.name }}" loading="lazy" />
+                      <span class="status-indicator"></span>
+                    </div>
+
+                    <div class="comment-content">
+                      <div class="comment-header">
+                        <div class="user-info">
+                          <h4>{{ comment.name }}</h4>
+                          <span class="time-badge">
+                            <i class="bi bi-clock"></i>
+                            {{ comment.created_at|timesince }} پیش
+                          </span>
+                        </div>
+                      </div>
+
+                      <div class="comment-body">
+                        <p>{{ comment.body|linebreaks }}</p>
+                      </div>
+
+                      <div class="comment-actions">
+                        <button class="action-btn reply-btn" data-comment-id="{{ comment.id }}" aria-label="پاسخ به نظر">
+                          <i class="bi bi-chat"></i>
+                          <span>پاسخ</span>
+                        </button>
+                        {% if comment.website %}
+                          <a href="{{ comment.website }}" target="_blank" class="action-btn" aria-label="وبسایت">
+                            <i class="bi bi-globe"></i>
+                            <span>وبسایت</span>
+                          </a>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Replies Container -->
+                {% if comment.get_replies %}
+                  <div class="replies-container">
+                    {% for reply in comment.get_replies %}
+                      <div class="comment-box reply">
+                        <div class="comment-wrapper">
+                          <div class="avatar-wrapper">
+                            <img src="{% static 'assets/img/person/default-avatar.webp' %}" alt="{{ reply.name }}" loading="lazy" />
+                            <span class="status-indicator"></span>
+                          </div>
+
+                          <div class="comment-content">
+                            <div class="comment-header">
+                              <div class="user-info">
+                                <h4>{{ reply.name }}</h4>
+                                <span class="time-badge">
+                                  <i class="bi bi-clock"></i>
+                                  {{ reply.created_at|timesince }} پیش
+                                </span>
+                              </div>
+                            </div>
+
+                            <div class="comment-body">
+                              <p>{{ reply.body|linebreaks }}</p>
+                            </div>
+
+                            <div class="comment-actions">
+                              {% if reply.website %}
+                                <a href="{{ reply.website }}" target="_blank" class="action-btn" aria-label="وبسایت">
+                                  <i class="bi bi-globe"></i>
+                                  <span>وبسایت</span>
+                                </a>
+                              {% endif %}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="no-comments">
+            <p>هنوز نظری ثبت نشده است. اولین نفری باشید که نظر می‌دهید!</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+  <!-- /Blog Comments Section -->
+
+  <!-- Blog Comment Form Section -->
+  <section id="blog-comment-form" class="blog-comment-form section">
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+      {% if messages %}
+        <div class="messages">
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <form method="post" action="" role="form">
+        {% csrf_token %}
+
+        <div class="form-header">
+          <h3>ثبت نظر</h3>
+          <p>آدرس ایمیل شما منتشر نخواهد شد. فیلدهای الزامی با * مشخص شده‌اند</p>
+        </div>
+
+        <div class="row gy-3">
+          <div class="col-md-6">
+            <div class="input-group">
+              <label for="{{ comment_form.name.id_for_label }}">{{ comment_form.name.label }}</label>
+              {{ comment_form.name }}
+              {% if comment_form.name.errors %}
+                <span class="error-text">{{ comment_form.name.errors.0 }}</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="input-group">
+              <label for="{{ comment_form.email.id_for_label }}">{{ comment_form.email.label }}</label>
+              {{ comment_form.email }}
+              {% if comment_form.email.errors %}
+                <span class="error-text">{{ comment_form.email.errors.0 }}</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div class="input-group">
+              <label for="{{ comment_form.website.id_for_label }}">{{ comment_form.website.label }}</label>
+              {{ comment_form.website }}
+              {% if comment_form.website.errors %}
+                <span class="error-text">{{ comment_form.website.errors.0 }}</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div class="input-group">
+              <label for="{{ comment_form.body.id_for_label }}">{{ comment_form.body.label }}</label>
+              {{ comment_form.body }}
+              {% if comment_form.body.errors %}
+                <span class="error-text">{{ comment_form.body.errors.0 }}</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- فیلد مخفی برای reply (اختیاری) -->
+          <input type="hidden" name="parent_id" id="parent_id" value="" />
+
+          <div class="col-12 text-center">
+            <button type="submit">ارسال نظر</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+  <!-- /Blog Comment Form Section -->
+
+  <!-- Related Articles Section (اختیاری) -->
+  {% if related_articles %}
+    <section id="related-articles" class="related-articles section">
+      <div class="container" data-aos="fade-up">
+        <h3>مقالات مرتبط</h3>
+        <div class="row">
+          {% for related in related_articles %}
+            <div class="col-md-4">
+              <div class="article-card">
+                <img src="{{ related.featured_image.url }}" alt="{{ related.title }}" class="img-fluid" />
+                <h4><a href="{{ related.get_absolute_url }}">{{ related.title }}</a></h4>
+                <p>{{ related.excerpt|truncatewords:20 }}</p>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  {% endif %}
+  <!-- /Related Articles Section -->
+{% endblock %}
+
+{% block extra_js %}
+  <script>
+    // اسکریپت برای مدیریت دکمه Reply
+    document.querySelectorAll('.reply-btn').forEach((button) => {
+      button.addEventListener('click', function () {
+        const commentId = this.dataset.commentId
+        document.getElementById('parent_id').value = commentId
+        document.getElementById('blog-comment-form').scrollIntoView({ behavior: 'smooth' })
+        document.getElementById('comment').focus()
+      })
+    })
+  </script>
+{% endblock %}

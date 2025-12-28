@@ -1,0 +1,330 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load article_tags %}
+
+{% block title %}
+  مقالات | رویا سازان جوان
+{% endblock %}
+
+{% block extra_css %}
+  <link href="{% static 'assets/css/blog.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+  <!-- Page Title -->
+  <div class="page-title light-background">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+      <h1 class="mb-2 mb-lg-0">مقالات</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li>
+            <a href="{% url 'website:index' %}">صفحه اصلی</a>
+          </li>
+          <li class="current">مقالات</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <!-- End Page Title -->
+
+  <!-- Blog Hero Section -->
+  <section id="blog-hero" class="blog-hero section">
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+      <div class="row g-4">
+        <!-- Main Content Area -->
+        <div class="col-lg-8">
+          <!-- Featured Article -->
+          {% if featured_article %}
+            <article class="featured-post position-relative mb-4" data-aos="fade-up">
+              <img src="{{ featured_article.featured_image.url }}" alt="{{ featured_article.title }}" class="img-fluid" />
+              <div class="post-overlay">
+                <div class="post-content">
+                  <div class="post-meta">
+                    {% for category in featured_article.categories.all|slice:':2' %}
+                      <span class="category">{{ category.name }}</span>
+                    {% endfor %}
+                    <span class="date">{{ featured_article.published_at|date:'Y/m/d' }}</span>
+                  </div>
+                  <h2 class="post-title"><a href="{{ featured_article.get_absolute_url }}">{{ featured_article.title }}</a></h2>
+                  <p class="post-excerpt">{{ featured_article.excerpt|truncatewords:25 }}</p>
+                  <div class="post-author">
+                    <span>نویسنده:</span>
+                    <a href="{% url 'articles:author_list' featured_article.author.id %}">{{ featured_article.author.get_full_name|default:featured_article.author.username }}</a>
+                  </div>
+                </div>
+              </div>
+            </article>
+          {% endif %}
+
+          <!-- Secondary Articles -->
+          {% if secondary_articles %}
+            <div class="row g-4">
+              {% for article in secondary_articles %}
+                <div class="col-md-6">
+                  <article class="secondary-post" data-aos="fade-up" {% if forloop.counter == 2 %}data-aos-delay="100"{% endif %}>
+                    <div class="post-image">
+                      <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="img-fluid" />
+                    </div>
+                    <div class="post-content">
+                      <div class="post-meta">
+                        {% for category in article.categories.all|slice:':1' %}
+                          <span class="category">{{ category.name }}</span>
+                        {% endfor %}
+                        <span class="date">{{ article.published_at|date:'Y/m/d' }}</span>
+                      </div>
+                      <h3 class="post-title"><a href="{{ article.get_absolute_url }}">{{ article.title|truncatewords:10 }}</a></h3>
+                      <div class="post-author">
+                        <span>نویسنده:</span>
+                        <a href="{% url 'articles:author_list' article.author.id %}">{{ article.author.get_full_name|default:article.author.username }}</a>
+                      </div>
+                    </div>
+                  </article>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+        <!-- End Main Content Area -->
+
+        <!-- Sidebar with Tabs -->
+        <div class="col-lg-4">
+          <div class="news-tabs" data-aos="fade-up" data-aos-delay="200">
+            <ul class="nav nav-tabs" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#top-stories" type="button">محبوب‌ترین</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#trending" type="button">پرطرفدار</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#latest" type="button">جدیدترین</button>
+              </li>
+            </ul>
+
+            <div class="tab-content">
+              <!-- Top Stories Tab -->
+              <div class="tab-pane fade show active" id="top-stories">
+                {% for article in top_stories %}
+                  <article class="tab-post">
+                    <div class="row g-0 align-items-center">
+                      <div class="col-4">
+                        <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="img-fluid" />
+                      </div>
+                      <div class="col-8">
+                        <div class="post-content">
+                          {% with category=article.categories.first %}
+                            {% if category %}
+                              <span class="category">{{ category.name }}</span>
+                            {% endif %}
+                          {% endwith %}
+                          <h4 class="post-title"><a href="{{ article.get_absolute_url }}">{{ article.title|truncatewords:8 }}</a></h4>
+                          <div class="post-author">
+                            نویسنده:
+                            <a href="{% url 'articles:author_list' article.author.id %}">{{ article.author.get_full_name|default:article.author.username }}</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                {% endfor %}
+              </div>
+
+              <!-- Trending News Tab -->
+              <div class="tab-pane fade" id="trending">
+                {% for article in trending_articles %}
+                  <article class="tab-post">
+                    <div class="row g-0 align-items-center">
+                      <div class="col-4">
+                        <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="img-fluid" />
+                      </div>
+                      <div class="col-8">
+                        <div class="post-content">
+                          {% with category=article.categories.first %}
+                            {% if category %}
+                              <span class="category">{{ category.name }}</span>
+                            {% endif %}
+                          {% endwith %}
+                          <h4 class="post-title"><a href="{{ article.get_absolute_url }}">{{ article.title|truncatewords:8 }}</a></h4>
+                          <div class="post-author">
+                            نویسنده:
+                            <a href="{% url 'articles:author_list' article.author.id %}">{{ article.author.get_full_name|default:article.author.username }}</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                {% endfor %}
+              </div>
+
+              <!-- Latest News Tab -->
+              <div class="tab-pane fade" id="latest">
+                {% for article in latest_articles %}
+                  <article class="tab-post">
+                    <div class="row g-0 align-items-center">
+                      <div class="col-4">
+                        <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="img-fluid" />
+                      </div>
+                      <div class="col-8">
+                        <div class="post-content">
+                          {% with category=article.categories.first %}
+                            {% if category %}
+                              <span class="category">{{ category.name }}</span>
+                            {% endif %}
+                          {% endwith %}
+                          <h4 class="post-title"><a href="{{ article.get_absolute_url }}">{{ article.title|truncatewords:8 }}</a></h4>
+                          <div class="post-author">
+                            نویسنده:
+                            <a href="{% url 'articles:author_list' article.author.id %}">{{ article.author.get_full_name|default:article.author.username }}</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- /Blog Hero Section -->
+
+  <!-- Blog Posts Section -->
+  <section id="blog-posts" class="blog-posts section">
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+      {% if articles %}
+        <div class="row gy-4">
+          {% for article in articles %}
+            <div class="col-lg-4">
+              <article>
+                <div class="post-img">
+                  <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="img-fluid" />
+                </div>
+
+                {% with category=article.categories.first %}
+                  {% if category %}
+                    <p class="post-category">{{ category.name }}</p>
+                  {% endif %}
+                {% endwith %}
+
+                <h2 class="title"><a href="{{ article.get_absolute_url }}">{{ article.title|truncatewords:10 }}</a></h2>
+
+                <div class="d-flex align-items-center">
+                  {% if article.author.profile.avatar %}
+                    <img src="{{ article.author.profile.avatar.url }}" alt="{{ article.author.get_full_name }}" class="img-fluid post-author-img flex-shrink-0" />
+                  {% else %}
+                    <img src="{% static 'assets/img/person/default-avatar.webp' %}" alt="{{ article.author.get_full_name }}" class="img-fluid post-author-img flex-shrink-0" />
+                  {% endif %}
+                  <div class="post-meta">
+                    <p class="post-author">
+                      <a href="{% url 'articles:author_list' article.author.id %}">{{ article.author.get_full_name|default:article.author.username }}</a>
+                    </p>
+                    <p class="post-date">
+                      <time datetime="{{ article.published_at|date:'Y-m-d' }}">{{ article.published_at|date:'Y/m/d' }}</time>
+                    </p>
+                  </div>
+                </div>
+              </article>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="alert alert-info text-center" role="alert">
+          <h4>مقاله‌ای یافت نشد</h4>
+          <p>متأسفانه با فیلترهای انتخابی شما مقاله‌ای پیدا نشد.</p>
+          <a href="{% url 'articles:article_list' %}" class="btn btn-primary">مشاهده همه مقالات</a>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+  <!-- /Blog Posts Section -->
+
+  <!-- Pagination Section -->
+  {% if is_paginated %}
+    <section id="pagination-2" class="pagination-2 section">
+      <div class="container">
+        <nav class="d-flex justify-content-center" aria-label="صفحه‌بندی">
+          <ul>
+            <!-- دکمه صفحه قبل -->
+            {% if page_obj.has_previous %}
+              <li>
+                <a href="?{% url_replace page=page_obj.previous_page_number %}" aria-label="صفحه قبل">
+                  <i class="bi bi-arrow-right"></i>
+                  <span class="d-none d-sm-inline">قبلی</span>
+                </a>
+              </li>
+            {% else %}
+              <li class="disabled">
+                <span>
+                  <i class="bi bi-arrow-right"></i>
+                  <span class="d-none d-sm-inline">قبلی</span>
+                </span>
+              </li>
+            {% endif %}
+
+            <!-- شماره صفحات -->
+            {% for num in page_obj.paginator.page_range %}
+              {% if page_obj.number == num %}
+                <li>
+                  <a href="#" class="active">{{ num }}</a>
+                </li>
+              {% elif num > page_obj.number|add:'-2' and num < page_obj.number|add:'2' %}
+                <li>
+                  <a href="?{% url_replace page=num %}">{{ num }}</a>
+                </li>
+              {% elif num == 1 %}
+                <li>
+                  <a href="?{% url_replace page=1 %}">1</a>
+                </li>
+                {% if page_obj.number > 3 %}
+                  <li class="ellipsis">...</li>
+                {% endif %}
+              {% elif num == page_obj.paginator.num_pages %}
+                {% if page_obj.number < page_obj.paginator.num_pages|add:'-2' %}
+                  <li class="ellipsis">...</li>
+                {% endif %}
+                <li>
+                  <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+                </li>
+              {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+              <li>
+                <a href="?{% url_replace page=page_obj.next_page_number %}" aria-label="صفحه بعد">
+                  <span class="d-none d-sm-inline">بعدی</span>
+                  <i class="bi bi-arrow-left"></i>
+                </a>
+              </li>
+            {% else %}
+              <li class="disabled">
+                <span>
+                  <span class="d-none d-sm-inline">بعدی</span>
+                  <i class="bi bi-arrow-left"></i>
+                </span>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+    </section>
+  {% endif %}
+  <!-- /Pagination Section -->
+{% endblock %}
+
+{% block extra_js %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const paginationLinks = document.querySelectorAll('.pagination-2 a')
+      paginationLinks.forEach((link) => {
+        link.addEventListener('click', function (e) {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          })
+        })
+      })
+    })
+  </script>
+{% endblock %}

@@ -1,5 +1,8 @@
 asgiref==3.11.0
 Django==5.2.9
+Pillow==12.0.0
 psycopg2-binary==2.9.11
 python-decouple==3.8
 sqlparse==0.5.5
+faker==39.0.0
+tzdata==2025.3
