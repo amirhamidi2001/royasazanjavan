@@ -1,11 +1,12 @@
 import random
 from django.core.management.base import BaseCommand
-from django.contrib.auth.models import User
 from django.utils import timezone
 from faker import Faker
 
 from articles.models import Category, Tag, Article, Comment
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 # fake = Faker("fa_IR")
 fake = Faker()
 

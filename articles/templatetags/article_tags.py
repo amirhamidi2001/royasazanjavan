@@ -4,8 +4,9 @@ from django.db.models import Count, Q
 
 # import markdown
 from ..models import Article, Category, Tag
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 register = template.Library()
 
 

@@ -2,10 +2,12 @@ from django.views.generic import DetailView, ListView
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 from django.db.models import Q, Count
-from django.contrib.auth.models import User
 
 from .models import Article, Comment, Category, Tag
 from .forms import CommentForm
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class ArticleDetailView(DetailView):

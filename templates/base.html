@@ -105,8 +105,8 @@
                 <button class="header-action-btn" data-bs-toggle="dropdown"><i class="bi bi-person"></i></button>
                 <div class="dropdown-menu">
                   <div class="dropdown-header">
-                    <h6>Welcome to <span class="sitename">FashionStore</span></h6>
-                    <p class="mb-0">Access account &amp; manage orders</p>
+                    <h6>به <span class="sitename">رویا سازان جوان</span> خوش آمدید</h6>
+                    <p class="mb-0">دسترسی به حساب کاربری و مدیریت دوره ها</p>
                   </div>
                   <div class="dropdown-body">
                     <a class="dropdown-item d-flex align-items-center" href="account.html">
@@ -126,10 +126,19 @@
                       <span>Settings</span>
                     </a>
                   </div>
-                  <div class="dropdown-footer">
-                    <a href="register.html" class="btn btn-primary w-100 mb-2">Sign In</a>
-                    <a href="login.html" class="btn btn-outline-primary w-100">Register</a>
-                  </div>
+                  {% if user.is_authenticated %}
+                    <div class="dropdown-footer">
+                      <form action="{% url 'accounts:logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary w-100 mb-2">خروج</button>
+                      </form>
+                    </div>
+                  {% else %}
+                    <div class="dropdown-footer">
+                      <a href="{% url 'accounts:login' %}" class="btn btn-primary w-100 mb-2">ورود</a>
+                      <a href="{% url 'accounts:register' %}" class="btn btn-outline-primary w-100">ثبت نام</a>
+                    </div>
+                  {% endif %}
                 </div>
               </div>
 

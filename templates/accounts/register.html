@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load socialaccount %}
+
+{% block title %}
+  ثبت‌نام | رویا سازان جوان
+{% endblock %}
+
+{% block content %}
+  <div class="page-title light-background">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+      <h1 class="mb-2 mb-lg-0">ثبت‌نام</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li>
+            <a href="{% url 'website:index' %}">صفحه اصلی</a>
+          </li>
+          <li class="current">ثبت‌نام</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <section id="register" class="register section">
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <div class="registration-form-wrapper">
+            <div class="form-header text-center">
+              <h2>ایجاد حساب کاربری</h2>
+              <p>عضو شوید و خرید خود را شروع کنید</p>
+            </div>
+
+            <div class="row">
+              <div class="col-lg-8 mx-auto">
+                <form method="post">
+                  {% csrf_token %}
+
+                  <div class="form-floating mb-3">
+                    {{ form.email }}
+                    <label for="{{ form.email.id_for_label }}">آدرس ایمیل</label>
+                    {% if form.email.errors %}
+                      <div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>
+                    {% endif %}
+                  </div>
+
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                      <div class="form-floating">
+                        {{ form.password1 }}
+                        <label for="{{ form.password1.id_for_label }}">رمز عبور</label>
+                        {% if form.password1.errors %}
+                          <div class="text-danger small mt-1">{{ form.password1.errors.0 }}</div>
+                        {% endif %}
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-floating">
+                        {{ form.password2 }}
+                        <label for="{{ form.password2.id_for_label }}">تکرار رمز عبور</label>
+                        {% if form.password2.errors %}
+                          <div class="text-danger small mt-1">{{ form.password2.errors.0 }}</div>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" id="termsCheck" required />
+                    <label class="form-check-label" for="termsCheck">موافقت با <a href="#">شرایط و قوانین</a> و <a href="#">حریم خصوصی</a></label>
+                  </div>
+
+                  <div class="d-grid mb-4">
+                    <button type="submit" class="btn btn-register">ایجاد حساب کاربری</button>
+                  </div>
+
+                  <div class="login-link text-center">
+                    <p>
+                      قبلاً ثبت‌نام کرده‌اید؟ <a href="{% url 'accounts:login' %}">ورود</a>
+                    </p>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div class="social-login">
+              <div class="row">
+                <div class="col-lg-8 mx-auto">
+                  <div class="divider">
+                    <span>یا ثبت‌نام با</span>
+                  </div>
+                  <div class="social-buttons">
+                    <a href="{% provider_login_url 'google' %}" class="btn btn-social">
+                      <i class="bi bi-google"></i>
+                      <span>Google</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="decorative-elements">
+              <div class="circle circle-1"></div>
+              <div class="circle circle-2"></div>
+              <div class="circle circle-3"></div>
+              <div class="square square-1"></div>
+              <div class="square square-2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load socialaccount %}
+
+{% block title %}
+  ورود | رویا سازان جوان
+{% endblock %}
+
+{% block content %}
+  <!-- Page Title -->
+  <div class="page-title light-background">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+      <h1 class="mb-2 mb-lg-0">ورود</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li>
+            <a href="{% url 'website:index' %}">صفحه اصلی</a>
+          </li>
+          <li class="current">ورود</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Login Section -->
+  <section id="login" class="login section">
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+      <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+          <div class="auth-container" data-aos="fade-in" data-aos-delay="200">
+            <div class="auth-form login-form active">
+              <div class="form-header">
+                <h3>خوش آمدید</h3>
+                <p>به حساب کاربری خود وارد شوید</p>
+              </div>
+
+              <form method="post" class="auth-form-content">
+                {% csrf_token %}
+
+                <div class="input-group mb-3">
+                  <span class="input-icon"><i class="bi bi-envelope"></i></span>
+                  {{ form.username }}
+                  {% if form.username.errors %}
+                    <div class="invalid-feedback d-block">{{ form.username.errors.0 }}</div>
+                  {% endif %}
+                </div>
+
+                <div class="input-group mb-3">
+                  <span class="input-icon"><i class="bi bi-lock"></i></span>
+                  {{ form.password }}
+                  <span class="password-toggle" onclick="togglePassword(this)"><i class="bi bi-eye"></i></span>
+                  {% if form.password.errors %}
+                    <div class="invalid-feedback d-block">{{ form.password.errors.0 }}</div>
+                  {% endif %}
+                </div>
+
+                <div class="form-options mb-4">
+                  <div class="remember-me">
+                    <input type="checkbox" id="rememberLogin" name="remember" />
+                    <label for="rememberLogin">مرا به خاطر بسپار</label>
+                  </div>
+                  <a href="{% url 'accounts:forgot-password' %}" class="forgot-password">فراموشی رمز عبور؟</a>
+                </div>
+
+                <button type="submit" class="auth-btn primary-btn mb-3">
+                  ورود
+                  <i class="bi bi-arrow-left"></i>
+                </button>
+
+                <div class="divider">
+                  <span>یا</span>
+                </div>
+
+                <a href="{% provider_login_url 'google' %}" class="auth-btn social-btn">
+                  <i class="bi bi-google"></i>
+                  ورود با Google
+                </a>
+
+                <div class="switch-form">
+                  <span>حساب کاربری ندارید؟</span>
+                  <a href="{% url 'accounts:register' %}" class="switch-btn">ثبت‌نام</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    function togglePassword(element) {
+      const input = element.previousElementSibling
+      const icon = element.querySelector('i')
+    
+      if (input.type === 'password') {
+        input.type = 'text'
+        icon.classList.remove('bi-eye')
+        icon.classList.add('bi-eye-slash')
+      } else {
+        input.type = 'password'
+        icon.classList.remove('bi-eye-slash')
+        icon.classList.add('bi-eye')
+      }
+    }
+  </script>
+{% endblock %}
