@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% load static %}
-{% load socialaccount %}
 
 {% block title %}
   ورود | رویا سازان جوان
@@ -71,7 +70,7 @@
                   <span>یا</span>
                 </div>
 
-                <a href="{% provider_login_url 'google' %}" class="auth-btn social-btn">
+                <a href="{% url 'accounts:google_login' %}" class="auth-btn social-btn">
                   <i class="bi bi-google"></i>
                   ورود با Google
                 </a>

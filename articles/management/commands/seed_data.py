@@ -31,11 +31,10 @@ class Command(BaseCommand):
 
     def get_author(self):
         user, _ = User.objects.get_or_create(
-            username="editor",
+            email="author@example.com",
             defaults={
-                "email": "editor@example.com",
-                "first_name": "Blog",
-                "last_name": "Editor",
+                "is_active": True,
+                "is_verified": True,
             },
         )
         user.set_password("editor123")

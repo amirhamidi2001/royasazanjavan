@@ -70,6 +70,7 @@ TEMPLATES = [
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
+                "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
@@ -111,6 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {"min_length": 8},
     },
     {
         "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
@@ -126,7 +128,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Tehran"
 
 USE_I18N = True
 
@@ -151,45 +153,36 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
 SESSION_COOKIE_AGE = 1209600
 
-# Authentication
+# ==================== Authentication ====================
 AUTH_USER_MODEL = "accounts.User"
+
 AUTHENTICATION_BACKENDS = [
-    "accounts.backends.EmailVerifiedBackend",  # Custom backend
+    "accounts.backends.EmailVerifiedBackend",
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
-# Allauth settings
+# ==================== Django Allauth (New Version) ====================
 SITE_ID = 1
-# ACCOUNT_EMAIL_REQUIRED = True
-# ACCOUNT_USERNAME_REQUIRED = False
-# ACCOUNT_AUTHENTICATION_METHOD = "email"
+
 ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
-# ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = False
+ACCOUNT_UNIQUE_EMAIL = True
+# ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+# ACCOUNT_USERNAME_REQUIRED = False
+# ACCOUNT_AUTHENTICATION_METHOD = "email"
+
+# Social Account settings
 SOCIALACCOUNT_AUTO_SIGNUP = True
-SOCIALACCOUNT_EMAIL_VERIFICATION = "none"  # Google emails are pre-verified
+SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
+SOCIALACCOUNT_EMAIL_REQUIRED = True
+SOCIALACCOUNT_QUERY_EMAIL = True
+SOCIALACCOUNT_ADAPTER = "accounts.adapters.CustomSocialAccountAdapter"
 
-# Email settings (development)
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-
-# Email settings (production)
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
-
-# Security
-LOGIN_URL = "/accounts/login/"
-LOGIN_REDIRECT_URL = "/"
-LOGOUT_REDIRECT_URL = "/accounts/login/"
-
-# Additional allauth settings
+# Google OAuth Provider
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "SCOPE": [
@@ -200,25 +193,46 @@ SOCIALACCOUNT_PROVIDERS = {
             "access_type": "online",
         },
         "APP": {
-            "client_id": config("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY"),
-            "secret": config("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET"),
+            "client_id": config("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY", default=""),
+            "secret": config("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET", default=""),
             "key": "",
         },
     }
 }
 
-SOCIALACCOUNT_EMAIL_REQUIRED = True
-SOCIALACCOUNT_QUERY_EMAIL = True
+# ==================== Email Configuration ====================
+if DEBUG:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_HOST = "smtp.gmail.com"
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+    EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+    DEFAULT_FROM_EMAIL = config("EMAIL_HOST_USER")
 
-# # settings.py (production)
-# SECURE_SSL_REDIRECT = True
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
-# SECURE_BROWSER_XSS_FILTER = True
-# SECURE_CONTENT_TYPE_NOSNIFF = True
-# X_FRAME_OPTIONS = "DENY"
+# ==================== Security ====================
+LOGIN_URL = "/accounts/login/"
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/accounts/login/"
 
-RATELIMIT_ENABLE = False
+# Production Security
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = "DENY"
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+
+# ==================== Rate Limiting ====================
+RATELIMIT_ENABLE = not DEBUG
+
+# ==================== Cache (Redis) ====================
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",

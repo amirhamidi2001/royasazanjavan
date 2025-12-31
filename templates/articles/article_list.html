@@ -49,7 +49,7 @@
                   <p class="post-excerpt">{{ featured_article.excerpt|truncatewords:25 }}</p>
                   <div class="post-author">
                     <span>نویسنده:</span>
-                    <a href="{% url 'articles:author_list' featured_article.author.id %}">{{ featured_article.author.get_full_name|default:featured_article.author.username }}</a>
+                    <a href="{% url 'articles:author_list' featured_article.author.user_profile.id %}">{{ featured_article.author.user_profile.get_fullname }}</a>
                   </div>
                 </div>
               </div>
@@ -75,7 +75,7 @@
                       <h3 class="post-title"><a href="{{ article.get_absolute_url }}">{{ article.title|truncatewords:10 }}</a></h3>
                       <div class="post-author">
                         <span>نویسنده:</span>
-                        <a href="{% url 'articles:author_list' article.author.id %}">{{ article.author.get_full_name|default:article.author.username }}</a>
+                        <a href="{% url 'articles:author_list' article.author.user_profile.id %}">{{ article.author.user_profile.get_fullname }}</a>
                       </div>
                     </div>
                   </article>
@@ -120,7 +120,7 @@
                           <h4 class="post-title"><a href="{{ article.get_absolute_url }}">{{ article.title|truncatewords:8 }}</a></h4>
                           <div class="post-author">
                             نویسنده:
-                            <a href="{% url 'articles:author_list' article.author.id %}">{{ article.author.get_full_name|default:article.author.username }}</a>
+                            <a href="{% url 'articles:author_list' article.author.user_profile.id %}">{{ article.author.user_profile.get_fullname }}</a>
                           </div>
                         </div>
                       </div>
@@ -147,7 +147,7 @@
                           <h4 class="post-title"><a href="{{ article.get_absolute_url }}">{{ article.title|truncatewords:8 }}</a></h4>
                           <div class="post-author">
                             نویسنده:
-                            <a href="{% url 'articles:author_list' article.author.id %}">{{ article.author.get_full_name|default:article.author.username }}</a>
+                            <a href="{% url 'articles:author_list' article.author.user_profile.id %}">{{ article.author.user_profile.get_fullname }}</a>
                           </div>
                         </div>
                       </div>
@@ -174,7 +174,7 @@
                           <h4 class="post-title"><a href="{{ article.get_absolute_url }}">{{ article.title|truncatewords:8 }}</a></h4>
                           <div class="post-author">
                             نویسنده:
-                            <a href="{% url 'articles:author_list' article.author.id %}">{{ article.author.get_full_name|default:article.author.username }}</a>
+                            <a href="{% url 'articles:author_list' article.author.user_profile.id %}">{{ article.author.user_profile.get_fullname }}</a>
                           </div>
                         </div>
                       </div>
@@ -211,14 +211,14 @@
                 <h2 class="title"><a href="{{ article.get_absolute_url }}">{{ article.title|truncatewords:10 }}</a></h2>
 
                 <div class="d-flex align-items-center">
-                  {% if article.author.profile.avatar %}
-                    <img src="{{ article.author.profile.avatar.url }}" alt="{{ article.author.get_full_name }}" class="img-fluid post-author-img flex-shrink-0" />
+                  {% if article.author.user_profile.image %}
+                    <img src="{{ article.author.user_profile.image.url }}" alt="{{ article.author.user_profile.get_fullname }}" class="img-fluid post-author-img flex-shrink-0" />
                   {% else %}
-                    <img src="{% static 'assets/img/person/default-avatar.webp' %}" alt="{{ article.author.get_full_name }}" class="img-fluid post-author-img flex-shrink-0" />
+                    <img src="{% static 'assets/img/person/person-f-default.webp' %}" alt="{{ article.author.user_profile.get_fullname }}" class="img-fluid post-author-img flex-shrink-0" />
                   {% endif %}
                   <div class="post-meta">
                     <p class="post-author">
-                      <a href="{% url 'articles:author_list' article.author.id %}">{{ article.author.get_full_name|default:article.author.username }}</a>
+                      <a href="{% url 'articles:author_list' article.author.user_profile.id %}">{{ article.author.user_profile.get_fullname }}</a>
                     </p>
                     <p class="post-date">
                       <time datetime="{{ article.published_at|date:'Y-m-d' }}">{{ article.published_at|date:'Y/m/d' }}</time>

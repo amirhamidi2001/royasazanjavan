@@ -38,5 +38,5 @@ urlpatterns = [
     # Change Password
     path("change-password/", ChangePasswordView.as_view(), name="change-password"),
     # Google OAuth (allauth)
-    path("", include("allauth.urls")),
+    # path("", include("allauth.urls")),
 ]

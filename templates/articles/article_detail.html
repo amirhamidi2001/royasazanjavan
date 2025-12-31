@@ -44,13 +44,13 @@
 
           <div class="article-meta" data-aos="fade-up" data-aos-delay="200">
             <div class="author">
-              {% if article.author.profile.avatar %}
-                <img src="{{ article.author.profile.avatar.url }}" alt="{{ article.author.get_full_name }}" class="author-img" />
+              {% if article.author.user_profile.image %}
+                <img src="{{ article.author.user_profile.image.url }}" alt="{{ article.author.user_profile.get_fullname }}" class="author-img" />
               {% else %}
-                <img src="{% static 'assets/img/person/default-avatar.webp' %}" alt="{{ article.author.get_full_name }}" class="author-img" />
+                <img src="{% static 'assets/img/person/person-f-default.webp' %}" alt="{{ article.author.user_profile.get_fullname }}" class="author-img" />
               {% endif %}
               <div class="author-info">
-                <a href="{% url 'articles:author_list' article.author.id %}"><h4>{{ article.author.get_full_name|default:article.author.username }}</h4></a>
+                <a href="{% url 'articles:author_list' article.author.user_profile.id %}"><h4>{{ article.author.user_profile.get_fullname }}</h4></a>
                 <span>نویسنده</span>
               </div>
             </div>
@@ -143,7 +143,7 @@
                 <div class="comment-box">
                   <div class="comment-wrapper">
                     <div class="avatar-wrapper">
-                      <img src="{% static 'assets/img/person/default-avatar.webp' %}" alt="{{ comment.name }}" loading="lazy" />
+                      <img src="{% static 'assets/img/person/person-f-default.webp' %}" alt="{{ comment.name }}" loading="lazy" />
                       <span class="status-indicator"></span>
                     </div>
 
@@ -185,7 +185,7 @@
                       <div class="comment-box reply">
                         <div class="comment-wrapper">
                           <div class="avatar-wrapper">
-                            <img src="{% static 'assets/img/person/default-avatar.webp' %}" alt="{{ reply.name }}" loading="lazy" />
+                            <img src="{% static 'assets/img/person/person-f-default.webp' %}" alt="{{ reply.name }}" loading="lazy" />
                             <span class="status-indicator"></span>
                           </div>
 
