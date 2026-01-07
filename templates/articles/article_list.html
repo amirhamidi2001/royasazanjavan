@@ -87,6 +87,8 @@
         <!-- End Main Content Area -->
 
         <!-- Sidebar with Tabs -->
+         {% if top_stories or trending_articles or latest_articles %}
+
         <div class="col-lg-4">
           <div class="news-tabs" data-aos="fade-up" data-aos-delay="200">
             <ul class="nav nav-tabs" role="tablist">
@@ -185,6 +187,7 @@
             </div>
           </div>
         </div>
+        {% endif %}
       </div>
     </div>
   </section>
