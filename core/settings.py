@@ -42,8 +42,13 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "social_django",
     "django_ratelimit",
+    "django.contrib.humanize",
     "accounts.apps.AccountsConfig",
     "articles.apps.ArticlesConfig",
+    "cart.apps.CartConfig",
+    "courses.apps.CoursesConfig",
+    "dashboard.apps.DashboardConfig",
+    "orders.apps.OrdersConfig",
     "website.apps.WebsiteConfig",
 ]
 
@@ -72,6 +77,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "cart.context_processors.cart_context",
                 # Social Django context processors
                 "social_django.context_processors.backends",
                 "social_django.context_processors.login_redirect",

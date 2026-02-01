@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}
+  پرداخت موفق | رویا سازان جوان
+{% endblock %}
+
+{% block content %}
+  <!-- Page Title -->
+  <div class="page-title light-background">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+      <h1 class="mb-2 mb-lg-0">پرداخت موفق</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li><a href="{% url 'website:index' %}">صفحه اصلی</a></li>
+          <li><a href="{% url 'orders:order_list' %}">سفارشات</a></li>
+          <li class="current">پرداخت موفق</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <!-- End Page Title -->
+
+  <!-- Success Section -->
+  <section class="order-success section">
+    <div class="container" data-aos="fade-up">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="success-card text-center">
+            <!-- Success Icon -->
+            <div class="success-icon mb-4">
+              <i class="bi bi-check-circle-fill text-success" style="font-size: 80px;"></i>
+            </div>
+            
+            <!-- Success Message -->
+            <h2 class="mb-3">پرداخت شما با موفقیت انجام شد!</h2>
+            <p class="lead text-muted mb-4">
+              از خرید شما متشکریم. اکنون می‌توانید به دوره‌های خریداری شده دسترسی داشته باشید.
+            </p>
+            
+            <!-- Order Details Card -->
+            <div class="order-info-card mb-4">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <div class="info-item">
+                    <span class="info-label">شماره سفارش:</span>
+                    <span class="info-value">{{ order.order_number }}</span>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div class="info-item">
+                    <span class="info-label">کد پیگیری:</span>
+                    <span class="info-value">{{ order.zarinpal_ref_id }}</span>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div class="info-item">
+                    <span class="info-label">مبلغ پرداختی:</span>
+                    <span class="info-value">{{ order.final_price|floatformat:0|intcomma }} تومان</span>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div class="info-item">
+                    <span class="info-label">تاریخ پرداخت:</span>
+                    <span class="info-value">{{ order.payment_date|date:"Y/m/d - H:i" }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Purchased Courses -->
+            <div class="purchased-courses mb-4">
+              <h4 class="mb-3">دوره‌های خریداری شده:</h4>
+              <div class="row">
+                {% for item in order.items.all %}
+                <div class="col-md-6 mb-3">
+                  <div class="course-card-mini">
+                    {% if item.course.thumbnail %}
+                      <img src="{{ item.course.thumbnail.url }}" 
+                           alt="{{ item.course.title }}" 
+                           class="course-thumb" />
+                    {% endif %}
+                    <div class="course-info">
+                      <h6>{{ item.course.title }}</h6>
+                      <a href="#" 
+                         class="btn btn-sm btn-primary mt-2">
+                        <i class="bi bi-play-circle"></i> شروع یادگیری
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+              <a href="{% url 'orders:order_detail' order.id %}" 
+                 class="btn btn-outline-primary me-2">
+                <i class="bi bi-receipt"></i> مشاهده جزئیات سفارش
+              </a>
+              <a href="{% url 'courses:course_list' %}" 
+                 class="btn btn-accent">
+                <i class="bi bi-mortarboard"></i> مشاهده دوره‌های بیشتر
+              </a>
+            </div>
+            
+            <!-- Email Notification -->
+            <div class="alert alert-info mt-4">
+              <i class="bi bi-envelope"></i>
+              یک ایمیل تایید حاوی جزئیات سفارش به <strong>{{ order.email }}</strong> ارسال شد.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- End Success Section -->
+  
+  <style>
+    .success-card {
+      background: #fff;
+      border-radius: 15px;
+      padding: 50px 30px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+    
+    .order-info-card {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 25px;
+      margin: 30px 0;
+    }
+    
+    .info-item {
+      text-align: center;
+    }
+    
+    .info-label {
+      display: block;
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 5px;
+    }
+    
+    .info-value {
+      display: block;
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+    }
+    
+    .course-card-mini {
+      background: #fff;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    
+    .course-card-mini:hover {
+      border-color: #e74c3c;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    
+    .course-thumb {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    
+    .course-card-mini h6 {
+      font-size: 14px;
+      margin-bottom: 10px;
+      height: 40px;
+      overflow: hidden;
+    }
+  </style>
+{% endblock %}

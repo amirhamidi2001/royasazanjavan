@@ -87,106 +87,105 @@
         <!-- End Main Content Area -->
 
         <!-- Sidebar with Tabs -->
-         {% if top_stories or trending_articles or latest_articles %}
+        {% if top_stories or trending_articles or latest_articles %}
+          <div class="col-lg-4">
+            <div class="news-tabs" data-aos="fade-up" data-aos-delay="200">
+              <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#top-stories" type="button">محبوب‌ترین</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#trending" type="button">پرطرفدار</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#latest" type="button">جدیدترین</button>
+                </li>
+              </ul>
 
-        <div class="col-lg-4">
-          <div class="news-tabs" data-aos="fade-up" data-aos-delay="200">
-            <ul class="nav nav-tabs" role="tablist">
-              <li class="nav-item" role="presentation">
-                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#top-stories" type="button">محبوب‌ترین</button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#trending" type="button">پرطرفدار</button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#latest" type="button">جدیدترین</button>
-              </li>
-            </ul>
-
-            <div class="tab-content">
-              <!-- Top Stories Tab -->
-              <div class="tab-pane fade show active" id="top-stories">
-                {% for article in top_stories %}
-                  <article class="tab-post">
-                    <div class="row g-0 align-items-center">
-                      <div class="col-4">
-                        <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="img-fluid" />
-                      </div>
-                      <div class="col-8">
-                        <div class="post-content">
-                          {% with category=article.categories.first %}
-                            {% if category %}
-                              <span class="category">{{ category.name }}</span>
-                            {% endif %}
-                          {% endwith %}
-                          <h4 class="post-title"><a href="{{ article.get_absolute_url }}">{{ article.title|truncatewords:8 }}</a></h4>
-                          <div class="post-author">
-                            نویسنده:
-                            <a href="{% url 'articles:author_list' article.author.user_profile.id %}">{{ article.author.user_profile.get_fullname }}</a>
+              <div class="tab-content">
+                <!-- Top Stories Tab -->
+                <div class="tab-pane fade show active" id="top-stories">
+                  {% for article in top_stories %}
+                    <article class="tab-post">
+                      <div class="row g-0 align-items-center">
+                        <div class="col-4">
+                          <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="img-fluid" />
+                        </div>
+                        <div class="col-8">
+                          <div class="post-content">
+                            {% with category=article.categories.first %}
+                              {% if category %}
+                                <span class="category">{{ category.name }}</span>
+                              {% endif %}
+                            {% endwith %}
+                            <h4 class="post-title"><a href="{{ article.get_absolute_url }}">{{ article.title|truncatewords:8 }}</a></h4>
+                            <div class="post-author">
+                              نویسنده:
+                              <a href="{% url 'articles:author_list' article.author.user_profile.id %}">{{ article.author.user_profile.get_fullname }}</a>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </article>
-                {% endfor %}
-              </div>
+                    </article>
+                  {% endfor %}
+                </div>
 
-              <!-- Trending News Tab -->
-              <div class="tab-pane fade" id="trending">
-                {% for article in trending_articles %}
-                  <article class="tab-post">
-                    <div class="row g-0 align-items-center">
-                      <div class="col-4">
-                        <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="img-fluid" />
-                      </div>
-                      <div class="col-8">
-                        <div class="post-content">
-                          {% with category=article.categories.first %}
-                            {% if category %}
-                              <span class="category">{{ category.name }}</span>
-                            {% endif %}
-                          {% endwith %}
-                          <h4 class="post-title"><a href="{{ article.get_absolute_url }}">{{ article.title|truncatewords:8 }}</a></h4>
-                          <div class="post-author">
-                            نویسنده:
-                            <a href="{% url 'articles:author_list' article.author.user_profile.id %}">{{ article.author.user_profile.get_fullname }}</a>
+                <!-- Trending News Tab -->
+                <div class="tab-pane fade" id="trending">
+                  {% for article in trending_articles %}
+                    <article class="tab-post">
+                      <div class="row g-0 align-items-center">
+                        <div class="col-4">
+                          <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="img-fluid" />
+                        </div>
+                        <div class="col-8">
+                          <div class="post-content">
+                            {% with category=article.categories.first %}
+                              {% if category %}
+                                <span class="category">{{ category.name }}</span>
+                              {% endif %}
+                            {% endwith %}
+                            <h4 class="post-title"><a href="{{ article.get_absolute_url }}">{{ article.title|truncatewords:8 }}</a></h4>
+                            <div class="post-author">
+                              نویسنده:
+                              <a href="{% url 'articles:author_list' article.author.user_profile.id %}">{{ article.author.user_profile.get_fullname }}</a>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </article>
-                {% endfor %}
-              </div>
+                    </article>
+                  {% endfor %}
+                </div>
 
-              <!-- Latest News Tab -->
-              <div class="tab-pane fade" id="latest">
-                {% for article in latest_articles %}
-                  <article class="tab-post">
-                    <div class="row g-0 align-items-center">
-                      <div class="col-4">
-                        <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="img-fluid" />
-                      </div>
-                      <div class="col-8">
-                        <div class="post-content">
-                          {% with category=article.categories.first %}
-                            {% if category %}
-                              <span class="category">{{ category.name }}</span>
-                            {% endif %}
-                          {% endwith %}
-                          <h4 class="post-title"><a href="{{ article.get_absolute_url }}">{{ article.title|truncatewords:8 }}</a></h4>
-                          <div class="post-author">
-                            نویسنده:
-                            <a href="{% url 'articles:author_list' article.author.user_profile.id %}">{{ article.author.user_profile.get_fullname }}</a>
+                <!-- Latest News Tab -->
+                <div class="tab-pane fade" id="latest">
+                  {% for article in latest_articles %}
+                    <article class="tab-post">
+                      <div class="row g-0 align-items-center">
+                        <div class="col-4">
+                          <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="img-fluid" />
+                        </div>
+                        <div class="col-8">
+                          <div class="post-content">
+                            {% with category=article.categories.first %}
+                              {% if category %}
+                                <span class="category">{{ category.name }}</span>
+                              {% endif %}
+                            {% endwith %}
+                            <h4 class="post-title"><a href="{{ article.get_absolute_url }}">{{ article.title|truncatewords:8 }}</a></h4>
+                            <div class="post-author">
+                              نویسنده:
+                              <a href="{% url 'articles:author_list' article.author.user_profile.id %}">{{ article.author.user_profile.get_fullname }}</a>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </article>
-                {% endfor %}
+                    </article>
+                  {% endfor %}
+                </div>
               </div>
             </div>
           </div>
-        </div>
         {% endif %}
       </div>
     </div>
@@ -233,87 +232,63 @@
           {% endfor %}
         </div>
       {% else %}
-        <div class="alert alert-info text-center" role="alert">
-          <h4>مقاله‌ای یافت نشد</h4>
-          <p>متأسفانه با فیلترهای انتخابی شما مقاله‌ای پیدا نشد.</p>
-          <a href="{% url 'articles:article_list' %}" class="btn btn-primary">مشاهده همه مقالات</a>
-        </div>
+        <!-- Privacy Section -->
+        <section id="privacy" class="privacy section">
+          <div class="container" data-aos="fade-up">
+            <!-- Header -->
+            <div class="privacy-header" data-aos="fade-up">
+              <div class="header-content">
+                <h2><i class="bi bi-info-circle"></i></h2>
+                <h4>مقاله‌ای یافت نشد</h4>
+                <p>متأسفانه با فیلترهای انتخابی شما مقاله‌ای پیدا نشد.</p>
+                <a href="{% url 'articles:article_list' %}" class="btn btn-primary">مشاهده همه مقالات</a>
+              </div>
+            </div>
+          </div>
+        </section>
       {% endif %}
     </div>
   </section>
   <!-- /Blog Posts Section -->
 
   <!-- Pagination Section -->
-  {% if is_paginated %}
-    <section id="pagination-2" class="pagination-2 section">
-      <div class="container">
-        <nav class="d-flex justify-content-center" aria-label="صفحه‌بندی">
-          <ul>
-            <!-- دکمه صفحه قبل -->
-            {% if page_obj.has_previous %}
+  <section id="category-pagination" class="category-pagination section">
+    <div class="container">
+      <nav class="d-flex justify-content-center" aria-label="Page navigation">
+        <ul>
+          {% if page_obj.has_previous %}
+            <li>
+              <a href="?page={{ page_obj.previous_page_number }}" aria-label="Previous page">
+                <i class="bi bi-arrow-right"></i>
+                <span class="d-none d-sm-inline">قبلی</span>
+              </a>
+            </li>
+          {% endif %}
+          {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
               <li>
-                <a href="?{% url_replace page=page_obj.previous_page_number %}" aria-label="صفحه قبل">
-                  <i class="bi bi-arrow-right"></i>
-                  <span class="d-none d-sm-inline">قبلی</span>
-                </a>
+                <a href="#" class="active">{{ num }}</a>
               </li>
-            {% else %}
-              <li class="disabled">
-                <span>
-                  <i class="bi bi-arrow-right"></i>
-                  <span class="d-none d-sm-inline">قبلی</span>
-                </span>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+              <li>
+                <a href="?page={{ num }}">{{ num }}</a>
               </li>
             {% endif %}
-
-            <!-- شماره صفحات -->
-            {% for num in page_obj.paginator.page_range %}
-              {% if page_obj.number == num %}
-                <li>
-                  <a href="#" class="active">{{ num }}</a>
-                </li>
-              {% elif num > page_obj.number|add:'-2' and num < page_obj.number|add:'2' %}
-                <li>
-                  <a href="?{% url_replace page=num %}">{{ num }}</a>
-                </li>
-              {% elif num == 1 %}
-                <li>
-                  <a href="?{% url_replace page=1 %}">1</a>
-                </li>
-                {% if page_obj.number > 3 %}
-                  <li class="ellipsis">...</li>
-                {% endif %}
-              {% elif num == page_obj.paginator.num_pages %}
-                {% if page_obj.number < page_obj.paginator.num_pages|add:'-2' %}
-                  <li class="ellipsis">...</li>
-                {% endif %}
-                <li>
-                  <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
-                </li>
-              {% endif %}
-            {% endfor %}
-
-            {% if page_obj.has_next %}
-              <li>
-                <a href="?{% url_replace page=page_obj.next_page_number %}" aria-label="صفحه بعد">
-                  <span class="d-none d-sm-inline">بعدی</span>
-                  <i class="bi bi-arrow-left"></i>
-                </a>
-              </li>
-            {% else %}
-              <li class="disabled">
-                <span>
-                  <span class="d-none d-sm-inline">بعدی</span>
-                  <i class="bi bi-arrow-left"></i>
-                </span>
-              </li>
-            {% endif %}
-          </ul>
-        </nav>
-      </div>
-    </section>
-  {% endif %}
-  <!-- /Pagination Section -->
+          {% endfor %}
+          {% if page_obj.has_next %}
+            <li>
+              <a href="?page={{ page_obj.next_page_number }}" aria-label="Next page">
+                <span class="d-none d-sm-inline">بعدی</span>
+                <i class="bi bi-arrow-left"></i>
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </section>
+  <!-- Pagination Section -->
+  
 {% endblock %}
 
 {% block extra_js %}

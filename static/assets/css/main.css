@@ -6770,7 +6770,7 @@ section,
 
 .search-product-list .product-image {
   position: relative;
-  padding-top: 125%;
+  padding-top: 100%;
   background: color-mix(in srgb, var(--surface-color), transparent 97%);
   overflow: hidden;
 }

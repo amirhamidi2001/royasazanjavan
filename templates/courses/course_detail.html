@@ -1,0 +1,414 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  {{ course.title }} | رویا سازان جوان
+{% endblock %}
+
+{% block content %}
+  <!-- Page Title -->
+  <div class="page-title light-background">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+      <h1 class="mb-2 mb-lg-0">{{ course.title }}</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li>
+            <a href="{% url 'website:index' %}">صفحه اصلی</a>
+          </li>
+          <li>
+            <a href="{% url 'courses:course_list' %}">دوره‌ها</a>
+          </li>
+          <li class="current">{{ course.title }}</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <!-- End Page Title -->
+
+  <!-- Course Section -->
+  <section id="course-detail" class="account section">
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+      <!-- Mobile Menu Toggle -->
+      <div class="mobile-menu d-lg-none mb-4">
+        <button class="mobile-menu-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#courseMenu">
+          <i class="bi bi-grid"></i>
+          <span>Menu</span>
+        </button>
+      </div>
+
+      <div class="row g-4">
+        <!-- Course Menu -->
+        <div class="col-lg-3">
+          <div class="profile-menu collapse d-lg-block" id="courseMenu">
+            <!-- Course Info -->
+            <div class="user-info" data-aos="fade-right">
+              <div class="user-avatar">
+                {% if course.thumbnail %}
+                  <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" loading="lazy" />
+                {% else %}
+                  <img src="{% static 'assets/img/logo.webp' %}" alt="{{ course.title }}" loading="lazy" />
+                {% endif %}
+                {% if avg_rating > 0 %}
+                  <span class="status-badge"><i class="bi bi-star-fill"></i></span>
+                {% endif %}
+              </div>
+              <h4>{{ course.instructor.user_profile.get_fullname }}</h4>
+              <div class="user-status">
+                <i class="bi bi-award"></i>
+                <span>مدرس دوره</span>
+              </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="menu-nav">
+              <ul class="nav flex-column" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" data-bs-toggle="tab" href="#overview">
+                    <i class="bi bi-info-circle"></i>
+                    <span>نمای کلی</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" data-bs-toggle="tab" href="#content">
+                    <i class="bi bi-camera-video"></i>
+                    <span>محتوای دوره</span>
+                    <span class="badge">{{ course.get_total_videos }}</span>
+                  </a>
+                </li>
+                {% if is_enrolled %}
+                  <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#progress">
+                      <i class="bi bi-graph-up"></i>
+                      <span>پیشرفت من</span>
+                      <span class="badge">{{ progress.completion_percentage }}%</span>
+                    </a>
+                  </li>
+                {% endif %}
+                <li class="nav-item">
+                  <a class="nav-link" data-bs-toggle="tab" href="#reviews">
+                    <i class="bi bi-star"></i>
+                    <span>نظرات و امتیازها</span>
+                    <span class="badge">{{ ratings.count }}</span>
+                  </a>
+                </li>
+              </ul>
+
+              <div class="menu-footer">
+                {% if not is_enrolled %}
+                  <a href="{% url 'courses:enroll_course' course.slug %}" class="help-link">
+                    <span>ثبت‌نام در دوره</span>
+                    <i class="bi bi-cart-plus"></i>
+                  </a>
+                {% else %}
+                  <a class="help-link">
+                    <i class="bi bi-check-circle"></i>
+                    <span>ثبت‌نام شده</span>
+                  </a>
+                {% endif %}
+                <a href="{% url 'courses:course_list' %}" class="logout-link">
+                  <span>بازگشت به لیست دوره‌ها</span>
+                  <i class="bi bi-arrow-right"></i>
+                </a>
+              </div>
+            </nav>
+          </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="col-lg-9">
+          <div class="content-area">
+            <div class="tab-content">
+              <!-- Overview Tab -->
+              <div class="tab-pane fade show active" id="overview">
+                <div class="section-header" data-aos="fade-up">
+                  <h2>نمای کلی دوره</h2>
+                  <div class="header-actions">
+                    <div class="rating">
+                      {% if avg_rating > 0 %}
+                        {% if forloop.counter <= avg_rating %}
+                          <i class="bi bi-star-fill"></i>
+                        {% else %}
+                          <i class="bi bi-star"></i>
+                        {% endif %}
+                        <span>({{ avg_rating }})</span>
+                      {% else %}
+                        <span>بدون امتیاز</span>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="review-card" data-aos="fade-up" data-aos-delay="100">
+                  {% if course.thumbnail %}
+                    <div class="review-header">
+                      <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="product-image" loading="lazy" style="width: 100%; max-height: 500px; object-fit: cover; border-radius: 8px;" />
+                    </div>
+                  {% endif %}
+
+                  <div class="review-content" style="padding: 20px 0;">
+                    <h3 style="margin-bottom: 15px;">{{ course.title }}</h3>
+
+                    <div class="course-info mb-3">
+                      <span class="badge" style="background: #007bff; color: white; margin-left: 10px;"><i class="bi bi-clock"></i> {{ course.duration }} ساعت</span>
+                      <span class="badge" style="background: #17a2b8; color: white; margin-left: 10px;"><i class="bi bi-camera-video"></i> {{ course.get_total_videos }} ویدیو</span>
+                      <span class="badge" style="background: #28a745; color: white;"><i class="bi bi-people"></i> {{ course.get_students_count }} دانشجو</span>
+                    </div>
+
+                    {% if progress %}
+                      <div>
+                        <h6>پیشرفت شما: {{ progress.completion_percentage }}%</h6>
+                        <div class="progress" style="height: 20px;">
+                          <div class="progress-bar" role="progressbar" style="width: {{ progress.completion_percentage }}%; background: #28a745;" aria-valuenow="{{ progress.completion_percentage }}" aria-valuemin="0" aria-valuemax="100">{{ progress.completion_percentage }}%</div>
+                        </div>
+                      </div>
+                    {% endif %}
+
+                    <h4 style="margin-top: 20px; margin-bottom: 15px;">توضیحات دوره</h4>
+                    <p>{{ course.description }}</p>
+
+                    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+                      <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                          <h3>${{ course.price }}</h3>
+                        </div>
+                        {% if not is_enrolled %}
+                          <div>
+                            <a href="{% url 'courses:enroll_course' course.slug %}" class="btn-edit"><i class="bi bi-cart-plus"></i> ثبت‌نام در دوره</a>
+                          </div>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Content Tab -->
+              <div class="tab-pane fade" id="content">
+                <div class="section-header" data-aos="fade-up">
+                  <h2>محتوای دوره</h2>
+                  <div class="header-actions">
+                    <span>{{ course.get_total_videos }} ویدیو</span>
+                  </div>
+                </div>
+
+                <div class="reviews-grid">
+                  {% if videos %}
+                    {% for video in videos %}
+                      <div class="review-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:'00' }}">
+                        <div class="review-header">
+                          <div style="width: 60px; height: 60px; background: #007bff; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: bold;">{{ video.display_order }}</div>
+                          <div class="review-meta">
+                            <h4>
+                              {{ video.title }}
+                              {% if progress and video in progress.watched_videos.all %}
+                                <span class="badge"><i class="bi bi-check-circle"></i> مشاهده شده</span>
+                              {% endif %}
+                            </h4>
+                            {% if video.description %}
+                              <p style="color: #6c757d; margin: 5px 0;">{{ video.description|truncatewords:15 }}</p>
+                            {% endif %}
+                            <div class="review-date">
+                              <i class="bi bi-clock"></i> {{ video.duration }} دقیقه
+                            </div>
+                          </div>
+                        </div>
+                        {% if is_enrolled %}
+                          <div class="review-footer">
+                            <a href="{{ video.video_link }}" target="_blank" class="btn-edit"><i class="bi bi-play-circle"></i> مشاهده ویدیو</a>
+                            {% if progress and video not in progress.watched_videos.all %}
+                              <a href="{% url 'courses:mark_video_watched' course.slug video.id %}" class="btn-delete"><i class="bi bi-check"></i> علامت‌گذاری به عنوان مشاهده شده</a>
+                            {% endif %}
+                          </div>
+                        {% else %}
+                          <div class="review-footer">
+                            <span style="color: #6c757d;">برای دسترسی به ویدیوها در دوره ثبت‌نام کنید</span>
+                          </div>
+                        {% endif %}
+                      </div>
+                    {% endfor %}
+                  {% else %}
+                    <div class="review-card" data-aos="fade-up">
+                      <div class="review-content">
+                        <p style="color: #6c757d; text-align: center;">هنوز ویدیویی در دسترس نیست.</p>
+                      </div>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+
+              <!-- Progress Tab -->
+              {% if is_enrolled %}
+                <div class="tab-pane fade" id="progress">
+                  <div class="section-header" data-aos="fade-up">
+                    <h2>پیشرفت من</h2>
+                    <div class="header-actions">
+                      <span>{{ progress.completion_percentage }}% تکمیل شده</span>
+                    </div>
+                  </div>
+
+                  <div class="review-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="review-content">
+                      <h4 style="margin-bottom: 15px;">وضعیت پیشرفت</h4>
+                      <div style="margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                          <span>پیشرفت کلی</span>
+                          <span style="font-weight: bold;">{{ progress.completion_percentage }}%</span>
+                        </div>
+                        <div class="progress" style="height: 30px;">
+                          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ progress.completion_percentage }}%; background: #007bff;" aria-valuenow="{{ progress.completion_percentage }}" aria-valuemin="0" aria-valuemax="100">{{ progress.completion_percentage }}%</div>
+                        </div>
+                      </div>
+
+                      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
+                        <div style="background: #007bff; color: white; padding: 20px; border-radius: 8px; text-align: center;">
+                          <h3 style="margin: 0; color: white;">{{ progress.watched_videos.count }}</h3>
+                          <p style="margin: 5px 0 0 0; color: white;">ویدیوهای مشاهده شده</p>
+                        </div>
+                        <div style="background: #6c757d; color: white; padding: 20px; border-radius: 8px; text-align: center;">
+                          <h3 style="margin: 0; color: white;">{{ course.get_total_videos }}</h3>
+                          <p style="margin: 5px 0 0 0; color: white;">کل ویدیوها</p>
+                        </div>
+                        <div style="background: #28a745; color: white; padding: 20px; border-radius: 8px; text-align: center;">
+                          <h3 style="margin: 0; color: white;">{{ progress.last_accessed|date:'d M' }}</h3>
+                          <p style="margin: 5px 0 0 0; color: white;">آخرین دسترسی</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {% if progress.watched_videos.exists %}
+                    <div class="review-card" data-aos="fade-up" data-aos-delay="200">
+                      <div class="review-content">
+                        <h4 style="margin-bottom: 15px;">ویدیوهای مشاهده شده اخیر</h4>
+                        <ul style="list-style: none; padding: 0;">
+                          {% for video in progress.watched_videos.all|slice:':10' %}
+                            <li style="margin-bottom: 10px; padding: 10px; background: #f8f9fa; border-radius: 5px; display: flex; align-items: center;">
+                              <i class="bi bi-check-circle-fill" style="color: #28a745; margin-left: 10px; font-size: 20px;"></i>
+                              <span>{{ video.title }}</span>
+                            </li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                    </div>
+                  {% endif %}
+                </div>
+              {% endif %}
+
+              <!-- Reviews Tab -->
+              <div class="tab-pane fade" id="reviews">
+                <div class="section-header" data-aos="fade-up">
+                  <h2>نظرات و امتیازها</h2>
+                  <div class="header-actions">
+                    <div class="rating">
+                      {% if avg_rating > 0 %}
+                        {% if forloop.counter <= avg_rating %}
+                          <i class="bi bi-star-fill"></i>
+                        {% else %}
+                          <i class="bi bi-star"></i>
+                        {% endif %}
+                        <span>({{ avg_rating }})</span>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Rating Form -->
+                {% if user.is_authenticated and is_enrolled %}
+                  <div class="review-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="review-content">
+                      <h5 style="margin-bottom: 15px;">
+                        {% if user_rating %}
+                          امتیاز خود را به‌روزرسانی کنید
+                        {% else %}
+                          این دوره را امتیازدهی کنید
+                        {% endif %}
+                      </h5>
+                      <form method="post" action="{% url 'courses:submit_rating' course.slug %}">
+                        {% csrf_token %}
+
+                        <div style="margin-bottom: 15px;">
+                          <label style="display: block; margin-bottom: 10px; font-weight: bold;">امتیاز</label>
+                          <div class="rating-options" style="display: flex; gap: 10px;">{{ rating_form.rating }}</div>
+                          {% if rating_form.rating.errors %}
+                            <div style="color: #dc3545; font-size: 14px; margin-top: 5px;">{{ rating_form.rating.errors }}</div>
+                          {% endif %}
+                        </div>
+
+                        <div style="margin-bottom: 15px;">
+                          <label style="display: block; margin-bottom: 10px; font-weight: bold;">نظر شما</label>
+                          {{ rating_form.feedback }}
+                          {% if rating_form.feedback.errors %}
+                            <div style="color: #dc3545; font-size: 14px; margin-top: 5px;">{{ rating_form.feedback.errors }}</div>
+                          {% endif %}
+                        </div>
+
+                        <button type="submit" class="btn-edit" style="background: #007bff; border: none;"><i class="bi bi-send"></i> ارسال امتیاز</button>
+                      </form>
+                    </div>
+                  </div>
+                {% elif not user.is_authenticated %}
+                  <div class="review-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="review-content" style="text-align: center; padding: 30px;">
+                      <p>
+                        لطفا برای امتیازدهی به این دوره <a href="{% url 'accounts:login' %}" style="color: #007bff;">وارد شوید</a>.
+                      </p>
+                    </div>
+                  </div>
+                {% elif not is_enrolled %}
+                  <div class="review-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="review-content" style="text-align: center; padding: 30px; background: #fff3cd;">
+                      <p style="color: #856404;">برای امتیازدهی به این دوره باید در آن ثبت‌نام کنید.</p>
+                    </div>
+                  </div>
+                {% endif %}
+
+                <!-- Display Reviews -->
+                <div class="reviews-grid">
+                  {% if ratings %}
+                    {% for rating in ratings %}
+                      <div class="review-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:'00' }}">
+                        <div class="review-header">
+                          <img src="{% if rating.user.user_profile.image %}
+                              {{ rating.user.user_profile.image.url }}
+                            {% else %}
+                              {% static 'assets/img/person/person-f-10.webp' %}
+                            {% endif %}"
+                            alt="{{ rating.user.user_profile.get_fullname }}"
+                            class="product-image"
+                            loading="lazy"
+                            style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;" />
+                          <div class="review-meta">
+                            <h4>{{ rating.user.user_profile.get_fullname }}</h4>
+                            <div class="rating">
+                              {% if forloop.counter <= rating.rating %}
+                                <i class="bi bi-star-fill"></i>
+                              {% else %}
+                                <i class="bi bi-star"></i>
+                              {% endif %}
+                              <span>({{ rating.rating }}.0)</span>
+                            </div>
+                            <div class="review-date">{{ rating.created_date|date:'d F Y' }}</div>
+                          </div>
+                        </div>
+                        <div class="review-content">
+                          <p>{{ rating.feedback }}</p>
+                        </div>
+                      </div>
+                    {% endfor %}
+                  {% else %}
+                    <div class="review-card" data-aos="fade-up">
+                      <div class="review-content" style="text-align: center; padding: 30px;">
+                        <p style="color: #6c757d;">هنوز نظری ثبت نشده است. اولین نفری باشید که این دوره را نقد می‌کنید!</p>
+                      </div>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- /Course Section -->
+{% endblock %}

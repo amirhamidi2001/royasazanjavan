@@ -1,0 +1,103 @@
+{% load static %}
+<div class="section-header" data-aos="fade-up">
+  <h2>نظرات و امتیازات من</h2>
+</div>
+
+{% if reviews %}
+<div class="reviews-list">
+  {% for review in reviews %}
+  <div class="review-card" data-aos="fade-up">
+    <div class="review-header">
+      <div class="course-info">
+        {% if review.course.thumbnail %}
+          <img src="{{ review.course.thumbnail.url }}" 
+               alt="{{ review.course.title }}" 
+               class="course-thumb" />
+        {% endif %}
+        <div>
+          <h5>{{ review.course.title }}</h5>
+          <p class="text-muted">{{ review.created_date|date:"Y/m/d" }}</p>
+        </div>
+      </div>
+      <div class="rating">
+        {% for i in "12345" %}
+          {% if forloop.counter <= review.rating %}
+            <i class="bi bi-star-fill text-warning"></i>
+          {% else %}
+            <i class="bi bi-star text-muted"></i>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    <div class="review-content">
+      <p>{{ review.feedback }}</p>
+    </div>
+    <div class="review-actions">
+      <a href="{% url 'courses:course_detail' review.course.slug %}" 
+         class="btn btn-sm btn-outline-primary">
+        <i class="bi bi-eye"></i> مشاهده دوره
+      </a>
+      <form method="POST" 
+            action="{% url 'dashboard:delete_review' review.id %}" 
+            class="d-inline"
+            onsubmit="return confirm('آیا از حذف این نظر مطمئن هستید؟')">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sm btn-outline-danger">
+          <i class="bi bi-trash"></i> حذف
+        </button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state text-center py-5">
+  <i class="bi bi-star" style="font-size: 5rem; color: #ddd;"></i>
+  <h3 class="mt-4">هنوز نظری ثبت نکرده‌اید</h3>
+  <p class="text-muted">با ثبت نظر، به بهبود کیفیت دوره‌ها کمک کنید</p>
+  <a href="#courses" data-bs-toggle="tab" class="btn btn-primary mt-3">
+    <i class="bi bi-mortarboard"></i> دوره‌های من
+  </a>
+</div>
+{% endif %}
+
+<style>
+.review-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.course-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.course-thumb {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.review-content {
+  margin: 15px 0;
+}
+
+.review-actions {
+  display: flex;
+  gap: 10px;
+}
+</style>

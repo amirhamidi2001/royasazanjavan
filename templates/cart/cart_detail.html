@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}
+  سبد خرید | رویا سازان جوان
+{% endblock %}
+
+{% block content %}
+  <!-- Page Title -->
+  <div class="page-title light-background">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+      <h1 class="mb-2 mb-lg-0">سبد خرید</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li>
+            <a href="{% url 'website:index' %}">صفحه اصلی</a>
+          </li>
+          <li class="current">سبد خرید</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <!-- End Page Title -->
+
+  <!-- Cart Section -->
+  <section id="cart" class="cart section">
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+      {% if cart_items %}
+        <div class="row">
+          <div class="col-lg-8" data-aos="fade-up" data-aos-delay="200">
+            <div class="cart-items">
+              <div class="cart-header d-none d-lg-block">
+                <div class="row align-items-center">
+                  <div class="col-lg-6">
+                    <h5>دوره</h5>
+                  </div>
+                  <div class="col-lg-3 text-center">
+                    <h5>قیمت</h5>
+                  </div>
+                  <div class="col-lg-3 text-center">
+                    <h5>عملیات</h5>
+                  </div>
+                </div>
+              </div>
+
+              {% for item in cart_items %}
+                <!-- Cart Item -->
+                <div class="cart-item" data-course-id="{{ item.course_obj.id }}">
+                  <div class="row align-items-center">
+                    <div class="col-lg-6 col-12 mt-3 mt-lg-0 mb-lg-0 mb-3">
+                      <div class="product-info d-flex align-items-center">
+                        <div class="product-image">
+                          {% if item.course_obj.thumbnail %}
+                            <img src="{{ item.course_obj.thumbnail.url }}" alt="{{ item.course_obj.title }}" class="img-fluid" loading="lazy" />
+                          {% else %}
+                            <img src="{% static 'assets/img/logo.webp' %}" alt="{{ item.course_obj.title }}" class="img-fluid" loading="lazy" />
+                          {% endif %}
+                        </div>
+                        <div class="product-details">
+                          <h6 class="product-title"><a href="{% url 'courses:course_detail' item.course_obj.slug %}">{{ item.course_obj.title }}</a></h6>
+                          <div class="product-meta">
+                            <span class="product-instructor">
+                              <i class="bi bi-person"></i>
+                              {{ item.course_obj.instructor.get_full_name|default:item.course_obj.instructor.email }}
+                            </span>
+                            <span class="product-duration">
+                              <i class="bi bi-clock"></i>
+                              {{ item.course_obj.duration }} ساعت
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-3 col-12 mt-3 mt-lg-0 text-center">
+                      <div class="price-tag">
+                        <span class="current-price">{{ item.course_obj.price|floatformat:0|intcomma }} تومان</span>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-3 col-12 mt-3 mt-lg-0 text-center">
+                      <form method="POST" action="{% url 'cart:cart_remove' item.course_obj.id %}" class="remove-form">
+                        {% csrf_token %}
+                        <button class="btn btn-outline-danger remove-item" type="submit"><i class="bi bi-trash"></i> حذف</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <!-- End Cart Item -->
+              {% endfor %}
+
+              <div class="cart-actions">
+                <div class="row">
+                  <div class="col-lg-6 text-md-end">
+                    <a href="{% url 'courses:course_list' %}" class="btn btn-outline-heading me-2"><i class="bi bi-arrow-right"></i> ادامه خرید</a>
+                    <form method="POST" action="{% url 'cart:cart_clear' %}" class="d-inline clear-cart-form">
+                      {% csrf_token %}
+                      <button class="btn btn-outline-remove" type="submit"><i class="bi bi-trash"></i> خالی کردن سبد</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 mt-4 mt-lg-0" data-aos="fade-up" data-aos-delay="300">
+            <div class="cart-summary">
+              <h4 class="summary-title">خلاصه سفارش</h4>
+
+              <div class="summary-item">
+                <span class="summary-label">تعداد دوره‌ها</span>
+                <span class="summary-value" id="cart-summary-quantity">{{ total_quantity }} دوره</span>
+              </div>
+
+              <div class="summary-item">
+                <span class="summary-label">جمع کل</span>
+                <span class="summary-value" id="cart-summary-subtotal">{{ total_price|floatformat:0|intcomma }} تومان</span>
+              </div>
+
+              <div class="summary-item discount">
+                <span class="summary-label">تخفیف</span>
+                <span class="summary-value" id="cart-summary-discount">0 تومان</span>
+              </div>
+
+              <div class="summary-total">
+                <span class="summary-label">مبلغ قابل پرداخت</span>
+                <span class="summary-value" id="cart-summary-total">{{ total_price|floatformat:0|intcomma }} تومان</span>
+              </div>
+
+              <div class="checkout-button">
+                {% if user.is_authenticated %}
+                  <a href="{% url 'orders:checkout' %}" class="btn btn-accent w-100">پرداخت و ثبت نهایی <i class="bi bi-arrow-left"></i></a>
+                {% else %}
+                  <a href="{% url 'accounts:login' %}?next={% url 'orders:checkout' %}" class="btn btn-accent w-100">ورود برای ادامه خرید <i class="bi bi-arrow-left"></i></a>
+                {% endif %}
+              </div>
+              <div class="continue-shopping">
+                <a href="{% url 'courses:course_list' %}" class="btn btn-link w-100"><i class="bi bi-arrow-right"></i> مشاهده دوره‌های بیشتر</a>
+              </div>
+
+              <div class="payment-methods">
+                <p class="payment-title">روش‌های پرداخت</p>
+                <div class="payment-icons">
+                  <i class="bi bi-credit-card" title="کارت به کارت"></i>
+                  <i class="bi bi-wallet2" title="کیف پول"></i>
+                  <i class="bi bi-bank" title="درگاه بانکی"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <!-- Empty Cart -->
+        <div class="row">
+          <div class="col-12">
+            <div class="empty-cart text-center py-5">
+              <i class="bi bi-cart-x" style="font-size: 5rem; color: #ddd;"></i>
+              <h3 class="mt-4">سبد خرید شما خالی است</h3>
+              <p class="text-muted">برای مشاهده دوره‌های آموزشی به صفحه دوره‌ها بروید</p>
+              <a href="{% url 'courses:course_list' %}" class="btn btn-accent mt-3"><i class="bi bi-mortarboard"></i> مشاهده دوره‌ها</a>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+  <!-- /Cart Section -->
+
+  {% block extra_js %}
+    <script src="{% static 'assets/js/cart.js' %}"></script>
+  {% endblock %}
+{% endblock %}

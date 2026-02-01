@@ -1,0 +1,45 @@
+<section id="call-to-action" class="call-to-action section">
+  <div class="container" data-aos="fade-up" data-aos-delay="100">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <div class="main-content text-center" data-aos="zoom-in" data-aos-delay="200">
+          <h3 data-aos="fade-up" data-aos-delay="300">جدید ترین مقالات</h3>
+          <p class="subtitle" data-aos="fade-up" data-aos-delay="350">
+            با جدیدترین مقاله ها، بینش‌ها و توصیه‌های تخصصی ما به‌روز باشید.
+          </p>
+          <div class="action-buttons" data-aos="fade-up" data-aos-delay="450">
+            <a href="{% url 'articles:article_list' %}" class="btn-shop-now">مشاهده همه مقالات</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row featured-products-row" data-aos="fade-up" data-aos-delay="500">
+      {% for article in articles %}
+      <div class="col-lg-3 col-md-6 mb-4" data-aos="zoom-in" data-aos-delay="{{ forloop.counter|add:100 }}">
+        <div class="product-showcase">
+          <div class="product-image">
+            {% if article.featured_image %}
+              <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="img-fluid" style="height: 250px; object-fit: cover; width: 100%;" />
+            {% endif %}
+          </div>
+          <div class="product-details">
+            <a href="{{ article.get_absolute_url }}">
+                <h6>{{ article.title|truncatechars:50 }}</h6>
+            </a>
+            <div class="price-section">
+              <span class="sale-price" style="font-size: 0.9rem;">{{ article.author.user_profile.get_fullname }}</span>
+            </div>
+            <div class="rating-stars">
+              <i class="bi bi-eye"></i>
+              <span class="rating-count">({{ article.view_count }})</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+        <h2 class="text-center">هیچ مقاله‌ای یافت نشد.</h2>
+      {% endfor %}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,1436 @@
+diff --git a/articles/templatetags/article_tags.py b/articles/templatetags/article_tags.py
+index 6a1d788..5778fa1 100644
+--- a/articles/templatetags/article_tags.py
++++ b/articles/templatetags/article_tags.py
+@@ -309,3 +309,10 @@ def article_has_category(article, category_slug):
+ def article_has_tag(article, tag_slug):
+     """Check whether an article has a specific tag."""
+     return article.tags.filter(slug=tag_slug).exists()
++
++
++@register.inclusion_tag("articles/latest_articles.html")
++def show_latest_articles(count=8):
++    # Using the 'published' manager you defined in your model
++    articles = Article.published.all()[:count]
++    return {"articles": articles}
+diff --git a/core/settings.py b/core/settings.py
+index 6f4646d..1c68345 100644
+--- a/core/settings.py
++++ b/core/settings.py
+@@ -42,8 +42,13 @@ INSTALLED_APPS = [
+     "django.contrib.sites",
+     "social_django",
+     "django_ratelimit",
++    "django.contrib.humanize",
+     "accounts.apps.AccountsConfig",
+     "articles.apps.ArticlesConfig",
++    "cart.apps.CartConfig",
++    "courses.apps.CoursesConfig",
++    "dashboard.apps.DashboardConfig",
++    "orders.apps.OrdersConfig",
+     "website.apps.WebsiteConfig",
+ ]
+ 
+@@ -72,6 +77,7 @@ TEMPLATES = [
+                 "django.template.context_processors.request",
+                 "django.contrib.auth.context_processors.auth",
+                 "django.contrib.messages.context_processors.messages",
++                "cart.context_processors.cart_context",
+                 # Social Django context processors
+                 "social_django.context_processors.backends",
+                 "social_django.context_processors.login_redirect",
+diff --git a/core/urls.py b/core/urls.py
+index 38b20e6..17fb0c4 100644
+--- a/core/urls.py
++++ b/core/urls.py
+@@ -26,6 +26,10 @@ urlpatterns = [
+     path("accounts/", include("accounts.urls")),
+     path("accounts/oauth/", include("social_django.urls", namespace="social")),
+     path("articles/", include("articles.urls")),
++    path("cart/", include("cart.urls")),
++    path("dashboard/", include("dashboard.urls")),
++    path("orders/", include("orders.urls")),
++    path("courses/", include("courses.urls")),
+ ]
+ 
+ if settings.DEBUG:
+diff --git a/static/assets/css/main.css b/static/assets/css/main.css
+index 25ff08e..ef81c31 100644
+--- a/static/assets/css/main.css
++++ b/static/assets/css/main.css
+@@ -6770,7 +6770,7 @@ section,
+ 
+ .search-product-list .product-image {
+   position: relative;
+-  padding-top: 125%;
++  padding-top: 100%;
+   background: color-mix(in srgb, var(--surface-color), transparent 97%);
+   overflow: hidden;
+ }
+diff --git a/static/assets/img/blog/blog-hero-1.webp b/static/assets/img/blog/blog-hero-1.webp
+deleted file mode 100644
+index f0c2d42..0000000
+Binary files a/static/assets/img/blog/blog-hero-1.webp and /dev/null differ
+diff --git a/static/assets/img/blog/blog-hero-2.webp b/static/assets/img/blog/blog-hero-2.webp
+deleted file mode 100644
+index af42194..0000000
+Binary files a/static/assets/img/blog/blog-hero-2.webp and /dev/null differ
+diff --git a/static/assets/img/blog/blog-hero-9.webp b/static/assets/img/blog/blog-hero-9.webp
+deleted file mode 100644
+index 15f0601..0000000
+Binary files a/static/assets/img/blog/blog-hero-9.webp and /dev/null differ
+diff --git a/static/assets/img/blog/blog-post-1.webp b/static/assets/img/blog/blog-post-1.webp
+deleted file mode 100644
+index 821b6d2..0000000
+Binary files a/static/assets/img/blog/blog-post-1.webp and /dev/null differ
+diff --git a/static/assets/img/blog/blog-post-2.webp b/static/assets/img/blog/blog-post-2.webp
+deleted file mode 100644
+index 82e78fd..0000000
+Binary files a/static/assets/img/blog/blog-post-2.webp and /dev/null differ
+diff --git a/static/assets/img/blog/blog-post-3.webp b/static/assets/img/blog/blog-post-3.webp
+deleted file mode 100644
+index 0cd02e2..0000000
+Binary files a/static/assets/img/blog/blog-post-3.webp and /dev/null differ
+diff --git a/static/assets/img/blog/blog-post-4.webp b/static/assets/img/blog/blog-post-4.webp
+deleted file mode 100644
+index 80b744d..0000000
+Binary files a/static/assets/img/blog/blog-post-4.webp and /dev/null differ
+diff --git a/static/assets/img/blog/blog-post-5.webp b/static/assets/img/blog/blog-post-5.webp
+deleted file mode 100644
+index 4147083..0000000
+Binary files a/static/assets/img/blog/blog-post-5.webp and /dev/null differ
+diff --git a/static/assets/img/blog/blog-post-6.webp b/static/assets/img/blog/blog-post-6.webp
+deleted file mode 100644
+index c8dbecd..0000000
+Binary files a/static/assets/img/blog/blog-post-6.webp and /dev/null differ
+diff --git a/static/assets/img/blog/blog-post-7.webp b/static/assets/img/blog/blog-post-7.webp
+deleted file mode 100644
+index 1447c49..0000000
+Binary files a/static/assets/img/blog/blog-post-7.webp and /dev/null differ
+diff --git a/static/assets/img/blog/blog-post-8.webp b/static/assets/img/blog/blog-post-8.webp
+deleted file mode 100644
+index bd147c9..0000000
+Binary files a/static/assets/img/blog/blog-post-8.webp and /dev/null differ
+diff --git a/static/assets/img/blog/blog-post-9.webp b/static/assets/img/blog/blog-post-9.webp
+deleted file mode 100644
+index 07ffb7c..0000000
+Binary files a/static/assets/img/blog/blog-post-9.webp and /dev/null differ
+diff --git a/static/assets/img/blog/blog-post-square-1.webp b/static/assets/img/blog/blog-post-square-1.webp
+deleted file mode 100644
+index e0ac5de..0000000
+Binary files a/static/assets/img/blog/blog-post-square-1.webp and /dev/null differ
+diff --git a/static/assets/img/blog/blog-post-square-10.webp b/static/assets/img/blog/blog-post-square-10.webp
+deleted file mode 100644
+index 21f3d37..0000000
+Binary files a/static/assets/img/blog/blog-post-square-10.webp and /dev/null differ
+diff --git a/static/assets/img/blog/blog-post-square-2.webp b/static/assets/img/blog/blog-post-square-2.webp
+deleted file mode 100644
+index 1dcf9d4..0000000
+Binary files a/static/assets/img/blog/blog-post-square-2.webp and /dev/null differ
+diff --git a/static/assets/img/blog/blog-post-square-3.webp b/static/assets/img/blog/blog-post-square-3.webp
+deleted file mode 100644
+index 89373cb..0000000
+Binary files a/static/assets/img/blog/blog-post-square-3.webp and /dev/null differ
+diff --git a/static/assets/img/blog/blog-post-square-4.webp b/static/assets/img/blog/blog-post-square-4.webp
+deleted file mode 100644
+index b8d6745..0000000
+Binary files a/static/assets/img/blog/blog-post-square-4.webp and /dev/null differ
+diff --git a/static/assets/img/blog/blog-post-square-5.webp b/static/assets/img/blog/blog-post-square-5.webp
+deleted file mode 100644
+index e4d4839..0000000
+Binary files a/static/assets/img/blog/blog-post-square-5.webp and /dev/null differ
+diff --git a/static/assets/img/blog/blog-post-square-6.webp b/static/assets/img/blog/blog-post-square-6.webp
+deleted file mode 100644
+index ac5d737..0000000
+Binary files a/static/assets/img/blog/blog-post-square-6.webp and /dev/null differ
+diff --git a/static/assets/img/blog/blog-post-square-7.webp b/static/assets/img/blog/blog-post-square-7.webp
+deleted file mode 100644
+index 321a553..0000000
+Binary files a/static/assets/img/blog/blog-post-square-7.webp and /dev/null differ
+diff --git a/static/assets/img/blog/blog-post-square-8.webp b/static/assets/img/blog/blog-post-square-8.webp
+deleted file mode 100644
+index 7a25beb..0000000
+Binary files a/static/assets/img/blog/blog-post-square-8.webp and /dev/null differ
+diff --git a/static/assets/img/blog/blog-post-square-9.webp b/static/assets/img/blog/blog-post-square-9.webp
+deleted file mode 100644
+index 60536e3..0000000
+Binary files a/static/assets/img/blog/blog-post-square-9.webp and /dev/null differ
+diff --git a/static/assets/img/product/product-1.webp b/static/assets/img/product/product-1.webp
+deleted file mode 100644
+index aeefaf3..0000000
+Binary files a/static/assets/img/product/product-1.webp and /dev/null differ
+diff --git a/static/assets/img/product/product-10.webp b/static/assets/img/product/product-10.webp
+deleted file mode 100644
+index 7ea81b5..0000000
+Binary files a/static/assets/img/product/product-10.webp and /dev/null differ
+diff --git a/static/assets/img/product/product-11.webp b/static/assets/img/product/product-11.webp
+deleted file mode 100644
+index 59b07db..0000000
+Binary files a/static/assets/img/product/product-11.webp and /dev/null differ
+diff --git a/static/assets/img/product/product-12.webp b/static/assets/img/product/product-12.webp
+deleted file mode 100644
+index 16febb6..0000000
+Binary files a/static/assets/img/product/product-12.webp and /dev/null differ
+diff --git a/static/assets/img/product/product-2.webp b/static/assets/img/product/product-2.webp
+deleted file mode 100644
+index 4e0a60f..0000000
+Binary files a/static/assets/img/product/product-2.webp and /dev/null differ
+diff --git a/static/assets/img/product/product-3.webp b/static/assets/img/product/product-3.webp
+deleted file mode 100644
+index 6ef3a9e..0000000
+Binary files a/static/assets/img/product/product-3.webp and /dev/null differ
+diff --git a/static/assets/img/product/product-4.webp b/static/assets/img/product/product-4.webp
+deleted file mode 100644
+index 4284cfd..0000000
+Binary files a/static/assets/img/product/product-4.webp and /dev/null differ
+diff --git a/static/assets/img/product/product-5.webp b/static/assets/img/product/product-5.webp
+deleted file mode 100644
+index b86c631..0000000
+Binary files a/static/assets/img/product/product-5.webp and /dev/null differ
+diff --git a/static/assets/img/product/product-6.webp b/static/assets/img/product/product-6.webp
+deleted file mode 100644
+index d374afd..0000000
+Binary files a/static/assets/img/product/product-6.webp and /dev/null differ
+diff --git a/static/assets/img/product/product-7.webp b/static/assets/img/product/product-7.webp
+deleted file mode 100644
+index bedb482..0000000
+Binary files a/static/assets/img/product/product-7.webp and /dev/null differ
+diff --git a/static/assets/img/product/product-8.webp b/static/assets/img/product/product-8.webp
+deleted file mode 100644
+index 832365b..0000000
+Binary files a/static/assets/img/product/product-8.webp and /dev/null differ
+diff --git a/static/assets/img/product/product-9.webp b/static/assets/img/product/product-9.webp
+deleted file mode 100644
+index eafa20e..0000000
+Binary files a/static/assets/img/product/product-9.webp and /dev/null differ
+diff --git a/templates/articles/article_list.html b/templates/articles/article_list.html
+index 8f616b0..fa24144 100644
+--- a/templates/articles/article_list.html
++++ b/templates/articles/article_list.html
+@@ -87,106 +87,105 @@
+         <!-- End Main Content Area -->
+ 
+         <!-- Sidebar with Tabs -->
+-         {% if top_stories or trending_articles or latest_articles %}
+-
+-        <div class="col-lg-4">
+-          <div class="news-tabs" data-aos="fade-up" data-aos-delay="200">
+-            <ul class="nav nav-tabs" role="tablist">
+-              <li class="nav-item" role="presentation">
+-                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#top-stories" type="button">محبوب‌ترین</button>
+-              </li>
+-              <li class="nav-item" role="presentation">
+-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#trending" type="button">پرطرفدار</button>
+-              </li>
+-              <li class="nav-item" role="presentation">
+-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#latest" type="button">جدیدترین</button>
+-              </li>
+-            </ul>
++        {% if top_stories or trending_articles or latest_articles %}
++          <div class="col-lg-4">
++            <div class="news-tabs" data-aos="fade-up" data-aos-delay="200">
++              <ul class="nav nav-tabs" role="tablist">
++                <li class="nav-item" role="presentation">
++                  <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#top-stories" type="button">محبوب‌ترین</button>
++                </li>
++                <li class="nav-item" role="presentation">
++                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#trending" type="button">پرطرفدار</button>
++                </li>
++                <li class="nav-item" role="presentation">
++                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#latest" type="button">جدیدترین</button>
++                </li>
++              </ul>
+ 
+-            <div class="tab-content">
+-              <!-- Top Stories Tab -->
+-              <div class="tab-pane fade show active" id="top-stories">
+-                {% for article in top_stories %}
+-                  <article class="tab-post">
+-                    <div class="row g-0 align-items-center">
+-                      <div class="col-4">
+-                        <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="img-fluid" />
+-                      </div>
+-                      <div class="col-8">
+-                        <div class="post-content">
+-                          {% with category=article.categories.first %}
+-                            {% if category %}
+-                              <span class="category">{{ category.name }}</span>
+-                            {% endif %}
+-                          {% endwith %}
+-                          <h4 class="post-title"><a href="{{ article.get_absolute_url }}">{{ article.title|truncatewords:8 }}</a></h4>
+-                          <div class="post-author">
+-                            نویسنده:
+-                            <a href="{% url 'articles:author_list' article.author.user_profile.id %}">{{ article.author.user_profile.get_fullname }}</a>
++              <div class="tab-content">
++                <!-- Top Stories Tab -->
++                <div class="tab-pane fade show active" id="top-stories">
++                  {% for article in top_stories %}
++                    <article class="tab-post">
++                      <div class="row g-0 align-items-center">
++                        <div class="col-4">
++                          <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="img-fluid" />
++                        </div>
++                        <div class="col-8">
++                          <div class="post-content">
++                            {% with category=article.categories.first %}
++                              {% if category %}
++                                <span class="category">{{ category.name }}</span>
++                              {% endif %}
++                            {% endwith %}
++                            <h4 class="post-title"><a href="{{ article.get_absolute_url }}">{{ article.title|truncatewords:8 }}</a></h4>
++                            <div class="post-author">
++                              نویسنده:
++                              <a href="{% url 'articles:author_list' article.author.user_profile.id %}">{{ article.author.user_profile.get_fullname }}</a>
++                            </div>
+                           </div>
+                         </div>
+                       </div>
+-                    </div>
+-                  </article>
+-                {% endfor %}
+-              </div>
++                    </article>
++                  {% endfor %}
++                </div>
+ 
+-              <!-- Trending News Tab -->
+-              <div class="tab-pane fade" id="trending">
+-                {% for article in trending_articles %}
+-                  <article class="tab-post">
+-                    <div class="row g-0 align-items-center">
+-                      <div class="col-4">
+-                        <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="img-fluid" />
+-                      </div>
+-                      <div class="col-8">
+-                        <div class="post-content">
+-                          {% with category=article.categories.first %}
+-                            {% if category %}
+-                              <span class="category">{{ category.name }}</span>
+-                            {% endif %}
+-                          {% endwith %}
+-                          <h4 class="post-title"><a href="{{ article.get_absolute_url }}">{{ article.title|truncatewords:8 }}</a></h4>
+-                          <div class="post-author">
+-                            نویسنده:
+-                            <a href="{% url 'articles:author_list' article.author.user_profile.id %}">{{ article.author.user_profile.get_fullname }}</a>
++                <!-- Trending News Tab -->
++                <div class="tab-pane fade" id="trending">
++                  {% for article in trending_articles %}
++                    <article class="tab-post">
++                      <div class="row g-0 align-items-center">
++                        <div class="col-4">
++                          <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="img-fluid" />
++                        </div>
++                        <div class="col-8">
++                          <div class="post-content">
++                            {% with category=article.categories.first %}
++                              {% if category %}
++                                <span class="category">{{ category.name }}</span>
++                              {% endif %}
++                            {% endwith %}
++                            <h4 class="post-title"><a href="{{ article.get_absolute_url }}">{{ article.title|truncatewords:8 }}</a></h4>
++                            <div class="post-author">
++                              نویسنده:
++                              <a href="{% url 'articles:author_list' article.author.user_profile.id %}">{{ article.author.user_profile.get_fullname }}</a>
++                            </div>
+                           </div>
+                         </div>
+                       </div>
+-                    </div>
+-                  </article>
+-                {% endfor %}
+-              </div>
++                    </article>
++                  {% endfor %}
++                </div>
+ 
+-              <!-- Latest News Tab -->
+-              <div class="tab-pane fade" id="latest">
+-                {% for article in latest_articles %}
+-                  <article class="tab-post">
+-                    <div class="row g-0 align-items-center">
+-                      <div class="col-4">
+-                        <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="img-fluid" />
+-                      </div>
+-                      <div class="col-8">
+-                        <div class="post-content">
+-                          {% with category=article.categories.first %}
+-                            {% if category %}
+-                              <span class="category">{{ category.name }}</span>
+-                            {% endif %}
+-                          {% endwith %}
+-                          <h4 class="post-title"><a href="{{ article.get_absolute_url }}">{{ article.title|truncatewords:8 }}</a></h4>
+-                          <div class="post-author">
+-                            نویسنده:
+-                            <a href="{% url 'articles:author_list' article.author.user_profile.id %}">{{ article.author.user_profile.get_fullname }}</a>
++                <!-- Latest News Tab -->
++                <div class="tab-pane fade" id="latest">
++                  {% for article in latest_articles %}
++                    <article class="tab-post">
++                      <div class="row g-0 align-items-center">
++                        <div class="col-4">
++                          <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="img-fluid" />
++                        </div>
++                        <div class="col-8">
++                          <div class="post-content">
++                            {% with category=article.categories.first %}
++                              {% if category %}
++                                <span class="category">{{ category.name }}</span>
++                              {% endif %}
++                            {% endwith %}
++                            <h4 class="post-title"><a href="{{ article.get_absolute_url }}">{{ article.title|truncatewords:8 }}</a></h4>
++                            <div class="post-author">
++                              نویسنده:
++                              <a href="{% url 'articles:author_list' article.author.user_profile.id %}">{{ article.author.user_profile.get_fullname }}</a>
++                            </div>
+                           </div>
+                         </div>
+                       </div>
+-                    </div>
+-                  </article>
+-                {% endfor %}
++                    </article>
++                  {% endfor %}
++                </div>
+               </div>
+             </div>
+           </div>
+-        </div>
+         {% endif %}
+       </div>
+     </div>
+@@ -233,87 +232,63 @@
+           {% endfor %}
+         </div>
+       {% else %}
+-        <div class="alert alert-info text-center" role="alert">
+-          <h4>مقاله‌ای یافت نشد</h4>
+-          <p>متأسفانه با فیلترهای انتخابی شما مقاله‌ای پیدا نشد.</p>
+-          <a href="{% url 'articles:article_list' %}" class="btn btn-primary">مشاهده همه مقالات</a>
+-        </div>
++        <!-- Privacy Section -->
++        <section id="privacy" class="privacy section">
++          <div class="container" data-aos="fade-up">
++            <!-- Header -->
++            <div class="privacy-header" data-aos="fade-up">
++              <div class="header-content">
++                <h2><i class="bi bi-info-circle"></i></h2>
++                <h4>مقاله‌ای یافت نشد</h4>
++                <p>متأسفانه با فیلترهای انتخابی شما مقاله‌ای پیدا نشد.</p>
++                <a href="{% url 'articles:article_list' %}" class="btn btn-primary">مشاهده همه مقالات</a>
++              </div>
++            </div>
++          </div>
++        </section>
+       {% endif %}
+     </div>
+   </section>
+   <!-- /Blog Posts Section -->
+ 
+   <!-- Pagination Section -->
+-  {% if is_paginated %}
+-    <section id="pagination-2" class="pagination-2 section">
+-      <div class="container">
+-        <nav class="d-flex justify-content-center" aria-label="صفحه‌بندی">
+-          <ul>
+-            <!-- دکمه صفحه قبل -->
+-            {% if page_obj.has_previous %}
++  <section id="category-pagination" class="category-pagination section">
++    <div class="container">
++      <nav class="d-flex justify-content-center" aria-label="Page navigation">
++        <ul>
++          {% if page_obj.has_previous %}
++            <li>
++              <a href="?page={{ page_obj.previous_page_number }}" aria-label="Previous page">
++                <i class="bi bi-arrow-right"></i>
++                <span class="d-none d-sm-inline">قبلی</span>
++              </a>
++            </li>
++          {% endif %}
++          {% for num in page_obj.paginator.page_range %}
++            {% if page_obj.number == num %}
+               <li>
+-                <a href="?{% url_replace page=page_obj.previous_page_number %}" aria-label="صفحه قبل">
+-                  <i class="bi bi-arrow-right"></i>
+-                  <span class="d-none d-sm-inline">قبلی</span>
+-                </a>
+-              </li>
+-            {% else %}
+-              <li class="disabled">
+-                <span>
+-                  <i class="bi bi-arrow-right"></i>
+-                  <span class="d-none d-sm-inline">قبلی</span>
+-                </span>
++                <a href="#" class="active">{{ num }}</a>
+               </li>
+-            {% endif %}
+-
+-            <!-- شماره صفحات -->
+-            {% for num in page_obj.paginator.page_range %}
+-              {% if page_obj.number == num %}
+-                <li>
+-                  <a href="#" class="active">{{ num }}</a>
+-                </li>
+-              {% elif num > page_obj.number|add:'-2' and num < page_obj.number|add:'2' %}
+-                <li>
+-                  <a href="?{% url_replace page=num %}">{{ num }}</a>
+-                </li>
+-              {% elif num == 1 %}
+-                <li>
+-                  <a href="?{% url_replace page=1 %}">1</a>
+-                </li>
+-                {% if page_obj.number > 3 %}
+-                  <li class="ellipsis">...</li>
+-                {% endif %}
+-              {% elif num == page_obj.paginator.num_pages %}
+-                {% if page_obj.number < page_obj.paginator.num_pages|add:'-2' %}
+-                  <li class="ellipsis">...</li>
+-                {% endif %}
+-                <li>
+-                  <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+-                </li>
+-              {% endif %}
+-            {% endfor %}
+-
+-            {% if page_obj.has_next %}
++            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+               <li>
+-                <a href="?{% url_replace page=page_obj.next_page_number %}" aria-label="صفحه بعد">
+-                  <span class="d-none d-sm-inline">بعدی</span>
+-                  <i class="bi bi-arrow-left"></i>
+-                </a>
+-              </li>
+-            {% else %}
+-              <li class="disabled">
+-                <span>
+-                  <span class="d-none d-sm-inline">بعدی</span>
+-                  <i class="bi bi-arrow-left"></i>
+-                </span>
++                <a href="?page={{ num }}">{{ num }}</a>
+               </li>
+             {% endif %}
+-          </ul>
+-        </nav>
+-      </div>
+-    </section>
+-  {% endif %}
+-  <!-- /Pagination Section -->
++          {% endfor %}
++          {% if page_obj.has_next %}
++            <li>
++              <a href="?page={{ page_obj.next_page_number }}" aria-label="Next page">
++                <span class="d-none d-sm-inline">بعدی</span>
++                <i class="bi bi-arrow-left"></i>
++              </a>
++            </li>
++          {% endif %}
++        </ul>
++      </nav>
++    </div>
++  </section>
++  <!-- Pagination Section -->
++  
+ {% endblock %}
+ 
+ {% block extra_js %}
+diff --git a/templates/base.html b/templates/base.html
+index 19ca7db..c06fffd 100644
+--- a/templates/base.html
++++ b/templates/base.html
+@@ -88,9 +88,9 @@
+             </a>
+ 
+             <!-- Search -->
+-            <form class="search-form desktop-search-form">
++            <form method="get" action="{% url 'courses:course_list' %}" class="search-form desktop-search-form">
+               <div class="input-group">
+-                <input type="text" class="form-control" placeholder="Search for products" />
++                <input type="text" class="form-control" placeholder="جستوجوی دوره ..." name="search" value="{{ search_query }}" required="" />
+                 <button class="btn" type="submit"><i class="bi bi-search"></i></button>
+               </div>
+             </form>
+@@ -109,21 +109,21 @@
+                     <p class="mb-0">دسترسی به حساب کاربری و مدیریت دوره ها</p>
+                   </div>
+                   <div class="dropdown-body">
+-                    <a class="dropdown-item d-flex align-items-center" href="account.html">
++                    <a class="dropdown-item d-flex align-items-center" href="{% url 'dashboard:dashboard' %}">
+                       <i class="bi bi-person-circle me-2"></i>
+-                      <span>My Profile</span>
++                      <span>پروفایل من</span>
+                     </a>
+                     <a class="dropdown-item d-flex align-items-center" href="account.html">
+                       <i class="bi bi-bag-check me-2"></i>
+-                      <span>My Orders</span>
++                      <span>سفارشات من</span>
+                     </a>
+                     <a class="dropdown-item d-flex align-items-center" href="account.html">
+                       <i class="bi bi-heart me-2"></i>
+-                      <span>My Wishlist</span>
++                      <span>لیست دلخواه من</span>
+                     </a>
+                     <a class="dropdown-item d-flex align-items-center" href="account.html">
+                       <i class="bi bi-gear me-2"></i>
+-                      <span>Settings</span>
++                      <span>تنظیمات</span>
+                     </a>
+                   </div>
+                   {% if user.is_authenticated %}
+@@ -149,9 +149,9 @@
+               </a>
+ 
+               <!-- Cart -->
+-              <a href="cart.html" class="header-action-btn">
++              <a href="{% url 'cart:cart_detail' %}" class="header-action-btn">
+                 <i class="bi bi-cart3"></i>
+-                <span class="badge">3</span>
++                <span class="badge">{{ cart_total_quantity }}</span>
+               </a>
+ 
+               <!-- Mobile Navigation Toggle -->
+@@ -176,10 +176,10 @@
+                 <a href="{% url 'articles:article_list' %}">مقالات</a>
+               </li>
+               <li>
+-                <a href="checkout.html">دوره های من</a>
++                <a href="{% url 'courses:course_progress' %}">دوره های من</a>
+               </li>
+               <li>
+-                <a href="product-details.html">لیست دوره ها</a>
++                <a href="{% url 'courses:course_list' %}">لیست دوره ها</a>
+               </li>
+               <li>
+                 <a href="{% url 'website:support' %}">درخواست مشاوره</a>
+@@ -206,9 +206,9 @@
+       <!-- Mobile Search Form -->
+       <div class="collapse" id="mobileSearch">
+         <div class="container">
+-          <form class="search-form">
++          <form method="get" action="{% url 'courses:course_list' %}" class="search-form">
+             <div class="input-group">
+-              <input type="text" class="form-control" placeholder="Search for products" />
++              <input type="text" class="form-control" placeholder="جستوجوی دوره ..." name="search" value="{{ search_query }}" required="" />
+               <button class="btn" type="submit"><i class="bi bi-search"></i></button>
+             </div>
+           </form>
+@@ -231,17 +231,14 @@
+             <div class="col-lg-4 col-md-6">
+               <div class="footer-widget footer-about">
+                 <a href="{% url 'website:index' %}" class="logo"><span class="sitename">Roya Sazan Javan</span></a>
+-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in nibh vehicula, facilisis magna ut, consectetur lorem. Proin eget tortor risus.</p>
++                <p>برای شروع یادگیری و مشاهده دوره‌های ما، همین حالا اقدام کنید و گام اول را در جهت ساخت آینده‌ای روشن‌تر بردارید!</p>
+ 
+                 <div class="social-links mt-4">
+-                  <h5>Connect With Us</h5>
++                  <h5>ارتباط با ما</h5>
+                   <div class="social-icons">
+-                    <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
++                    <a href="#" aria-label="Facebook"><i class="bi bi-telegram"></i></a>
++                    <a href="#" aria-label="TikTok"><i class="bi bi-whatsapp"></i></a>
+                     <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+-                    <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+-                    <a href="#" aria-label="TikTok"><i class="bi bi-tiktok"></i></a>
+-                    <a href="#" aria-label="Pinterest"><i class="bi bi-pinterest"></i></a>
+-                    <a href="#" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+                   </div>
+                 </div>
+               </div>
+@@ -249,7 +246,7 @@
+ 
+             <div class="col-lg-2 col-md-6 col-sm-6">
+               <div class="footer-widget">
+-                <h4>Shop</h4>
++                <h4>دوره‌ها</h4>
+                 <ul class="footer-links">
+                   <li>
+                     <a href="category.html">New Arrivals</a>
+@@ -275,25 +272,25 @@
+ 
+             <div class="col-lg-2 col-md-6 col-sm-6">
+               <div class="footer-widget">
+-                <h4>Support</h4>
++                <h4>پشتیانی</h4>
+                 <ul class="footer-links">
+                   <li>
+-                    <a href="support.html">Help Center</a>
++                    <a href="{% url 'website:faq' %}">سوالات متداول</a>
+                   </li>
+                   <li>
+-                    <a href="account.html">Order Status</a>
++                    <a href="{% url 'website:tos' %}">شرایط خدمات</a>
+                   </li>
+                   <li>
+-                    <a href="shiping-info.html">Shipping Info</a>
++                    <a href="{% url 'website:support' %}">درخواست مشاوره</a>
+                   </li>
+                   <li>
+-                    <a href="return-policy.html">Returns &amp; Exchanges</a>
++                    <a href="{% url 'website:about' %}">درباره ما</a>
+                   </li>
+                   <li>
+-                    <a href="#">Size Guide</a>
++                    <a href="{% url 'website:job-application' %}">همکاری با ما</a>
+                   </li>
+                   <li>
+-                    <a href="contact.html">Contact Us</a>
++                    <a href="{% url 'website:contact' %}">ارتباط با ما</a>
+                   </li>
+                 </ul>
+               </div>
+@@ -301,35 +298,20 @@
+ 
+             <div class="col-lg-4 col-md-6">
+               <div class="footer-widget">
+-                <h4>Contact Information</h4>
++                <h4>اطلاعات تماس</h4>
+                 <div class="footer-contact">
+                   <div class="contact-item">
+-                    <i class="bi bi-geo-alt"></i>
+-                    <span>123 Fashion Street, New York, NY 10001</span>
++                    <i class="bi bi-geo-alt"></i>&nbsp;
++                    <span>تهران، پاکدشت، دوراهی یبر، طبقه فوقانی بانک ملی ایران، واحد 95</span>
+                   </div>
+                   <div class="contact-item">
+-                    <i class="bi bi-telephone"></i>
+-                    <span>+1 (555) 123-4567</span>
++                    <i class="bi bi-telephone"></i>&nbsp;
++                    <span>09037953318 | 09124774350</span>
+                   </div>
+                   <div class="contact-item">
+-                    <i class="bi bi-envelope"></i>
+-                    <span>hello@example.com</span>
++                    <i class="bi bi-clock"></i>&nbsp;
++                    <span>شنبه تا پنج‌شنبه | ساعت ۱۰ تا ۱۹</span>
+                   </div>
+-                  <div class="contact-item">
+-                    <i class="bi bi-clock"></i>
+-                    <span>Monday-Friday: 9am-6pm<br />Saturday: 10am-4pm<br />Sunday: Closed</span>
+-                  </div>
+-                </div>
+-
+-                <div class="app-buttons mt-4">
+-                  <a href="#" class="app-btn">
+-                    <i class="bi bi-apple"></i>
+-                    <span>App Store</span>
+-                  </a>
+-                  <a href="#" class="app-btn">
+-                    <i class="bi bi-google-play"></i>
+-                    <span>Google Play</span>
+-                  </a>
+                 </div>
+               </div>
+             </div>
+@@ -343,7 +325,7 @@
+             <div class="col-lg-6 col-md-12">
+               <div class="copyright">
+                 <p>
+-                  © <span>Copyright</span> <strong class="sitename">Roya Sazan Javan</strong>. All Rights Reserved.
++                  <span>Copyright</span> <strong class="sitename">Roya Sazan Javan</strong>. All Rights Reserved
+                 </p>
+               </div>
+               <div class="credits mt-1">
+@@ -351,28 +333,7 @@
+                 <!-- You can delete the links only if you've purchased the pro version. -->
+                 <!-- Licensing information: https://bootstrapmade.com/license/ -->
+                 <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
+-                Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+-              </div>
+-            </div>
+-
+-            <div class="col-lg-6 col-md-12">
+-              <div class="d-flex flex-wrap justify-content-lg-end justify-content-center align-items-center gap-4">
+-                <div class="payment-methods">
+-                  <div class="payment-icons">
+-                    <i class="bi bi-credit-card" aria-label="Credit Card"></i>
+-                    <i class="bi bi-paypal" aria-label="PayPal"></i>
+-                    <i class="bi bi-apple" aria-label="Apple Pay"></i>
+-                    <i class="bi bi-google" aria-label="Google Pay"></i>
+-                    <i class="bi bi-shop" aria-label="Shop Pay"></i>
+-                    <i class="bi bi-cash" aria-label="Cash on Delivery"></i>
+-                  </div>
+-                </div>
+-
+-                <div class="legal-links">
+-                  <a href="tos.html">Terms</a>
+-                  <a href="privacy.html">Privacy</a>
+-                  <a href="tos.html">Cookies</a>
+-                </div>
++                Developed by <a href="https://amirhamidi.pythonanywhere.com/">Amir Hamidi</a> | Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+               </div>
+             </div>
+           </div>
+diff --git a/templates/website/index.html b/templates/website/index.html
+index ec3ae69..c80f347 100644
+--- a/templates/website/index.html
++++ b/templates/website/index.html
+@@ -1,5 +1,7 @@
+ {% extends 'base.html' %}
+ {% load static %}
++{% load article_tags %}
++{% load course_tags %}
+ 
+ {% block title %}
+   صفحه اصلی | رویا سازان جوان
+@@ -12,10 +14,9 @@
+       <div class="hero-content">
+         <div class="content-wrapper" data-aos="fade-up" data-aos-delay="100">
+           <h1 class="hero-title">آموزش حسابداری و مالیات</h1>
+-          <p class="hero-description">Explore our curated collection of premium items designed to enhance your lifestyle. From fashion to tech, find everything you need with exclusive deals and fast shipping.</p>
++          <p class="hero-description">وب‌سایت رویاسازان جوان به عنوان مرجع جامع آموزش حسابداری و مالیات، دوره‌های آموزشی گام به گام را از سطح مبتدی تا پیشرفته ارائه می‌دهد. با این دوره‌ها، شما می‌توانید مهارت‌های کاربردی را کسب کرده و در مسیر شغلی خود پیشرفت کنید. ما با بهره‌گیری از روش‌های مدرن و اساتید مجرب، فرآیند یادگیری را برای شما لذت‌بخش و مؤثر خواهیم کرد.</p>
+           <div class="hero-actions" data-aos="fade-up" data-aos-delay="200">
+-            <a href="#products" class="btn-primary">Shop Now</a>
+-            <a href="#categories" class="btn-secondary">Browse Categories</a>
++            <a href="#categories" class="btn-secondary">مشاهده دوره‌ها</a>
+           </div>
+           <div class="features-list" data-aos="fade-up" data-aos-delay="300">
+             <div class="feature-item">
+@@ -46,14 +47,13 @@
+ 
+         <div class="floating-elements">
+           <div class="floating-icon cart" data-aos="fade-up" data-aos-delay="600">
+-            <i class="bi bi-cart3"></i>
+-            <span class="notification-dot">3</span>
++            <a href="#" aria-label="Facebook"><i class="bi bi-telegram"></i></a>
+           </div>
+           <div class="floating-icon wishlist" data-aos="fade-up" data-aos-delay="700">
+-            <i class="bi bi-heart"></i>
++            <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+           </div>
+           <div class="floating-icon search" data-aos="fade-up" data-aos-delay="800">
+-            <i class="bi bi-search"></i>
++            <a href="#" aria-label="TikTok"><i class="bi bi-whatsapp"></i></a>
+           </div>
+         </div>
+       </div>
+@@ -61,616 +61,10 @@
+   </section>
+   <!-- /Hero Section -->
+ 
+-  <!-- Promo Cards Section -->
+-  <section id="promo-cards" class="promo-cards section">
+-    <div class="container" data-aos="fade-up" data-aos-delay="100">
+-      <div class="row gy-4">
+-        <div class="col-lg-6">
+-          <div class="category-featured" data-aos="fade-right" data-aos-delay="200">
+-            <div class="category-image">
+-              <img src="{% static 'assets/img/product/product-f-2.webp' %}" alt="Women's Collection" class="img-fluid" />
+-            </div>
+-            <div class="category-content">
+-              <span class="category-tag">Trending Now</span>
+-              <h2>New Summer Collection</h2>
+-              <p>Discover our latest arrivals designed for the modern lifestyle. Elegant, comfortable, and sustainable fashion for every occasion.</p>
+-              <a href="#" class="btn-shop">Explore Collection <i class="bi bi-arrow-right"></i></a>
+-            </div>
+-          </div>
+-        </div>
+-
+-        <div class="col-lg-6">
+-          <div class="row gy-4">
+-            <div class="col-xl-6">
+-              <div class="category-card cat-men" data-aos="fade-up" data-aos-delay="300">
+-                <div class="category-image">
+-                  <img src="{% static 'assets/img/product/product-m-5.webp' %}" alt="Men's Fashion" class="img-fluid" />
+-                </div>
+-                <div class="category-content">
+-                  <h4>Men's Wear</h4>
+-                  <p>242 products</p>
+-                  <a href="#" class="card-link">Shop Now <i class="bi bi-arrow-right"></i></a>
+-                </div>
+-              </div>
+-            </div>
+-
+-            <div class="col-xl-6">
+-              <div class="category-card cat-kids" data-aos="fade-up" data-aos-delay="400">
+-                <div class="category-image">
+-                  <img src="{% static 'assets/img/product/product-8.webp' %}" alt="Kid's Fashion" class="img-fluid" />
+-                </div>
+-                <div class="category-content">
+-                  <h4>Kid's Fashion</h4>
+-                  <p>185 products</p>
+-                  <a href="#" class="card-link">Shop Now <i class="bi bi-arrow-right"></i></a>
+-                </div>
+-              </div>
+-            </div>
+-
+-            <div class="col-xl-6">
+-              <div class="category-card cat-cosmetics" data-aos="fade-up" data-aos-delay="500">
+-                <div class="category-image">
+-                  <img src="{% static 'assets/img/product/product-3.webp' %}" alt="Cosmetics" class="img-fluid" />
+-                </div>
+-                <div class="category-content">
+-                  <h4>Beauty Products</h4>
+-                  <p>127 products</p>
+-                  <a href="#" class="card-link">Shop Now <i class="bi bi-arrow-right"></i></a>
+-                </div>
+-              </div>
+-            </div>
+-
+-            <div class="col-xl-6">
+-              <div class="category-card cat-accessories" data-aos="fade-up" data-aos-delay="600">
+-                <div class="category-image">
+-                  <img src="{% static 'assets/img/product/product-12.webp' %}" alt="Accessories" class="img-fluid" />
+-                </div>
+-                <div class="category-content">
+-                  <h4>Accessories</h4>
+-                  <p>308 products</p>
+-                  <a href="#" class="card-link">Shop Now <i class="bi bi-arrow-right"></i></a>
+-                </div>
+-              </div>
+-            </div>
+-          </div>
+-        </div>
+-      </div>
+-    </div>
+-  </section>
+-  <!-- /Promo Cards Section -->
+-
+-  <!-- Best Sellers Section -->
+-  <section id="best-sellers" class="best-sellers section">
+-    <!-- Section Title -->
+-    <div class="container section-title" data-aos="fade-up">
+-      <h2>Best Sellers</h2>
+-      <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+-    </div>
+-    <!-- End Section Title -->
+-
+-    <div class="container" data-aos="fade-up" data-aos-delay="100">
+-      <div class="row g-5">
+-        <!-- Product 1 -->
+-        <div class="col-lg-3 col-md-6">
+-          <div class="product-item">
+-            <div class="product-image">
+-              <div class="product-badge">Limited</div>
+-              <img src="{% static 'assets/img/product/product-1.webp' %}" alt="Product Image" class="img-fluid" loading="lazy" />
+-              <div class="product-actions">
+-                <button class="action-btn wishlist-btn"><i class="bi bi-heart"></i></button>
+-                <button class="action-btn compare-btn"><i class="bi bi-arrow-left-right"></i></button>
+-                <button class="action-btn quickview-btn"><i class="bi bi-zoom-in"></i></button>
+-              </div>
+-              <button class="cart-btn">Select Options</button>
+-            </div>
+-            <div class="product-info">
+-              <div class="product-category">Premium Collection</div>
+-              <h4 class="product-name"><a href="product-details.html">Mauris blandit aliquet elit</a></h4>
+-              <div class="product-rating">
+-                <div class="stars">
+-                  <i class="bi bi-star-fill"></i>
+-                  <i class="bi bi-star-fill"></i>
+-                  <i class="bi bi-star-fill"></i>
+-                  <i class="bi bi-star-fill"></i>
+-                  <i class="bi bi-star"></i>
+-                </div>
+-                <span class="rating-count">(24)</span>
+-              </div>
+-              <div class="product-price">$189.00</div>
+-              <div class="color-swatches">
+-                <span class="swatch active" style="background-color: #2563eb;"></span>
+-                <span class="swatch" style="background-color: #059669;"></span>
+-                <span class="swatch" style="background-color: #dc2626;"></span>
+-              </div>
+-            </div>
+-          </div>
+-        </div>
+-        <!-- End Product 1 -->
++  <!-- Featured Courses -->
++  {% show_latest_courses 8 %}
+ 
+-        <!-- Product 2 -->
+-        <div class="col-lg-3 col-md-6">
+-          <div class="product-item">
+-            <div class="product-image">
+-              <div class="product-badge sale-badge">25% Off</div>
+-              <img src="{% static 'assets/img/product/product-4.webp' %}" alt="Product Image" class="img-fluid" loading="lazy" />
+-              <div class="product-actions">
+-                <button class="action-btn wishlist-btn"><i class="bi bi-heart"></i></button>
+-                <button class="action-btn compare-btn"><i class="bi bi-arrow-left-right"></i></button>
+-                <button class="action-btn quickview-btn"><i class="bi bi-zoom-in"></i></button>
+-              </div>
+-              <button class="cart-btn">Add to Cart</button>
+-            </div>
+-            <div class="product-info">
+-              <div class="product-category">Best Sellers</div>
+-              <h4 class="product-name"><a href="product-details.html">Sed do eiusmod tempor incididunt</a></h4>
+-              <div class="product-rating">
+-                <div class="stars">
+-                  <i class="bi bi-star-fill"></i>
+-                  <i class="bi bi-star-fill"></i>
+-                  <i class="bi bi-star-fill"></i>
+-                  <i class="bi bi-star-fill"></i>
+-                  <i class="bi bi-star-half"></i>
+-                </div>
+-                <span class="rating-count">(38)</span>
+-              </div>
+-              <div class="product-price">
+-                <span class="old-price">$240.00</span>
+-                <span class="current-price">$180.00</span>
+-              </div>
+-              <div class="color-swatches">
+-                <span class="swatch active" style="background-color: #1f2937;"></span>
+-                <span class="swatch" style="background-color: #f59e0b;"></span>
+-                <span class="swatch" style="background-color: #8b5cf6;"></span>
+-              </div>
+-            </div>
+-          </div>
+-        </div>
+-        <!-- End Product 2 -->
++  <!-- Latest Articles -->
++  {% show_latest_articles 8 %}
+ 
+-        <!-- Product 3 -->
+-        <div class="col-lg-3 col-md-6">
+-          <div class="product-item">
+-            <div class="product-image">
+-              <img src="{% static 'assets/img/product/product-7.webp' %}" alt="Product Image" class="img-fluid" loading="lazy" />
+-              <div class="product-actions">
+-                <button class="action-btn wishlist-btn"><i class="bi bi-heart"></i></button>
+-                <button class="action-btn compare-btn"><i class="bi bi-arrow-left-right"></i></button>
+-                <button class="action-btn quickview-btn"><i class="bi bi-zoom-in"></i></button>
+-              </div>
+-              <button class="cart-btn">Add to Cart</button>
+-            </div>
+-            <div class="product-info">
+-              <div class="product-category">New Arrivals</div>
+-              <h4 class="product-name"><a href="product-details.html">Lorem ipsum dolor sit amet consectetur</a></h4>
+-              <div class="product-rating">
+-                <div class="stars">
+-                  <i class="bi bi-star-fill"></i>
+-                  <i class="bi bi-star-fill"></i>
+-                  <i class="bi bi-star-fill"></i>
+-                  <i class="bi bi-star"></i>
+-                  <i class="bi bi-star"></i>
+-                </div>
+-                <span class="rating-count">(12)</span>
+-              </div>
+-              <div class="product-price">$95.00</div>
+-              <div class="color-swatches">
+-                <span class="swatch active" style="background-color: #ef4444;"></span>
+-                <span class="swatch" style="background-color: #06b6d4;"></span>
+-                <span class="swatch" style="background-color: #10b981;"></span>
+-              </div>
+-            </div>
+-          </div>
+-        </div>
+-        <!-- End Product 3 -->
+-
+-        <!-- Product 4 -->
+-        <div class="col-lg-3 col-md-6">
+-          <div class="product-item">
+-            <div class="product-image">
+-              <div class="product-badge trending-badge">Trending</div>
+-              <img src="{% static 'assets/img/product/product-10.webp' %}" alt="Product Image" class="img-fluid" loading="lazy" />
+-              <div class="product-actions">
+-                <button class="action-btn wishlist-btn active"><i class="bi bi-heart-fill"></i></button>
+-                <button class="action-btn compare-btn"><i class="bi bi-arrow-left-right"></i></button>
+-                <button class="action-btn quickview-btn"><i class="bi bi-zoom-in"></i></button>
+-              </div>
+-              <button class="cart-btn">Add to Cart</button>
+-            </div>
+-            <div class="product-info">
+-              <div class="product-category">Designer Series</div>
+-              <h4 class="product-name"><a href="product-details.html">Ut enim ad minim veniam quis</a></h4>
+-              <div class="product-rating">
+-                <div class="stars">
+-                  <i class="bi bi-star-fill"></i>
+-                  <i class="bi bi-star-fill"></i>
+-                  <i class="bi bi-star-fill"></i>
+-                  <i class="bi bi-star-fill"></i>
+-                  <i class="bi bi-star-fill"></i>
+-                </div>
+-                <span class="rating-count">(56)</span>
+-              </div>
+-              <div class="product-price">$165.00</div>
+-              <div class="color-swatches">
+-                <span class="swatch" style="background-color: #64748b;"></span>
+-                <span class="swatch active" style="background-color: #7c3aed;"></span>
+-                <span class="swatch" style="background-color: #f59e0b;"></span>
+-              </div>
+-            </div>
+-          </div>
+-        </div>
+-        <!-- End Product 4 -->
+-      </div>
+-    </div>
+-  </section>
+-  <!-- /Best Sellers Section -->
+-
+-  <!-- Cards Section -->
+-  <section id="cards" class="cards section">
+-    <div class="container" data-aos="fade-up" data-aos-delay="100">
+-      <div class="row gy-4">
+-        <div class="col-lg-4 col-md-6 mb-5 mb-md-0" data-aos="fade-up" data-aos-delay="200">
+-          <div class="product-category">
+-            <h3 class="category-title"><i class="bi bi-fire"></i> Trending Now</h3>
+-            <div class="product-list">
+-              <div class="product-card">
+-                <div class="product-image">
+-                  <img src="{% static 'assets/img/product/product-1.webp' %}" alt="Premium Leather Tote" class="img-fluid" />
+-                  <div class="product-badges">
+-                    <span class="badge-new">New</span>
+-                  </div>
+-                </div>
+-                <div class="product-info">
+-                  <h4 class="product-name">Premium Leather Tote</h4>
+-                  <div class="product-rating">
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-half"></i>
+-                    <span>(24)</span>
+-                  </div>
+-                  <div class="product-price">
+-                    <span class="current-price">$87.50</span>
+-                  </div>
+-                </div>
+-              </div>
+-
+-              <div class="product-card">
+-                <div class="product-image">
+-                  <img src="{% static 'assets/img/product/product-3.webp' %}" alt="Statement Earrings" class="img-fluid" />
+-                </div>
+-                <div class="product-info">
+-                  <h4 class="product-name">Statement Earrings</h4>
+-                  <div class="product-rating">
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <span>(41)</span>
+-                  </div>
+-                  <div class="product-price">
+-                    <span class="current-price">$39.99</span>
+-                  </div>
+-                </div>
+-              </div>
+-
+-              <div class="product-card">
+-                <div class="product-image">
+-                  <img src="{% static 'assets/img/product/product-5.webp' %}" alt="Organic Cotton Shirt" class="img-fluid" />
+-                </div>
+-                <div class="product-info">
+-                  <h4 class="product-name">Organic Cotton Shirt</h4>
+-                  <div class="product-rating">
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star"></i>
+-                    <span>(18)</span>
+-                  </div>
+-                  <div class="product-price">
+-                    <span class="current-price">$45.00</span>
+-                  </div>
+-                </div>
+-              </div>
+-            </div>
+-          </div>
+-        </div>
+-
+-        <div class="col-lg-4 col-md-6 mb-5 mb-md-0" data-aos="fade-up" data-aos-delay="300">
+-          <div class="product-category">
+-            <h3 class="category-title"><i class="bi bi-award"></i> Best Sellers</h3>
+-            <div class="product-list">
+-              <div class="product-card">
+-                <div class="product-image">
+-                  <img src="{% static 'assets/img/product/product-2.webp' %}" alt="Slim Fit Denim" class="img-fluid" />
+-                  <div class="product-badges">
+-                    <span class="badge-sale">-15%</span>
+-                  </div>
+-                </div>
+-                <div class="product-info">
+-                  <h4 class="product-name">Slim Fit Denim</h4>
+-                  <div class="product-rating">
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <span>(87)</span>
+-                  </div>
+-                  <div class="product-price">
+-                    <span class="current-price">$68.00</span>
+-                    <span class="old-price">$80.00</span>
+-                  </div>
+-                </div>
+-              </div>
+-
+-              <div class="product-card">
+-                <div class="product-image">
+-                  <img src="{% static 'assets/img/product/product-6.webp' %}" alt="Designer Handbag" class="img-fluid" />
+-                </div>
+-                <div class="product-info">
+-                  <h4 class="product-name">Designer Handbag</h4>
+-                  <div class="product-rating">
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-half"></i>
+-                    <span>(56)</span>
+-                  </div>
+-                  <div class="product-price">
+-                    <span class="current-price">$129.99</span>
+-                  </div>
+-                </div>
+-              </div>
+-
+-              <div class="product-card">
+-                <div class="product-image">
+-                  <img src="{% static 'assets/img/product/product-8.webp' %}" alt="Leather Crossbody" class="img-fluid" />
+-                  <div class="product-badges">
+-                    <span class="badge-hot">Hot</span>
+-                  </div>
+-                </div>
+-                <div class="product-info">
+-                  <h4 class="product-name">Leather Crossbody</h4>
+-                  <div class="product-rating">
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <span>(112)</span>
+-                  </div>
+-                  <div class="product-price">
+-                    <span class="current-price">$95.50</span>
+-                  </div>
+-                </div>
+-              </div>
+-            </div>
+-          </div>
+-        </div>
+-
+-        <div class="col-lg-4 col-md-6 mb-5 mb-md-0" data-aos="fade-up" data-aos-delay="400">
+-          <div class="product-category">
+-            <h3 class="category-title"><i class="bi bi-star"></i> Featured Items</h3>
+-            <div class="product-list">
+-              <div class="product-card">
+-                <div class="product-image">
+-                  <img src="{% static 'assets/img/product/product-7.webp' %}" alt="Pleated Midi Skirt" class="img-fluid" />
+-                </div>
+-                <div class="product-info">
+-                  <h4 class="product-name">Pleated Midi Skirt</h4>
+-                  <div class="product-rating">
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star"></i>
+-                    <span>(32)</span>
+-                  </div>
+-                  <div class="product-price">
+-                    <span class="current-price">$75.00</span>
+-                  </div>
+-                </div>
+-              </div>
+-
+-              <div class="product-card">
+-                <div class="product-image">
+-                  <img src="{% static 'assets/img/product/product-4.webp' %}" alt="Geometric Earrings" class="img-fluid" />
+-                  <div class="product-badges">
+-                    <span class="badge-limited">Limited</span>
+-                  </div>
+-                </div>
+-                <div class="product-info">
+-                  <h4 class="product-name">Geometric Earrings</h4>
+-                  <div class="product-rating">
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-half"></i>
+-                    <span>(47)</span>
+-                  </div>
+-                  <div class="product-price">
+-                    <span class="current-price">$42.99</span>
+-                  </div>
+-                </div>
+-              </div>
+-
+-              <div class="product-card">
+-                <div class="product-image">
+-                  <img src="{% static 'assets/img/product/product-9.webp' %}" alt="Structured Satchel" class="img-fluid" />
+-                </div>
+-                <div class="product-info">
+-                  <h4 class="product-name">Structured Satchel</h4>
+-                  <div class="product-rating">
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <i class="bi bi-star-fill"></i>
+-                    <span>(64)</span>
+-                  </div>
+-                  <div class="product-price">
+-                    <span class="current-price">$89.99</span>
+-                  </div>
+-                </div>
+-              </div>
+-            </div>
+-          </div>
+-        </div>
+-      </div>
+-    </div>
+-  </section>
+-  <!-- /Cards Section -->
+-
+-  <!-- Call To Action Section -->
+-  <section id="call-to-action" class="call-to-action section">
+-    <div class="container" data-aos="fade-up" data-aos-delay="100">
+-      <div class="row">
+-        <div class="col-lg-8 mx-auto">
+-          <div class="main-content text-center" data-aos="zoom-in" data-aos-delay="200">
+-            <div class="offer-badge" data-aos="fade-down" data-aos-delay="250">
+-              <span class="limited-time">Limited Time</span>
+-              <span class="offer-text">50% OFF</span>
+-            </div>
+-
+-            <h2 data-aos="fade-up" data-aos-delay="300">Exclusive Flash Sale</h2>
+-
+-            <p class="subtitle" data-aos="fade-up" data-aos-delay="350">Don't miss out on our biggest sale of the year. Premium quality products at unbeatable prices for the next 48 hours only.</p>
+-
+-            <div class="countdown-wrapper" data-aos="fade-up" data-aos-delay="400">
+-              <div class="countdown d-flex justify-content-center" data-count="2025/12/31">
+-                <div>
+-                  <h3 class="count-days"></h3>
+-                  <h4>Days</h4>
+-                </div>
+-                <div>
+-                  <h3 class="count-hours"></h3>
+-                  <h4>Hours</h4>
+-                </div>
+-                <div>
+-                  <h3 class="count-minutes"></h3>
+-                  <h4>Minutes</h4>
+-                </div>
+-                <div>
+-                  <h3 class="count-seconds"></h3>
+-                  <h4>Seconds</h4>
+-                </div>
+-              </div>
+-            </div>
+-
+-            <div class="action-buttons" data-aos="fade-up" data-aos-delay="450">
+-              <a href="#" class="btn-shop-now">Shop Now</a>
+-              <a href="#" class="btn-view-deals">View All Deals</a>
+-            </div>
+-          </div>
+-        </div>
+-      </div>
+-
+-      <div class="row featured-products-row" data-aos="fade-up" data-aos-delay="500">
+-        <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="100">
+-          <div class="product-showcase">
+-            <div class="product-image">
+-              <img src="{% static 'assets/img/product/product-5.webp' %}" alt="Featured Product" class="img-fluid" />
+-              <div class="discount-badge">-45%</div>
+-            </div>
+-            <div class="product-details">
+-              <h6>Premium Wireless Headphones</h6>
+-              <div class="price-section">
+-                <span class="original-price">$129</span>
+-                <span class="sale-price">$71</span>
+-              </div>
+-              <div class="rating-stars">
+-                <i class="bi bi-star-fill"></i>
+-                <i class="bi bi-star-fill"></i>
+-                <i class="bi bi-star-fill"></i>
+-                <i class="bi bi-star-fill"></i>
+-                <i class="bi bi-star-fill"></i>
+-                <span class="rating-count">(324)</span>
+-              </div>
+-            </div>
+-          </div>
+-        </div>
+-        <!-- End Product Showcase -->
+-
+-        <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="150">
+-          <div class="product-showcase">
+-            <div class="product-image">
+-              <img src="{% static 'assets/img/product/product-7.webp' %}" alt="Featured Product" class="img-fluid" />
+-              <div class="discount-badge">-60%</div>
+-            </div>
+-            <div class="product-details">
+-              <h6>Smart Fitness Tracker</h6>
+-              <div class="price-section">
+-                <span class="original-price">$89</span>
+-                <span class="sale-price">$36</span>
+-              </div>
+-              <div class="rating-stars">
+-                <i class="bi bi-star-fill"></i>
+-                <i class="bi bi-star-fill"></i>
+-                <i class="bi bi-star-fill"></i>
+-                <i class="bi bi-star-fill"></i>
+-                <i class="bi bi-star-half"></i>
+-                <span class="rating-count">(198)</span>
+-              </div>
+-            </div>
+-          </div>
+-        </div>
+-        <!-- End Product Showcase -->
+-
+-        <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="200">
+-          <div class="product-showcase">
+-            <div class="product-image">
+-              <img src="{% static 'assets/img/product/product-11.webp' %}" alt="Featured Product" class="img-fluid" />
+-              <div class="discount-badge">-35%</div>
+-            </div>
+-            <div class="product-details">
+-              <h6>Luxury Travel Backpack</h6>
+-              <div class="price-section">
+-                <span class="original-price">$159</span>
+-                <span class="sale-price">$103</span>
+-              </div>
+-              <div class="rating-stars">
+-                <i class="bi bi-star-fill"></i>
+-                <i class="bi bi-star-fill"></i>
+-                <i class="bi bi-star-fill"></i>
+-                <i class="bi bi-star-fill"></i>
+-                <i class="bi bi-star-fill"></i>
+-                <span class="rating-count">(267)</span>
+-              </div>
+-            </div>
+-          </div>
+-        </div>
+-        <!-- End Product Showcase -->
+-
+-        <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="250">
+-          <div class="product-showcase">
+-            <div class="product-image">
+-              <img src="{% static 'assets/img/product/product-1.webp' %}" alt="Featured Product" class="img-fluid" />
+-              <div class="discount-badge">-55%</div>
+-            </div>
+-            <div class="product-details">
+-              <h6>Artisan Coffee Mug Set</h6>
+-              <div class="price-section">
+-                <span class="original-price">$75</span>
+-                <span class="sale-price">$34</span>
+-              </div>
+-              <div class="rating-stars">
+-                <i class="bi bi-star-fill"></i>
+-                <i class="bi bi-star-fill"></i>
+-                <i class="bi bi-star-fill"></i>
+-                <i class="bi bi-star-fill"></i>
+-                <i class="bi bi-star"></i>
+-                <span class="rating-count">(142)</span>
+-              </div>
+-            </div>
+-          </div>
+-        </div>
+-        <!-- End Product Showcase -->
+-      </div>
+-    </div>
+-  </section>
+ {% endblock %}
+diff --git a/templates/website/job_application.html b/templates/website/job_application.html
+index 23250b9..ef1a485 100644
+--- a/templates/website/job_application.html
++++ b/templates/website/job_application.html
+@@ -157,6 +157,7 @@
+                         <option value="holoo">هلو</option>
+                         <option value="ghiyas">قیاس</option>
+                         <option value="mahak">محک</option>
++                        <option value="other">سایر</option>
+                       </select>
+                     </div>
+                   </div>

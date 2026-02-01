@@ -1,0 +1,391 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}
+  تسویه حساب | رویا سازان جوان
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+{% endblock %}
+
+{% block content %}
+  <!-- Page Title -->
+  <div class="page-title light-background">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+      <h1 class="mb-2 mb-lg-0">تسویه حساب</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li>
+            <a href="{% url 'website:index' %}">صفحه اصلی</a>
+          </li>
+          <li>
+            <a href="{% url 'cart:cart_detail' %}">سبد خرید</a>
+          </li>
+          <li class="current">تسویه حساب</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <!-- End Page Title -->
+
+  <!-- Checkout Section -->
+  <section id="checkout" class="checkout section">
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+      <div class="row">
+        <div class="col-lg-7">
+          <!-- Checkout Form -->
+          <div class="checkout-container" data-aos="fade-up">
+            <form class="checkout-form" method="POST" action="{% url 'orders:checkout' %}">
+              {% csrf_token %}
+              
+              <!-- Display form errors -->
+              {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                  {{ form.non_field_errors }}
+                </div>
+              {% endif %}
+              
+              <!-- Customer Information -->
+              <div class="checkout-section" id="customer-info">
+                <div class="section-header">
+                  <div class="section-number">1</div>
+                  <h3>اطلاعات خریدار</h3>
+                </div>
+                <div class="section-content">
+                  <div class="row">
+                    <div class="col-md-6 form-group">
+                      <label for="id_first_name">نام *</label>
+                      {{ form.first_name }}
+                      {% if form.first_name.errors %}
+                        <div class="invalid-feedback d-block">{{ form.first_name.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                    <div class="col-md-6 form-group">
+                      <label for="id_last_name">نام خانوادگی *</label>
+                      {{ form.last_name }}
+                      {% if form.last_name.errors %}
+                        <div class="invalid-feedback d-block">{{ form.last_name.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="id_email">ایمیل *</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                      <div class="invalid-feedback d-block">{{ form.email.errors.0 }}</div>
+                    {% endif %}
+                  </div>
+                  <div class="form-group">
+                    <label for="id_phone">شماره تلفن *</label>
+                    {{ form.phone }}
+                    {% if form.phone.errors %}
+                      <div class="invalid-feedback d-block">{{ form.phone.errors.0 }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Shipping Address -->
+              <div class="checkout-section" id="shipping-address">
+                <div class="section-header">
+                  <div class="section-number">2</div>
+                  <h3>آدرس (اختیاری)</h3>
+                  <p class="text-muted small">برای دوره‌های آنلاین نیازی به آدرس نیست، اما می‌توانید برای صدور فاکتور ذخیره کنید</p>
+                </div>
+                <div class="section-content">
+                  <div class="form-group">
+                    <label for="id_address">آدرس کامل</label>
+                    {{ form.address }}
+                    {% if form.address.errors %}
+                      <div class="invalid-feedback d-block">{{ form.address.errors.0 }}</div>
+                    {% endif %}
+                  </div>
+                  <div class="form-group">
+                    <label for="id_apartment">واحد، پلاک (اختیاری)</label>
+                    {{ form.apartment }}
+                    {% if form.apartment.errors %}
+                      <div class="invalid-feedback d-block">{{ form.apartment.errors.0 }}</div>
+                    {% endif %}
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4 form-group">
+                      <label for="id_city">شهر</label>
+                      {{ form.city }}
+                      {% if form.city.errors %}
+                        <div class="invalid-feedback d-block">{{ form.city.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                    <div class="col-md-4 form-group">
+                      <label for="id_state">استان</label>
+                      {{ form.state }}
+                      {% if form.state.errors %}
+                        <div class="invalid-feedback d-block">{{ form.state.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                    <div class="col-md-4 form-group">
+                      <label for="id_zip_code">کد پستی</label>
+                      {{ form.zip_code }}
+                      {% if form.zip_code.errors %}
+                        <div class="invalid-feedback d-block">{{ form.zip_code.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="id_country">کشور</label>
+                    {{ form.country }}
+                    {% if form.country.errors %}
+                      <div class="invalid-feedback d-block">{{ form.country.errors.0 }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Payment Method -->
+              <div class="checkout-section" id="payment-method">
+                <div class="section-header">
+                  <div class="section-number">3</div>
+                  <h3>روش پرداخت</h3>
+                </div>
+                <div class="section-content">
+                  <div class="payment-options">
+                    <div class="payment-option active">
+                      <input type="radio" name="payment-method" id="zarinpal" value="zarinpal" checked />
+                      <label for="zarinpal">
+                        <span class="payment-icon"><i class="bi bi-credit-card-2-front"></i></span>
+                        <span class="payment-label">پرداخت آنلاین (زرین‌پال)</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="payment-details" id="zarinpal-details">
+                    <p class="payment-info">
+                      <i class="bi bi-shield-check text-success"></i>
+                      پس از ثبت سفارش، به درگاه پرداخت امن زرین‌پال منتقل می‌شوید
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Additional Notes -->
+              <div class="checkout-section" id="order-notes">
+                <div class="section-header">
+                  <div class="section-number">4</div>
+                  <h3>یادداشت (اختیاری)</h3>
+                </div>
+                <div class="section-content">
+                  <div class="form-group">
+                    <label for="id_notes">یادداشت سفارش</label>
+                    {{ form.notes }}
+                    {% if form.notes.errors %}
+                      <div class="invalid-feedback d-block">{{ form.notes.errors.0 }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Order Review -->
+              <div class="checkout-section" id="order-review">
+                <div class="section-header">
+                  <div class="section-number">5</div>
+                  <h3>بررسی و ثبت سفارش</h3>
+                </div>
+                <div class="section-content">
+                  <div class="form-check terms-check">
+                    <input class="form-check-input" type="checkbox" id="id_terms" name="terms" required />
+                    <label class="form-check-label" for="id_terms">
+                      <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">شرایط و قوانین</a> 
+                      و 
+                      <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">حریم خصوصی</a> 
+                      را مطالعه کرده و می‌پذیرم *
+                    </label>
+                    {% if form.terms.errors %}
+                      <div class="invalid-feedback d-block">{{ form.terms.errors.0 }}</div>
+                    {% endif %}
+                  </div>
+                  
+                  <div class="place-order-container">
+                    <button type="submit" class="btn btn-primary place-order-btn">
+                      <span class="btn-text">پرداخت و ثبت نهایی</span>
+                      <span class="btn-price">{{ total|floatformat:0|intcomma }} تومان</span>
+                    </button>
+                  </div>
+                  
+                  <div class="text-center mt-3">
+                    <a href="{% url 'cart:cart_detail' %}" class="btn btn-link">
+                      <i class="bi bi-arrow-right"></i> بازگشت به سبد خرید
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <!-- Order Summary -->
+          <div class="order-summary" data-aos="fade-left" data-aos-delay="200">
+            <div class="order-summary-header">
+              <h3>خلاصه سفارش</h3>
+              <span class="item-count">{{ cart_count }} دوره</span>
+            </div>
+
+            <div class="order-summary-content">
+              <div class="order-items">
+                {% for item in cart_items %}
+                <div class="order-item">
+                  <div class="order-item-image">
+                    {% if item.course_obj.thumbnail %}
+                      <img src="{{ item.course_obj.thumbnail.url }}" 
+                           alt="{{ item.course_obj.title }}" 
+                           class="img-fluid" />
+                    {% else %}
+                      <img src="{% static 'img/default-course.jpg' %}" 
+                           alt="{{ item.course_obj.title }}" 
+                           class="img-fluid" />
+                    {% endif %}
+                  </div>
+                  <div class="order-item-details">
+                    <h4>{{ item.course_obj.title }}</h4>
+                    <p class="order-item-variant">
+                      <i class="bi bi-person"></i> {{ item.course_obj.instructor.get_full_name|default:item.course_obj.instructor.email }}
+                      <br>
+                      <i class="bi bi-clock"></i> {{ item.course_obj.duration }} ساعت
+                    </p>
+                    <div class="order-item-price">
+                      <span class="quantity">{{ item.quantity }} ×</span>
+                      <span class="price">{{ item.course_obj.price|floatformat:0|intcomma }} تومان</span>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+
+              <!-- Promo Code -->
+              <div class="promo-code">
+                <form method="POST" action="{% url 'orders:apply_coupon' %}" id="coupon-form">
+                  {% csrf_token %}
+                  <div class="input-group">
+                    <input type="text" 
+                           name="code" 
+                           class="form-control" 
+                           placeholder="کد تخفیف" 
+                           id="coupon-code-input" />
+                    <button class="btn btn-outline-primary" type="submit" id="apply-coupon-btn">
+                      اعمال
+                    </button>
+                  </div>
+                </form>
+                <div id="coupon-message" class="mt-2"></div>
+              </div>
+
+              <!-- Order Totals -->
+              <div class="order-totals">
+                <div class="order-subtotal d-flex justify-content-between">
+                  <span>جمع کل دوره‌ها</span>
+                  <span id="subtotal-amount">{{ subtotal|floatformat:0|intcomma }} تومان</span>
+                </div>
+                
+                {% if discount_amount > 0 %}
+                <div class="order-discount d-flex justify-content-between text-success">
+                  <span>تخفیف</span>
+                  <span id="discount-amount">-{{ discount_amount|floatformat:0|intcomma }} تومان</span>
+                </div>
+                {% endif %}
+                
+                {% if tax_amount > 0 %}
+                <div class="order-tax d-flex justify-content-between">
+                  <span>مالیات</span>
+                  <span id="tax-amount">{{ tax_amount|floatformat:0|intcomma }} تومان</span>
+                </div>
+                {% endif %}
+                
+                <div class="order-total d-flex justify-content-between">
+                  <span>مبلغ قابل پرداخت</span>
+                  <span id="total-amount">{{ total|floatformat:0|intcomma }} تومان</span>
+                </div>
+              </div>
+
+              <!-- Secure Checkout -->
+              <div class="secure-checkout">
+                <div class="secure-checkout-header">
+                  <i class="bi bi-shield-lock"></i>
+                  <span>پرداخت امن</span>
+                </div>
+                <div class="payment-icons">
+                  <i class="bi bi-credit-card-2-front" title="کارت به کارت"></i>
+                  <i class="bi bi-credit-card" title="درگاه بانکی"></i>
+                  <i class="bi bi-wallet2" title="کیف پول"></i>
+                </div>
+              </div>
+              
+              <!-- Benefits -->
+              <div class="checkout-benefits mt-4">
+                <ul class="list-unstyled">
+                  <li><i class="bi bi-check-circle-fill text-success"></i> دسترسی فوری بعد از پرداخت</li>
+                  <li><i class="bi bi-check-circle-fill text-success"></i> گواهی معتبر پایان دوره</li>
+                  <li><i class="bi bi-check-circle-fill text-success"></i> پشتیبانی ۲۴ ساعته</li>
+                  <li><i class="bi bi-check-circle-fill text-success"></i> ضمانت بازگشت وجه</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Terms and Privacy Modals -->
+      <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="termsModalLabel">شرایط و قوانین</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>با خرید از پلتفرم آموزشی ما، شما با شرایط زیر موافقت می‌کنید:</p>
+              <ul>
+                <li>دسترسی به دوره‌ها مادام‌العمر خواهد بود</li>
+                <li>محتوای دوره‌ها تنها برای استفاده شخصی شما است</li>
+                <li>اشتراک‌گذاری اکانت یا محتوای دوره‌ها ممنوع است</li>
+                <li>در صورت تخلف، دسترسی شما قطع خواهد شد</li>
+              </ul>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">متوجه شدم</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="privacyModalLabel">حریم خصوصی</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>ما به حریم خصوصی شما احترام می‌گذاریم:</p>
+              <ul>
+                <li>اطلاعات شما به صورت امن ذخیره می‌شود</li>
+                <li>اطلاعات پرداخت از طریق درگاه امن انجام می‌شود</li>
+                <li>ما هرگز اطلاعات شما را به اشتراک نمی‌گذاریم</li>
+                <li>ایمیل‌های ما فقط شامل اطلاعات مهم است</li>
+              </ul>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">متوجه شدم</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- /Checkout Section -->
+  
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/checkout.js' %}"></script>
+{% endblock %}

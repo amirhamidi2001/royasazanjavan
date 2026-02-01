@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}
+  سفارشات من | رویا سازان جوان
+{% endblock %}
+
+{% block content %}
+  <!-- Page Title -->
+  <div class="page-title light-background">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+      <h1 class="mb-2 mb-lg-0">سفارشات من</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li><a href="{% url 'website:index' %}">صفحه اصلی</a></li>
+          <li class="current">سفارشات</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <!-- End Page Title -->
+
+  <!-- Orders List Section -->
+  <section class="orders-list section">
+    <div class="container" data-aos="fade-up">
+      {% if orders %}
+        <div class="orders-table-container">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>شماره سفارش</th>
+                  <th>تاریخ</th>
+                  <th>تعداد دوره‌ها</th>
+                  <th>مبلغ</th>
+                  <th>وضعیت</th>
+                  <th class="text-center">عملیات</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for order in orders %}
+                <tr>
+                  <td>
+                    <a href="{% url 'orders:order_detail' order.id %}" class="order-number">
+                      #{{ order.order_number }}
+                    </a>
+                  </td>
+                  <td>{{ order.created_date|date:"Y/m/d" }}</td>
+                  <td>{{ order.get_total_items }} دوره</td>
+                  <td>
+                    <strong>{{ order.final_price|floatformat:0|intcomma }} تومان</strong>
+                  </td>
+                  <td>
+                    {% if order.is_paid %}
+                      <span class="badge bg-success">
+                        <i class="bi bi-check-circle"></i> پرداخت شده
+                      </span>
+                    {% elif order.status == 'pending' %}
+                      <span class="badge bg-warning text-dark">
+                        <i class="bi bi-clock"></i> در انتظار
+                      </span>
+                    {% elif order.status == 'failed' %}
+                      <span class="badge bg-danger">
+                        <i class="bi bi-x-circle"></i> ناموفق
+                      </span>
+                    {% elif order.status == 'cancelled' %}
+                      <span class="badge bg-secondary">
+                        <i class="bi bi-x-circle"></i> لغو شده
+                      </span>
+                    {% endif %}
+                  </td>
+                  <td class="text-center">
+                    <a href="{% url 'orders:order_detail' order.id %}" 
+                       class="btn btn-sm btn-outline-primary me-1"
+                       title="مشاهده جزئیات">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                    {% if order.status == 'pending' and not order.is_paid %}
+                      <a href="{% url 'orders:payment' order.id %}" 
+                         class="btn btn-sm btn-success"
+                         title="پرداخت">
+                        <i class="bi bi-credit-card"></i>
+                      </a>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- Order Statistics -->
+        <div class="row mt-5">
+          <div class="col-md-4 mb-3">
+            <div class="stat-card">
+              <div class="stat-icon bg-success">
+                <i class="bi bi-check-circle"></i>
+              </div>
+              <div class="stat-info">
+                <h3>{{ orders|length }}</h3>
+                <p>کل سفارشات</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <div class="stat-card">
+              <div class="stat-icon bg-primary">
+                <i class="bi bi-credit-card"></i>
+              </div>
+              <div class="stat-info">
+                <h3>{{ orders|length }}</h3>
+                <p>سفارشات موفق</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <div class="stat-card">
+              <div class="stat-icon bg-warning">
+                <i class="bi bi-clock"></i>
+              </div>
+              <div class="stat-info">
+                <h3>0</h3>
+                <p>در انتظار پرداخت</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      {% else %}
+        <!-- Empty State -->
+        <div class="empty-orders text-center py-5">
+          <i class="bi bi-receipt" style="font-size: 80px; color: #ddd;"></i>
+          <h3 class="mt-4">هنوز سفارشی ثبت نکرده‌اید</h3>
+          <p class="text-muted">برای خرید دوره‌های آموزشی به صفحه دوره‌ها بروید</p>
+          <a href="{% url 'courses:course_list' %}" class="btn btn-accent mt-3">
+            <i class="bi bi-mortarboard"></i> مشاهده دوره‌ها
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+  <!-- End Orders List Section -->
+  
+  <style>
+    .orders-table-container {
+      background: #fff;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .order-number {
+      font-weight: 600;
+      color: #e74c3c;
+      text-decoration: none;
+    }
+    
+    .order-number:hover {
+      text-decoration: underline;
+    }
+    
+    .stat-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #fff;
+    }
+    
+    .stat-info h3 {
+      font-size: 32px;
+      font-weight: 700;
+      margin: 0;
+      color: #333;
+    }
+    
+    .stat-info p {
+      margin: 0;
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .empty-orders {
+      background: #fff;
+      border-radius: 10px;
+      padding: 60px 30px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+  </style>
+{% endblock %}

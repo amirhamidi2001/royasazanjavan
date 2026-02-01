@@ -88,9 +88,9 @@
             </a>
 
             <!-- Search -->
-            <form class="search-form desktop-search-form">
+            <form method="get" action="{% url 'courses:course_list' %}" class="search-form desktop-search-form">
               <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search for products" />
+                <input type="text" class="form-control" placeholder="جستوجوی دوره ..." name="search" value="{{ search_query }}" required="" />
                 <button class="btn" type="submit"><i class="bi bi-search"></i></button>
               </div>
             </form>
@@ -109,21 +109,21 @@
                     <p class="mb-0">دسترسی به حساب کاربری و مدیریت دوره ها</p>
                   </div>
                   <div class="dropdown-body">
-                    <a class="dropdown-item d-flex align-items-center" href="account.html">
+                    <a class="dropdown-item d-flex align-items-center" href="{% url 'dashboard:dashboard' %}">
                       <i class="bi bi-person-circle me-2"></i>
-                      <span>My Profile</span>
+                      <span>پروفایل من</span>
                     </a>
                     <a class="dropdown-item d-flex align-items-center" href="account.html">
                       <i class="bi bi-bag-check me-2"></i>
-                      <span>My Orders</span>
+                      <span>سفارشات من</span>
                     </a>
                     <a class="dropdown-item d-flex align-items-center" href="account.html">
                       <i class="bi bi-heart me-2"></i>
-                      <span>My Wishlist</span>
+                      <span>لیست دلخواه من</span>
                     </a>
                     <a class="dropdown-item d-flex align-items-center" href="account.html">
                       <i class="bi bi-gear me-2"></i>
-                      <span>Settings</span>
+                      <span>تنظیمات</span>
                     </a>
                   </div>
                   {% if user.is_authenticated %}
@@ -149,9 +149,9 @@
               </a>
 
               <!-- Cart -->
-              <a href="cart.html" class="header-action-btn">
+              <a href="{% url 'cart:cart_detail' %}" class="header-action-btn">
                 <i class="bi bi-cart3"></i>
-                <span class="badge">3</span>
+                <span class="badge">{{ cart_total_quantity }}</span>
               </a>
 
               <!-- Mobile Navigation Toggle -->
@@ -176,10 +176,10 @@
                 <a href="{% url 'articles:article_list' %}">مقالات</a>
               </li>
               <li>
-                <a href="checkout.html">دوره های من</a>
+                <a href="{% url 'courses:course_progress' %}">دوره های من</a>
               </li>
               <li>
-                <a href="product-details.html">لیست دوره ها</a>
+                <a href="{% url 'courses:course_list' %}">لیست دوره ها</a>
               </li>
               <li>
                 <a href="{% url 'website:support' %}">درخواست مشاوره</a>
@@ -206,9 +206,9 @@
       <!-- Mobile Search Form -->
       <div class="collapse" id="mobileSearch">
         <div class="container">
-          <form class="search-form">
+          <form method="get" action="{% url 'courses:course_list' %}" class="search-form">
             <div class="input-group">
-              <input type="text" class="form-control" placeholder="Search for products" />
+              <input type="text" class="form-control" placeholder="جستوجوی دوره ..." name="search" value="{{ search_query }}" required="" />
               <button class="btn" type="submit"><i class="bi bi-search"></i></button>
             </div>
           </form>
@@ -231,17 +231,14 @@
             <div class="col-lg-4 col-md-6">
               <div class="footer-widget footer-about">
                 <a href="{% url 'website:index' %}" class="logo"><span class="sitename">Roya Sazan Javan</span></a>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in nibh vehicula, facilisis magna ut, consectetur lorem. Proin eget tortor risus.</p>
+                <p>برای شروع یادگیری و مشاهده دوره‌های ما، همین حالا اقدام کنید و گام اول را در جهت ساخت آینده‌ای روشن‌تر بردارید!</p>
 
                 <div class="social-links mt-4">
-                  <h5>Connect With Us</h5>
+                  <h5>ارتباط با ما</h5>
                   <div class="social-icons">
-                    <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                    <a href="#" aria-label="Facebook"><i class="bi bi-telegram"></i></a>
+                    <a href="#" aria-label="TikTok"><i class="bi bi-whatsapp"></i></a>
                     <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
-                    <a href="#" aria-label="TikTok"><i class="bi bi-tiktok"></i></a>
-                    <a href="#" aria-label="Pinterest"><i class="bi bi-pinterest"></i></a>
-                    <a href="#" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
                   </div>
                 </div>
               </div>
@@ -249,7 +246,7 @@
 
             <div class="col-lg-2 col-md-6 col-sm-6">
               <div class="footer-widget">
-                <h4>Shop</h4>
+                <h4>دوره‌ها</h4>
                 <ul class="footer-links">
                   <li>
                     <a href="category.html">New Arrivals</a>
@@ -275,25 +272,25 @@
 
             <div class="col-lg-2 col-md-6 col-sm-6">
               <div class="footer-widget">
-                <h4>Support</h4>
+                <h4>پشتیانی</h4>
                 <ul class="footer-links">
                   <li>
-                    <a href="support.html">Help Center</a>
+                    <a href="{% url 'website:faq' %}">سوالات متداول</a>
                   </li>
                   <li>
-                    <a href="account.html">Order Status</a>
+                    <a href="{% url 'website:tos' %}">شرایط خدمات</a>
                   </li>
                   <li>
-                    <a href="shiping-info.html">Shipping Info</a>
+                    <a href="{% url 'website:support' %}">درخواست مشاوره</a>
                   </li>
                   <li>
-                    <a href="return-policy.html">Returns &amp; Exchanges</a>
+                    <a href="{% url 'website:about' %}">درباره ما</a>
                   </li>
                   <li>
-                    <a href="#">Size Guide</a>
+                    <a href="{% url 'website:job-application' %}">همکاری با ما</a>
                   </li>
                   <li>
-                    <a href="contact.html">Contact Us</a>
+                    <a href="{% url 'website:contact' %}">ارتباط با ما</a>
                   </li>
                 </ul>
               </div>
@@ -301,35 +298,20 @@
 
             <div class="col-lg-4 col-md-6">
               <div class="footer-widget">
-                <h4>Contact Information</h4>
+                <h4>اطلاعات تماس</h4>
                 <div class="footer-contact">
                   <div class="contact-item">
-                    <i class="bi bi-geo-alt"></i>
-                    <span>123 Fashion Street, New York, NY 10001</span>
+                    <i class="bi bi-geo-alt"></i>&nbsp;
+                    <span>تهران، پاکدشت، دوراهی یبر، طبقه فوقانی بانک ملی ایران، واحد 95</span>
                   </div>
                   <div class="contact-item">
-                    <i class="bi bi-telephone"></i>
-                    <span>+1 (555) 123-4567</span>
+                    <i class="bi bi-telephone"></i>&nbsp;
+                    <span>09037953318 | 09124774350</span>
                   </div>
                   <div class="contact-item">
-                    <i class="bi bi-envelope"></i>
-                    <span>hello@example.com</span>
+                    <i class="bi bi-clock"></i>&nbsp;
+                    <span>شنبه تا پنج‌شنبه | ساعت ۱۰ تا ۱۹</span>
                   </div>
-                  <div class="contact-item">
-                    <i class="bi bi-clock"></i>
-                    <span>Monday-Friday: 9am-6pm<br />Saturday: 10am-4pm<br />Sunday: Closed</span>
-                  </div>
-                </div>
-
-                <div class="app-buttons mt-4">
-                  <a href="#" class="app-btn">
-                    <i class="bi bi-apple"></i>
-                    <span>App Store</span>
-                  </a>
-                  <a href="#" class="app-btn">
-                    <i class="bi bi-google-play"></i>
-                    <span>Google Play</span>
-                  </a>
                 </div>
               </div>
             </div>
@@ -343,7 +325,7 @@
             <div class="col-lg-6 col-md-12">
               <div class="copyright">
                 <p>
-                  © <span>Copyright</span> <strong class="sitename">Roya Sazan Javan</strong>. All Rights Reserved.
+                  <span>Copyright</span> <strong class="sitename">Roya Sazan Javan</strong>. All Rights Reserved
                 </p>
               </div>
               <div class="credits mt-1">
@@ -351,28 +333,7 @@
                 <!-- You can delete the links only if you've purchased the pro version. -->
                 <!-- Licensing information: https://bootstrapmade.com/license/ -->
                 <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
-                Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
-              </div>
-            </div>
-
-            <div class="col-lg-6 col-md-12">
-              <div class="d-flex flex-wrap justify-content-lg-end justify-content-center align-items-center gap-4">
-                <div class="payment-methods">
-                  <div class="payment-icons">
-                    <i class="bi bi-credit-card" aria-label="Credit Card"></i>
-                    <i class="bi bi-paypal" aria-label="PayPal"></i>
-                    <i class="bi bi-apple" aria-label="Apple Pay"></i>
-                    <i class="bi bi-google" aria-label="Google Pay"></i>
-                    <i class="bi bi-shop" aria-label="Shop Pay"></i>
-                    <i class="bi bi-cash" aria-label="Cash on Delivery"></i>
-                  </div>
-                </div>
-
-                <div class="legal-links">
-                  <a href="tos.html">Terms</a>
-                  <a href="privacy.html">Privacy</a>
-                  <a href="tos.html">Cookies</a>
-                </div>
+                Developed by <a href="https://amirhamidi.pythonanywhere.com/">Amir Hamidi</a> | Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
               </div>
             </div>
           </div>

@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  دوره های آموزشی | رویا سازان جوان
+{% endblock %}
+
+{% block content %}
+  <!-- Search Results Header Section -->
+  <section id="search-results-header" class="search-results-header section">
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+      <div class="search-results-header">
+        <div class="row align-items-center">
+          <div class="col-lg-6 mb-4 mb-lg-0">
+            <div class="results-count" data-aos="fade-right" data-aos-delay="200">
+              <h2>دوره های آموزشی</h2>
+              <p>
+                {% if search_query %}
+                  نتایج جستجو برای "<span class="search-term">{{ search_query }}</span>"
+                {% else %}
+                  تمام دوره های آموزشی
+                {% endif %}
+                {% if courses %}
+                  <span class="results-number">({{ paginator.count }} دوره)</span>
+                {% endif %}
+              </p>
+            </div>
+          </div>
+          <div class="col-lg-6" data-aos="fade-left" data-aos-delay="300">
+            <form method="get" action="{% url 'courses:course_list' %}" class="search-form">
+              <div class="input-group">
+                <button class="btn search-btn" type="submit"><i class="bi bi-search"></i></button>
+                <input type="text" class="form-control" placeholder="جستوجوی دوره ..." name="search" value="{{ search_query }}" required="" />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- /Search Results Header Section -->
+
+  <!-- Search Product List Section -->
+  <section id="search-product-list" class="search-product-list section">
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+      {% if courses %}
+        <div class="row g-4">
+          {% for course in courses %}
+            <!-- courses -->
+            <div class="col-6 col-lg-3">
+              <div class="product-card" data-aos="zoom-in">
+                <div class="product-image">
+                  {% if course.thumbnail %}
+                    <img src="{{ course.thumbnail.url }}" class="main-image img-fluid" alt="{{ course.title }}" />
+                    <img src="{% static 'assets/img/logo.webp' %}" class="hover-image img-fluid" alt="{{ course.title }}" />
+                  {% endif %}
+                  <div class="product-overlay">
+                    <div class="product-actions">
+                      <a href="{% url 'courses:course_detail' course.slug %}" type="button" class="action-btn" data-bs-toggle="tooltip" title="مشاهده دوره"><i class="bi bi-eye"></i></a>
+                      <form method="POST" action="{% url 'cart:cart_add' course.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="action-btn" data-bs-toggle="tooltip" title="افزودن به سبد خرید" data-course-id="{{ course.id }}"><i class="bi bi-cart-plus"></i></button>
+                      </form>
+                      <button type="button" class="action-btn" data-bs-toggle="tooltip" title="{{ course.duration }} ساعت"><i class="bi bi-clock"></i></button>
+                      <button type="button" class="action-btn" data-bs-toggle="tooltip" title="{{ course.total_students }} دانشجو"><i class="bi bi-people"></i></button>
+                    </div>
+                  </div>
+                </div>
+                <div class="product-details">
+                  <h4 class="product-title"><a href="{% url 'courses:course_detail' course.slug %}">{{ course.title }}</a></h4>
+                  <div class="product-category">{{ course.instructor.user_profile.get_fullname }}</div>
+                  <div class="product-meta">
+                    <div class="product-price">{{ course.price }}</div>
+                    <div class="product-rating">
+                      <i class="bi bi-star-fill"></i>
+                      {{ course.avg_rating }} <span>({{ course.total_students }})</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <!-- Privacy Section -->
+        <section id="privacy" class="privacy section">
+          <div class="container" data-aos="fade-up">
+            <!-- Header -->
+            <div class="privacy-header" data-aos="fade-up">
+              <div class="header-content">
+                <h2><i class="bi bi-info-circle"></i></h2>
+                <h4>هیچ دوره ای یافت نشد</h4>
+                <p>متأسفانه با فیلترهای انتخابی شما دوره ای پیدا نشد.</p>
+                <a href="{% url 'courses:course_list' %}" class="btn btn-primary">مشاهده همه دوره ها</a>
+              </div>
+            </div>
+          </div>
+        </section>
+      {% endif %}
+    </div>
+  </section>
+  <!-- /Search Product List Section -->
+
+  <!-- Category Pagination Section -->
+  <section id="category-pagination" class="category-pagination section">
+    <div class="container">
+      <nav class="d-flex justify-content-center" aria-label="Page navigation">
+        <ul>
+          {% if page_obj.has_previous %}
+            <li>
+              <a href="?page={{ page_obj.previous_page_number }}" aria-label="Previous page">
+                <i class="bi bi-arrow-right"></i>
+                <span class="d-none d-sm-inline">قبلی</span>
+              </a>
+            </li>
+          {% endif %}
+          {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+              <li>
+                <a href="#" class="active">{{ num }}</a>
+              </li>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+              <li>
+                <a href="?page={{ num }}">{{ num }}</a>
+              </li>
+            {% endif %}
+          {% endfor %}
+          {% if page_obj.has_next %}
+            <li>
+              <a href="?page={{ page_obj.next_page_number }}" aria-label="Next page">
+                <span class="d-none d-sm-inline">بعدی</span>
+                <i class="bi bi-arrow-left"></i>
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </section>
+  <!-- /Category Pagination Section -->
+{% endblock %}

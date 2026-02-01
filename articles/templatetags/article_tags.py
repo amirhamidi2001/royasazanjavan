@@ -309,3 +309,10 @@ def article_has_category(article, category_slug):
 def article_has_tag(article, tag_slug):
     """Check whether an article has a specific tag."""
     return article.tags.filter(slug=tag_slug).exists()
+
+
+@register.inclusion_tag("articles/latest_articles.html")
+def show_latest_articles(count=8):
+    # Using the 'published' manager you defined in your model
+    articles = Article.published.all()[:count]
+    return {"articles": articles}

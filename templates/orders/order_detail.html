@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}
+  جزئیات سفارش {{ order.order_number }} | رویا سازان جوان
+{% endblock %}
+
+{% block content %}
+  <!-- Page Title -->
+  <div class="page-title light-background">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+      <h1 class="mb-2 mb-lg-0">جزئیات سفارش</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li><a href="{% url 'website:index' %}">صفحه اصلی</a></li>
+          <li><a href="{% url 'orders:order_list' %}">سفارشات</a></li>
+          <li class="current">{{ order.order_number }}</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <!-- End Page Title -->
+
+  <!-- Order Detail Section -->
+  <section class="order-detail section">
+    <div class="container" data-aos="fade-up">
+      <div class="row">
+        <!-- Order Information -->
+        <div class="col-lg-8">
+          <!-- Order Status -->
+          <div class="order-status-card mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h4>سفارش #{{ order.order_number }}</h4>
+                <p class="text-muted mb-0">ثبت شده در {{ order.created_date|date:"Y/m/d - H:i" }}</p>
+              </div>
+              <div>
+                {% if order.is_paid %}
+                  <span class="badge bg-success p-3">
+                    <i class="bi bi-check-circle"></i> پرداخت شده
+                  </span>
+                {% elif order.status == 'pending' %}
+                  <span class="badge bg-warning p-3">
+                    <i class="bi bi-clock"></i> در انتظار پرداخت
+                  </span>
+                {% elif order.status == 'failed' %}
+                  <span class="badge bg-danger p-3">
+                    <i class="bi bi-x-circle"></i> پرداخت ناموفق
+                  </span>
+                {% elif order.status == 'cancelled' %}
+                  <span class="badge bg-secondary p-3">
+                    <i class="bi bi-x-circle"></i> لغو شده
+                  </span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          
+          <!-- Order Items -->
+          <div class="order-items-card mb-4">
+            <h5 class="mb-3">آیتم‌های سفارش</h5>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>دوره</th>
+                    <th class="text-center">قیمت</th>
+                    <th class="text-center">تعداد</th>
+                    <th class="text-center">جمع</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in order.items.all %}
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        {% if item.course.thumbnail %}
+                          <img src="{{ item.course.thumbnail.url }}" 
+                               alt="{{ item.course.title }}" 
+                               class="order-item-thumb me-3" />
+                        {% endif %}
+                        <div>
+                          <h6 class="mb-1">{{ item.course.title }}</h6>
+                          <small class="text-muted">
+                            <i class="bi bi-person"></i> 
+                            {{ item.course.instructor.get_full_name|default:item.course.instructor.email }}
+                          </small>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-center align-middle">
+                      {{ item.price|floatformat:0|intcomma }} تومان
+                    </td>
+                    <td class="text-center align-middle">{{ item.quantity }}</td>
+                    <td class="text-center align-middle">
+                      <strong>{{ item.get_total_price|floatformat:0|intcomma }} تومان</strong>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+          <!-- Customer Information -->
+          <div class="customer-info-card mb-4">
+            <h5 class="mb-3">اطلاعات خریدار</h5>
+            <div class="row">
+              <div class="col-md-6">
+                <p><strong>نام:</strong> {{ order.get_full_name }}</p>
+                <p><strong>ایمیل:</strong> {{ order.email }}</p>
+                <p><strong>تلفن:</strong> {{ order.phone }}</p>
+              </div>
+              {% if order.address %}
+              <div class="col-md-6">
+                <p><strong>آدرس:</strong></p>
+                <p class="text-muted">
+                  {{ order.address }}
+                  {% if order.apartment %}, {{ order.apartment }}{% endif %}
+                  <br>
+                  {{ order.city }}, {{ order.state }} {{ order.zip_code }}
+                  <br>
+                  {{ order.country }}
+                </p>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+          
+          {% if order.notes %}
+          <!-- Order Notes -->
+          <div class="order-notes-card mb-4">
+            <h5 class="mb-3">یادداشت سفارش</h5>
+            <p class="text-muted">{{ order.notes }}</p>
+          </div>
+          {% endif %}
+        </div>
+        
+        <!-- Order Summary Sidebar -->
+        <div class="col-lg-4">
+          <div class="order-summary-sidebar">
+            <h5 class="mb-3">خلاصه سفارش</h5>
+            
+            <div class="summary-row">
+              <span>جمع دوره‌ها:</span>
+              <span>{{ order.total_price|floatformat:0|intcomma }} تومان</span>
+            </div>
+            
+            {% if order.discount_amount > 0 %}
+            <div class="summary-row text-success">
+              <span>تخفیف:</span>
+              <span>-{{ order.discount_amount|floatformat:0|intcomma }} تومان</span>
+            </div>
+            {% endif %}
+            
+            {% if order.tax_amount > 0 %}
+            <div class="summary-row">
+              <span>مالیات:</span>
+              <span>{{ order.tax_amount|floatformat:0|intcomma }} تومان</span>
+            </div>
+            {% endif %}
+            
+            <div class="summary-total">
+              <span>مبلغ کل:</span>
+              <span>{{ order.final_price|floatformat:0|intcomma }} تومان</span>
+            </div>
+            
+            {% if order.is_paid %}
+            <div class="payment-info mt-4">
+              <h6 class="mb-3">اطلاعات پرداخت</h6>
+              <p><strong>کد پیگیری:</strong><br>{{ order.zarinpal_ref_id }}</p>
+              <p><strong>تاریخ پرداخت:</strong><br>{{ order.payment_date|date:"Y/m/d - H:i" }}</p>
+            </div>
+            {% elif order.status == 'pending' %}
+            <div class="mt-4">
+              <a href="{% url 'orders:payment' order.id %}" 
+                 class="btn btn-accent w-100">
+                <i class="bi bi-credit-card"></i> پرداخت سفارش
+              </a>
+            </div>
+            {% endif %}
+            
+            <div class="mt-3">
+              <a href="{% url 'orders:order_list' %}" 
+                 class="btn btn-outline-primary w-100">
+                <i class="bi bi-arrow-right"></i> بازگشت به لیست سفارشات
+              </a>
+            </div>
+            
+            {% if order.is_paid %}
+            <div class="mt-3">
+              <a href="{% url 'courses:my_courses' %}" 
+                 class="btn btn-success w-100">
+                <i class="bi bi-mortarboard"></i> دوره‌های من
+              </a>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- End Order Detail Section -->
+  
+  <style>
+    .order-status-card,
+    .order-items-card,
+    .customer-info-card,
+    .order-notes-card,
+    .order-summary-sidebar {
+      background: #fff;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .order-item-thumb {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .summary-total {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 0;
+      margin-top: 10px;
+      border-top: 2px solid #e0e0e0;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    
+    .payment-info {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    
+    .payment-info p {
+      margin-bottom: 10px;
+    }
+  </style>
+{% endblock %}
