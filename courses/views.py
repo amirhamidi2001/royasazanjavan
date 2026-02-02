@@ -151,16 +151,34 @@ class CourseProgressView(LoginRequiredMixin, ListView):
         )
 
 
-class MarkVideoWatchedView(LoginRequiredMixin, View):
-    """Mark a video as watched and update user's progress."""
+# class MarkVideoWatchedView(LoginRequiredMixin, View):
+#     """Mark a video as watched and update user's progress."""
 
+#     def post(self, request, slug, video_id):
+#         course = get_object_or_404(Course, slug=slug, is_active=True)
+#         video = get_object_or_404(Video, id=video_id, course=course)
+
+#         progress, _ = CourseProgress.objects.get_or_create(
+#             user=request.user, course=course
+#         )
+#         progress.mark_video_watched(video)
+
+
+#         messages.success(
+#             request,
+#             _("Video '%(video_title)s' marked as watched.")
+#             % {"video_title": video.title},
+#         )
+#         return redirect("courses:course_detail", slug=slug)
+class MarkVideoWatchedView(LoginRequiredMixin, View):
     def post(self, request, slug, video_id):
         course = get_object_or_404(Course, slug=slug, is_active=True)
         video = get_object_or_404(Video, id=video_id, course=course)
 
-        progress, _ = CourseProgress.objects.get_or_create(
+        progress, created = CourseProgress.objects.get_or_create(
             user=request.user, course=course
         )
+
         progress.mark_video_watched(video)
 
         messages.success(
@@ -168,6 +186,7 @@ class MarkVideoWatchedView(LoginRequiredMixin, View):
             _("Video '%(video_title)s' marked as watched.")
             % {"video_title": video.title},
         )
+
         return redirect("courses:course_detail", slug=slug)
 
 

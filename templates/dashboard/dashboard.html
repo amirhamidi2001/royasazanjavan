@@ -1,15 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load humanize %}
-
 {% block title %}
   داشبورد | رویا سازان جوان
 {% endblock %}
-
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/dashboard.css' %}" />
 {% endblock %}
-
 {% block content %}
   <!-- Page Title -->
   <div class="page-title light-background">
@@ -17,14 +14,15 @@
       <h1 class="mb-2 mb-lg-0">داشبورد</h1>
       <nav class="breadcrumbs">
         <ol>
-          <li><a href="{% url 'website:index' %}">صفحه اصلی</a></li>
+          <li>
+            <a href="{% url 'website:index' %}">صفحه اصلی</a>
+          </li>
           <li class="current">داشبورد</li>
         </ol>
       </nav>
     </div>
   </div>
   <!-- End Page Title -->
-
   <!-- Account Section -->
   <section id="account" class="account section">
     <div class="container" data-aos="fade-up" data-aos-delay="100">
@@ -35,7 +33,6 @@
           <span>منو</span>
         </button>
       </div>
-
       <div class="row g-4">
         <!-- Profile Menu -->
         <div class="col-lg-3">
@@ -63,7 +60,6 @@
                 </div>
               </div>
             </div>
-
             <!-- Navigation Menu -->
             <nav class="menu-nav">
               <ul class="nav flex-column" role="tablist">
@@ -99,7 +95,6 @@
                   </a>
                 </li>
               </ul>
-
               <div class="menu-footer">
                 <a href="{% url 'courses:course_list' %}" class="help-link">
                   <i class="bi bi-collection"></i>
@@ -113,18 +108,15 @@
             </nav>
           </div>
         </div>
-
         <!-- Content Area -->
         <div class="col-lg-9">
           <div class="content-area">
             <div class="tab-content">
-              
               <!-- Overview Tab -->
               <div class="tab-pane fade show active" id="overview">
                 <div class="section-header" data-aos="fade-up">
                   <h2>خلاصه فعالیت‌ها</h2>
                 </div>
-
                 <!-- Statistics Cards -->
                 <div class="row g-3 mb-4">
                   <div class="col-md-3 col-sm-6">
@@ -172,120 +164,161 @@
                     </div>
                   </div>
                 </div>
-
+                <!-- Recent Courses -->
                 <!-- Recent Courses -->
                 <div class="recent-courses mb-4">
-                  <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h3>دوره‌های اخیر</h3>
-                    <a href="#courses" data-bs-toggle="tab" class="btn btn-sm btn-outline-primary">
-                      مشاهده همه
-                    </a>
-                  </div>
-                  
-                  {% if enrolled_courses %}
-                  <div class="row g-3">
-                    {% for item in enrolled_courses %}
-                    <div class="col-md-6">
-                      <div class="course-card-mini" data-aos="fade-up">
-                        <div class="course-thumb">
-                          {% if item.course.thumbnail %}
-                            <img src="{{ item.course.thumbnail.url }}" alt="{{ item.course.title }}" />
-                          {% else %}
-                            <img src="{% static 'assets/img/logo.webp' %}" alt="{{ item.course.title }}" />
-                          {% endif %}
-                        </div>
-                        <div class="course-info">
-                          <h6>{{ item.course.title }}</h6>
-                          <div class="course-meta">
-                            <span><i class="bi bi-person"></i> {{ item.course.instructor.get_full_name }}</span>
-                            <span><i class="bi bi-clock"></i> {{ item.course.duration }} ساعت</span>
-                          </div>
-                          {% if item.progress %}
-                          <div class="progress-bar-container">
-                            <div class="progress">
-                              <div class="progress-bar" style="width: {{ item.progress.completion_percentage }}%"></div>
-                            </div>
-                            <span class="progress-text">{{ item.progress.completion_percentage }}%</span>
-                          </div>
-                          {% else %}
-                          <div class="progress-bar-container">
-                            <div class="progress">
-                              <div class="progress-bar" style="width: 0%"></div>
-                            </div>
-                            <span class="progress-text">شروع نشده</span>
-                          </div>
-                          {% endif %}
-                          <a href="#" class="btn btn-sm btn-primary mt-2">
-                            ادامه یادگیری
-                          </a>
-                        </div>
-                      </div>
+                  <div class="section-header" data-aos="fade-up">
+                    <h2>دوره‌های اخیر</h2>
+                    <div class="header-actions">
+                      <a href="#courses" data-bs-toggle="tab" class="filter-btn">
+                        <i class="bi bi-arrow-left"></i>
+                        <span>مشاهده همه</span>
+                      </a>
                     </div>
-                    {% endfor %}
                   </div>
-                  {% else %}
-                  <div class="empty-state text-center py-5">
-                    <i class="bi bi-mortarboard" style="font-size: 4rem; color: #ddd;"></i>
-                    <h4 class="mt-3">هنوز دوره‌ای خریداری نکرده‌اید</h4>
-                    <a href="{% url 'courses:course_list' %}" class="btn btn-primary mt-3">
-                      مشاهده دوره‌ها
-                    </a>
-                  </div>
-                  {% endif %}
-                </div>
 
-                <!-- Recent Orders -->
-                <div class="recent-orders">
-                  <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h3>سفارشات اخیر</h3>
-                    <a href="#orders" data-bs-toggle="tab" class="btn btn-sm btn-outline-primary">
-                      مشاهده همه
-                    </a>
-                  </div>
-                  
-                  {% if orders %}
-                  <div class="table-responsive">
-                    <table class="table table-hover">
-                      <thead>
-                        <tr>
-                          <th>شماره سفارش</th>
-                          <th>تاریخ</th>
-                          <th>مبلغ</th>
-                          <th>وضعیت</th>
-                          <th>عملیات</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% for order in orders %}
-                        <tr>
-                          <td>#{{ order.order_number }}</td>
-                          <td>{{ order.created_date|date:"Y/m/d" }}</td>
-                          <td>{{ order.final_price|floatformat:0|intcomma }} تومان</td>
-                          <td>
-                            {% if order.is_paid %}
-                              <span class="badge bg-success">پرداخت شده</span>
-                            {% else %}
-                              <span class="badge bg-warning">در انتظار</span>
-                            {% endif %}
-                          </td>
-                          <td>
-                            <a href="{% url 'orders:order_detail' order.id %}" class="btn btn-sm btn-outline-primary">
-                              جزئیات
-                            </a>
-                          </td>
-                        </tr>
-                        {% endfor %}
-                      </tbody>
-                    </table>
-                  </div>
+                  {% if enrolled_courses %}
+                    <div class="orders-grid">
+                      {% for item in enrolled_courses|slice:':4' %}
+                        {% with progress=item.progress %}
+                          <div class="order-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter }}00">
+                            <div class="order-header">
+                              <div class="order-id">
+                                <span class="label">دوره:</span>
+                                <span class="value">{{ item.course.title|truncatechars:30 }}</span>
+                              </div>
+                              <div class="order-date">ثبت‌نام در: {{ item.enrolled_date|date:'Y/m/d' }}</div>
+                            </div>
+
+                            <div class="order-content">
+                              <div class="product-grid">
+                                {% if item.course.thumbnail %}
+                                  <img src="{{ item.course.thumbnail.url }}" alt="{{ item.course.title }}" loading="lazy" style="width: 100%; height: 100px; object-fit: cover;" />
+                                {% else %}
+                                  <img src="{% static 'assets/img/course/default-thumbnail.webp' %}" alt="{{ item.course.title }}" loading="lazy" style="width: 100%; height: 100px; object-fit: cover;" />
+                                {% endif %}
+                              </div>
+
+                              <div class="order-info">
+                                <!-- Progress Bar -->
+                                <div class="info-row">
+                                  <span>پیشرفت</span>
+                                  <div class="progress-wrapper" style="flex: 1; margin-right: 10px;">
+                                    <div class="progress" style="height: 6px;">
+                                      <div class="progress-bar {% if progress and progress.completion_percentage == 100 %}
+                                          
+                        bg-success
+
+                                        {% elif progress and progress.completion_percentage > 0 %}
+                                          
+                        bg-primary
+
+                                        {% else %}
+                                          
+                        bg-secondary
+
+                                        {% endif %}"
+                                        role="progressbar"
+                                        style="width: {% if progress %}
+                                          {{ progress.completion_percentage }}
+                                        {% else %}
+                                          0
+                                        {% endif %}%;"
+                                        aria-valuenow="{% if progress %}
+                                          {{ progress.completion_percentage }}
+                                        {% else %}
+                                          0
+                                        {% endif %}"
+                                        aria-valuemin="0"
+                                        aria-valuemax="100"></div>
+                                    </div>
+                                  </div>
+                                  <span class="status {% if progress and progress.completion_percentage == 100 %}
+                                      
+                    completed
+
+                                    {% elif progress and progress.completion_percentage > 0 %}
+                                      
+                    in-progress
+
+                                    {% else %}
+                                      
+                    not-started
+
+                                    {% endif %}"
+                                    style="font-size: 0.8rem;">
+                                    {% if progress %}
+                                      {{ progress.completion_percentage }}%
+                                    {% else %}
+                                      ۰%
+                                    {% endif %}
+                                  </span>
+                                </div>
+
+                                <!-- Instructor -->
+                                <div class="info-row">
+                                  <span>مدرس</span>
+                                  <span>{{ item.course.instructor.user_profile.get_fullname|truncatechars:20 }}</span>
+                                </div>
+
+                                <!-- Duration -->
+                                <div class="info-row">
+                                  <span>مدت زمان</span>
+                                  <span>{{ item.course.duration }} ساعت</span>
+                                </div>
+
+                                <!-- Last Accessed -->
+                                <div class="info-row">
+                                  <span>آخرین فعالیت</span>
+                                  <span>
+                                    {% if progress and progress.last_accessed %}
+                                      {{ progress.last_accessed|timesince }} پیش
+                                    {% else %}
+                                      شروع نشده
+                                    {% endif %}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="order-footer">
+                              <a href="{% url 'courses:course_detail' item.course.slug %}" class="btn-track">
+                                <i class="bi bi-play-circle me-1"></i>
+                                {% if progress and progress.completion_percentage > 0 %}
+                                  ادامه یادگیری
+                                {% else %}
+                                  شروع یادگیری
+                                {% endif %}
+                              </a>
+                            </div>
+                          </div>
+                        {% endwith %}
+                      {% endfor %}
+                    </div>
+
+                    <!-- View All Link (for mobile) -->
+                    <div class="text-center mt-4 d-block d-lg-none">
+                      <a href="#courses" data-bs-toggle="tab" class="btn btn-outline-primary">
+                        <i class="bi bi-grid-3x3-gap me-1"></i>
+                        مشاهده همه دوره‌ها
+                      </a>
+                    </div>
                   {% else %}
-                  <div class="empty-state text-center py-4">
-                    <p class="text-muted">شما هنوز سفارشی ثبت نکرده‌اید</p>
-                  </div>
+                    <!-- No Courses Enrolled -->
+                    <div class="empty-state text-center py-5" data-aos="fade-up">
+                      <div class="empty-state-icon mb-4">
+                        <i class="bi bi-book text-muted" style="font-size: 4rem;"></i>
+                      </div>
+                      <h4 class="mb-3">هنوز در دوره‌ای ثبت‌نام نکرده‌اید</h4>
+                      <p class="text-muted mb-4">برای شروع یادگیری، ابتدا در دوره‌های آموزشی ثبت‌نام کنید.</p>
+                      <a href="{% url 'courses:course_list' %}" class="btn btn-primary">
+                        <i class="bi bi-grid me-1"></i>
+                        مشاهده دوره‌ها
+                      </a>
+                    </div>
                   {% endif %}
                 </div>
               </div>
-
               <!-- My Courses Tab -->
               <div class="tab-pane fade" id="courses">
                 <div class="section-header" data-aos="fade-up">
@@ -297,98 +330,315 @@
                         <span>فیلتر</span>
                       </button>
                       <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="?status=all">همه دوره‌ها</a></li>
-                        <li><a class="dropdown-item" href="?status=in_progress">در حال یادگیری</a></li>
-                        <li><a class="dropdown-item" href="?status=completed">تکمیل شده</a></li>
-                        <li><a class="dropdown-item" href="?status=not_started">شروع نشده</a></li>
+                        <li>
+                          <a class="dropdown-item" href="?status=all">همه دوره‌ها</a>
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="?status=in_progress">در حال یادگیری</a>
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="?status=completed">تکمیل شده</a>
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="?status=not_started">شروع نشده</a>
+                        </li>
                       </ul>
                     </div>
                   </div>
                 </div>
-
                 {% if enrolled_courses %}
-                <div class="courses-grid">
-                  {% for item in enrolled_courses %}
-                  <div class="course-card" data-aos="fade-up">
-                    <div class="course-image">
-                      {% if item.course.thumbnail %}
-                        <img src="{{ item.course.thumbnail.url }}" alt="{{ item.course.title }}" />
-                      {% else %}
-                        <img src="{% static 'assets/img/logo.webp' %}" alt="{{ item.course.title }}" />
-                      {% endif %}
-                      {% if item.progress %}
-                        {% if item.progress.completion_percentage == 100 %}
-                          <div class="course-badge completed">
-                            <i class="bi bi-check-circle"></i> تکمیل شده
+                  <div class="orders-grid">
+                    {% for item in enrolled_courses %}
+                      {% with progress=item.progress %}
+                        <div class="order-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter }}00">
+                          <div class="order-header">
+                            <div class="order-id">
+                              <span class="label">دوره:</span>
+                              <span class="value">{{ item.course.title|truncatechars:40 }}</span>
+                            </div>
+                            <div class="order-date">ثبت‌نام در: {{ item.enrolled_date|date:'Y/m/d' }}</div>
                           </div>
-                        {% elif item.progress.completion_percentage > 0 %}
-                          <div class="course-badge in-progress">
-                            <i class="bi bi-play-circle"></i> در حال یادگیری
+                          <div class="order-content">
+                            <div class="product-grid">
+                              {% if item.course.thumbnail %}
+                                <img src="{{ item.course.thumbnail.url }}" alt="{{ item.course.title }}" loading="lazy" style="width: 100%; height: 120px; object-fit: cover;" />
+                              {% else %}
+                                <img src="{% static 'assets/img/course/default-thumbnail.webp' %}" alt="{{ item.course.title }}" loading="lazy" style="width: 100%; height: 120px; object-fit: cover;" />
+                              {% endif %}
+                            </div>
+                            <div class="order-info">
+                              <!-- Progress Bar -->
+                              <div class="info-row">
+                                <span>پیشرفت</span>
+                                <div class="progress-wrapper" style="flex: 1; margin-right: 10px;">
+                                  <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar {% if progress.completion_percentage == 100 %}
+                                        
+                                        
+                                        bg-success
+
+
+                                      {% elif progress.completion_percentage > 0 %}
+                                        
+                                        
+                                        bg-primary
+
+
+                                      {% else %}
+                                        
+                                        
+                                        bg-secondary
+
+
+                                      {% endif %}"
+                                      role="progressbar"
+                                      style="width: {{ progress.completion_percentage }}%;"
+                                      aria-valuenow="{{ progress.completion_percentage }}"
+                                      aria-valuemin="0"
+                                      aria-valuemax="100"></div>
+                                  </div>
+                                </div>
+                                <span class="status {% if progress.completion_percentage == 100 %}
+                                    
+                                    
+                                     completed
+
+
+                                  {% elif progress.completion_percentage > 0 %}
+                                    
+                                    
+                                     in-progress
+
+
+                                  {% else %}
+                                    
+                                    
+                                     not-started
+
+
+                                  {% endif %}">
+                                  {{ progress.completion_percentage }}%
+                                </span>
+                              </div>
+                              <!-- Videos Count -->
+                              <div class="info-row">
+                                <span>ویدیوها</span>
+                                <span>
+                                  {% if progress %}
+                                    {{ progress.watched_videos.count }}/{{ item.course.get_total_videos }}
+                                  {% else %}
+                                    0/{{ item.course.get_total_videos }}
+                                  {% endif %}
+                                </span>
+                              </div>
+                              <!-- Duration -->
+                              <div class="info-row">
+                                <span>مدت زمان</span>
+                                <span>{{ item.course.duration }} ساعت</span>
+                              </div>
+                              <!-- Last Accessed -->
+                              <div class="info-row">
+                                <span>آخرین دسترسی</span>
+                                <span>
+                                  {% if progress and progress.last_accessed %}
+                                    {{ progress.last_accessed|date:'Y/m/d H:i' }}
+                                  {% else %}
+                                    هنوز شروع نشده
+                                  {% endif %}
+                                </span>
+                              </div>
+                            </div>
                           </div>
-                        {% endif %}
-                      {% endif %}
-                    </div>
-                    <div class="course-content">
-                      <h4>{{ item.course.title }}</h4>
-                      <div class="course-meta">
-                        <span><i class="bi bi-person"></i> {{ item.course.instructor.get_full_name }}</span>
-                        <span><i class="bi bi-clock"></i> {{ item.course.duration }} ساعت</span>
-                        <span><i class="bi bi-film"></i> {{ item.course.get_total_videos }} ویدیو</span>
-                      </div>
-                      {% if item.progress %}
-                      <div class="progress-section">
-                        <div class="d-flex justify-content-between mb-1">
-                          <span>پیشرفت شما:</span>
-                          <span>{{ item.progress.completion_percentage }}%</span>
+                          <div class="order-footer">
+                            <a href="{% url 'courses:course_detail' item.course.slug %}" class="btn-track">
+                              {% if progress and progress.completion_percentage > 0 %}
+                                ادامه یادگیری
+                              {% else %}
+                                شروع یادگیری
+                              {% endif %}
+                            </a>
+                            <button type="button" class="btn-details" data-bs-toggle="collapse" data-bs-target="#courseDetails{{ forloop.counter }}" aria-expanded="false">جزئیات بیشتر</button>
+                          </div>
+                          <!-- Detailed Progress -->
+                          <div class="collapse order-details" id="courseDetails{{ forloop.counter }}">
+                            <div class="details-content">
+                              <!-- Course Details -->
+                              <div class="detail-section">
+                                <h5>اطلاعات دوره</h5>
+                                <div class="info-grid">
+                                  <div class="info-item">
+                                    <span class="label">مدرس:</span>
+                                    <span class="value">{{ item.course.instructor.user_profile.get_fullname }}</span>
+                                  </div>
+                                  <div class="info-item">
+                                    <span class="label">قیمت:</span>
+                                    <span class="value">{{ item.course.price|floatformat:'0' }} تومان</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <!-- Watched Videos -->
+                              <div class="detail-section">
+                                <h5>
+                                  ویدیوهای مشاهده شده{% if progress %}
+                                    ({{ progress.watched_videos.count }})
+                                  {% else %}
+                                    (0)
+                                  {% endif %}
+                                </h5>
+                                {% if progress and progress.watched_videos.count > 0 %}
+                                  <div class="order-items">
+                                    {% for video in progress.watched_videos.all|slice:':5' %}
+                                      <div class="item">
+                                        <div class="video-icon">
+                                          <i class="bi bi-play-circle-fill text-success"></i>
+                                        </div>
+                                        <div class="item-info">
+                                          <h6>{{ video.title|truncatechars:50 }}</h6>
+                                          <div class="item-meta">
+                                            <span class="duration">{{ video.duration }} دقیقه</span>
+                                            <span class="view-date">{{ progress.last_accessed|date:'Y/m/d' }}</span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    {% endfor %}
+                                    {% if progress.watched_videos.count > 5 %}
+                                      <div class="more-videos text-center mt-3">
+                                        <span class="text-muted">و {{ progress.watched_videos.count|add:'-5' }} ویدیوی دیگر</span>
+                                      </div>
+                                    {% endif %}
+                                  </div>
+                                {% else %}
+                                  <p class="text-muted">هنوز هیچ ویدیویی مشاهده نکرده‌اید.</p>
+                                {% endif %}
+                              </div>
+                              <!-- Remaining Videos -->
+                              <div class="detail-section">
+                                <h5>ویدیوهای باقی‌مانده</h5>
+                                {% with unwatched_videos=item.course.videos.all|slice:':3' %}
+                                  {% if unwatched_videos %}
+                                    <div class="order-items">
+                                      {% for video in unwatched_videos %}
+                                        <div class="item">
+                                          <div class="video-icon">
+                                            <i class="bi bi-play-circle text-muted"></i>
+                                          </div>
+                                          <div class="item-info">
+                                            <h6>{{ video.title|truncatechars:50 }}</h6>
+                                            <div class="item-meta">
+                                              <span class="duration">{{ video.duration }} دقیقه</span>
+                                              <span class="order">قسمت {{ video.display_order }}</span>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      {% endfor %}
+                                    </div>
+                                  {% else %}
+                                    <p class="text-muted">هیچ ویدیویی در این دوره وجود ندارد.</p>
+                                  {% endif %}
+                                {% endwith %}
+                              </div>
+                              <!-- Progress Statistics -->
+                              {% if progress %}
+                                <div class="detail-section">
+                                  <h5>آمار پیشرفت</h5>
+                                  <div class="progress-stats">
+                                    <div class="stat-item">
+                                      <div class="stat-value">{{ progress.completion_percentage }}%</div>
+                                      <div class="stat-label">تکمیل شده</div>
+                                    </div>
+                                    <div class="stat-item">
+                                      <div class="stat-value">{{ item.course.get_total_videos|add:'-progress.watched_videos.count' }}</div>
+                                      <div class="stat-label">ویدیو باقی‌مانده</div>
+                                    </div>
+                                  </div>
+                                </div>
+                              {% endif %}
+                            </div>
+                          </div>
                         </div>
-                        <div class="progress">
-                          <div class="progress-bar bg-success" 
-                               style="width: {{ item.progress.completion_percentage }}%"></div>
+                      {% endwith %}
+                    {% endfor %}
+                  </div>
+                  <!-- Statistics Summary -->
+                  <div class="stats-summary mt-5" data-aos="fade-up">
+                    <div class="row g-3">
+                      <div class="col-md-3">
+                        <div class="stat-card bg-light p-3 rounded">
+                          <h4 class="stat-number">{{ enrolled_courses|length }}</h4>
+                          <p class="stat-label text-muted mb-0">تعداد دوره‌ها</p>
                         </div>
                       </div>
-                      {% endif %}
-                      <div class="course-actions">
-                        <a href="#" 
-                           class="btn btn-primary w-100">
-                          <i class="bi bi-play-circle"></i> 
-                          {% if item.progress and item.progress.completion_percentage > 0 %}
-                            ادامه یادگیری
-                          {% else %}
-                            شروع یادگیری
-                          {% endif %}
-                        </a>
+                      <div class="col-md-3">
+                        <div class="stat-card bg-light p-3 rounded">
+                          <h4 class="stat-number">
+                            {% with completed=0 %}
+                              {% for item in enrolled_courses %}
+                                {% if item.progress and item.progress.completion_percentage == 100 %}
+                                  {{ completed|add:1 }}
+                                {% endif %}
+                              {% endfor %}
+                              {{ completed }}
+                            {% endwith %}
+                          </h4>
+                          <p class="stat-label text-muted mb-0">تکمیل شده</p>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="stat-card bg-light p-3 rounded">
+                          <h4 class="stat-number">
+                            {% with in_progress=0 %}
+                              {% for item in enrolled_courses %}
+                                {% if item.progress and item.progress.completion_percentage > 0 and item.progress.completion_percentage < 100 %}
+                                  {{ in_progress|add:1 }}
+                                {% endif %}
+                              {% endfor %}
+                              {{ in_progress }}
+                            {% endwith %}
+                          </h4>
+                          <p class="stat-label text-muted mb-0">در حال یادگیری</p>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="stat-card bg-light p-3 rounded">
+                          <h4 class="stat-number">
+                            {% with not_started=0 %}
+                              {% for item in enrolled_courses %}
+                                {% if not item.progress or item.progress.completion_percentage == 0 %}
+                                  {{ not_started|add:1 }}
+                                {% endif %}
+                              {% endfor %}
+                              {{ not_started }}
+                            {% endwith %}
+                          </h4>
+                          <p class="stat-label text-muted mb-0">شروع نشده</p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  {% endfor %}
-                </div>
                 {% else %}
-                <div class="empty-state text-center py-5">
-                  <i class="bi bi-mortarboard" style="font-size: 5rem; color: #ddd;"></i>
-                  <h3 class="mt-4">دوره‌ای یافت نشد</h3>
-                  <p class="text-muted">برای خرید دوره به صفحه دوره‌ها بروید</p>
-                  <a href="{% url 'courses:course_list' %}" class="btn btn-primary mt-3">
-                    مشاهده دوره‌ها
-                  </a>
-                </div>
+                  <!-- No Courses Enrolled -->
+                  <div class="empty-state text-center py-5" data-aos="fade-up">
+                    <div class="empty-state-icon mb-4">
+                      <i class="bi bi-book text-muted" style="font-size: 4rem;"></i>
+                    </div>
+                    <h4 class="mb-3">هنوز در دوره‌ای ثبت‌نام نکرده‌اید</h4>
+                    <p class="text-muted mb-4">برای مشاهده دوره‌های خود، ابتدا در دوره‌های آموزشی ثبت‌نام کنید.</p>
+                    <a href="{% url 'courses:course_list' %}" class="btn btn-primary">مشاهده دوره‌ها</a>
+                  </div>
                 {% endif %}
               </div>
-
               <!-- Orders Tab -->
               <div class="tab-pane fade" id="orders">
                 {% include 'dashboard/_orders_tab.html' %}
               </div>
-
               <!-- Reviews Tab -->
               <div class="tab-pane fade" id="reviews">
                 {% include 'dashboard/_reviews_tab.html' %}
               </div>
-
               <!-- Settings Tab -->
               <div class="tab-pane fade" id="settings">
                 {% include 'dashboard/_settings_tab.html' %}
               </div>
-
             </div>
           </div>
         </div>
@@ -396,9 +646,7 @@
     </div>
   </section>
   <!-- /Account Section -->
-  
 {% endblock %}
-
 {% block extra_js %}
-<script src="{% static 'js/dashboard.js' %}"></script>
+  <script src="{% static 'js/dashboard.js' %}"></script>
 {% endblock %}

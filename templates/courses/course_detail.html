@@ -5,6 +5,36 @@
   {{ course.title }} | رویا سازان جوان
 {% endblock %}
 
+{% block extra_css %}
+  <style>
+    .btn-edit {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    
+      background-color: #ffcc33;
+      color: #000000;
+      padding: 10px 16px;
+      border-radius: 6px;
+    
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    
+      font-size: 14px;
+      font-weight: 500;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+    
+    .btn-edit:hover {
+      background-color: #ffd700;
+    }
+    
+    .btn-edit:active {
+      transform: scale(0.97);
+    }
+  </style>
+{% endblock %}
 {% block content %}
   <!-- Page Title -->
   <div class="page-title light-background">
@@ -32,7 +62,7 @@
       <div class="mobile-menu d-lg-none mb-4">
         <button class="mobile-menu-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#courseMenu">
           <i class="bi bi-grid"></i>
-          <span>Menu</span>
+          <span>منو</span>
         </button>
       </div>
 
@@ -95,10 +125,10 @@
 
               <div class="menu-footer">
                 {% if not is_enrolled %}
-                  <a href="{% url 'courses:enroll_course' course.slug %}" class="help-link">
-                    <span>ثبت‌نام در دوره</span>
-                    <i class="bi bi-cart-plus"></i>
-                  </a>
+                  <form method="POST" action="{% url 'cart:cart_add' course.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-edit">ثبت‌نام در دوره <i class="bi bi-cart-plus"></i></button>
+                  </form>
                 {% else %}
                   <a class="help-link">
                     <i class="bi bi-check-circle"></i>
@@ -158,7 +188,7 @@
                       <div>
                         <h6>پیشرفت شما: {{ progress.completion_percentage }}%</h6>
                         <div class="progress" style="height: 20px;">
-                          <div class="progress-bar" role="progressbar" style="width: {{ progress.completion_percentage }}%; background: #28a745;" aria-valuenow="{{ progress.completion_percentage }}" aria-valuemin="0" aria-valuemax="100">{{ progress.completion_percentage }}%</div>
+                          <div class="progress-bar" role="progressbar" style="width: {{ progress.completion_percentage }}%; background: #ffcc33;" aria-valuenow="{{ progress.completion_percentage }}" aria-valuemin="0" aria-valuemax="100">{{ progress.completion_percentage }}%</div>
                         </div>
                       </div>
                     {% endif %}
@@ -173,7 +203,10 @@
                         </div>
                         {% if not is_enrolled %}
                           <div>
-                            <a href="{% url 'courses:enroll_course' course.slug %}" class="btn-edit"><i class="bi bi-cart-plus"></i> ثبت‌نام در دوره</a>
+                            <form method="POST" action="{% url 'cart:cart_add' course.id %}">
+                              {% csrf_token %}
+                              <button type="submit" class="btn-edit">ثبت‌نام در دوره <i class="bi bi-cart-plus"></i></button>
+                            </form>
                           </div>
                         {% endif %}
                       </div>
@@ -216,12 +249,15 @@
                           <div class="review-footer">
                             <a href="{{ video.video_link }}" target="_blank" class="btn-edit"><i class="bi bi-play-circle"></i> مشاهده ویدیو</a>
                             {% if progress and video not in progress.watched_videos.all %}
-                              <a href="{% url 'courses:mark_video_watched' course.slug video.id %}" class="btn-delete"><i class="bi bi-check"></i> علامت‌گذاری به عنوان مشاهده شده</a>
+                              <form method="post" action="{% url 'courses:mark_video_watched' course.slug video.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-delete"><i class="bi bi-check"></i> علامت‌گذاری به عنوان مشاهده شده</button>
+                              </form>
                             {% endif %}
                           </div>
                         {% else %}
                           <div class="review-footer">
-                            <span style="color: #6c757d;">برای دسترسی به ویدیوها در دوره ثبت‌نام کنید</span>
+                            <span style="color: #ffcc33;">برای دسترسی به ویدیوها در دوره ثبت‌نام کنید</span>
                           </div>
                         {% endif %}
                       </div>
@@ -229,7 +265,7 @@
                   {% else %}
                     <div class="review-card" data-aos="fade-up">
                       <div class="review-content">
-                        <p style="color: #6c757d; text-align: center;">هنوز ویدیویی در دسترس نیست.</p>
+                        <p style="color: #ffcc33; text-align: center;">هنوز ویدیویی در دسترس نیست.</p>
                       </div>
                     </div>
                   {% endif %}
@@ -255,7 +291,7 @@
                           <span style="font-weight: bold;">{{ progress.completion_percentage }}%</span>
                         </div>
                         <div class="progress" style="height: 30px;">
-                          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ progress.completion_percentage }}%; background: #007bff;" aria-valuenow="{{ progress.completion_percentage }}" aria-valuemin="0" aria-valuemax="100">{{ progress.completion_percentage }}%</div>
+                          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ progress.completion_percentage }}%; background: #ffcc33;" aria-valuenow="{{ progress.completion_percentage }}" aria-valuemin="0" aria-valuemax="100">{{ progress.completion_percentage }}%</div>
                         </div>
                       </div>
 
@@ -282,7 +318,7 @@
                         <h4 style="margin-bottom: 15px;">ویدیوهای مشاهده شده اخیر</h4>
                         <ul style="list-style: none; padding: 0;">
                           {% for video in progress.watched_videos.all|slice:':10' %}
-                            <li style="margin-bottom: 10px; padding: 10px; background: #f8f9fa; border-radius: 5px; display: flex; align-items: center;">
+                            <li style="margin-bottom: 10px; padding: 10px; background: #000000; border-radius: 5px; display: flex; align-items: center;">
                               <i class="bi bi-check-circle-fill" style="color: #28a745; margin-left: 10px; font-size: 20px;"></i>
                               <span>{{ video.title }}</span>
                             </li>
@@ -342,7 +378,7 @@
                           {% endif %}
                         </div>
 
-                        <button type="submit" class="btn-edit" style="background: #007bff; border: none;"><i class="bi bi-send"></i> ارسال امتیاز</button>
+                        <button type="submit" class="btn-edit" style="background: #ffcc33; border: none;"><i class="bi bi-send"></i> ارسال امتیاز</button>
                       </form>
                     </div>
                   </div>
@@ -350,14 +386,14 @@
                   <div class="review-card" data-aos="fade-up" data-aos-delay="100">
                     <div class="review-content" style="text-align: center; padding: 30px;">
                       <p>
-                        لطفا برای امتیازدهی به این دوره <a href="{% url 'accounts:login' %}" style="color: #007bff;">وارد شوید</a>.
+                        لطفا برای امتیازدهی به این دوره <a href="{% url 'accounts:login' %}" style="color: #ffcc33;">وارد شوید</a>.
                       </p>
                     </div>
                   </div>
                 {% elif not is_enrolled %}
                   <div class="review-card" data-aos="fade-up" data-aos-delay="100">
-                    <div class="review-content" style="text-align: center; padding: 30px; background: #fff3cd;">
-                      <p style="color: #856404;">برای امتیازدهی به این دوره باید در آن ثبت‌نام کنید.</p>
+                    <div class="review-content" style="text-align: center; padding: 30px">
+                      <p style="color: #ffcc33;">برای امتیازدهی به این دوره باید در آن ثبت‌نام کنید.</p>
                     </div>
                   </div>
                 {% endif %}
@@ -398,7 +434,7 @@
                   {% else %}
                     <div class="review-card" data-aos="fade-up">
                       <div class="review-content" style="text-align: center; padding: 30px;">
-                        <p style="color: #6c757d;">هنوز نظری ثبت نشده است. اولین نفری باشید که این دوره را نقد می‌کنید!</p>
+                        <p style="color: #ffcc33;">هنوز نظری ثبت نشده است. اولین نفری باشید که این دوره را نقد می‌کنید!</p>
                       </div>
                     </div>
                   {% endif %}
