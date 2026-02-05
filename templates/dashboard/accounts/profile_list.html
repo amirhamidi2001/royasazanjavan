@@ -1,0 +1,40 @@
+{% extends 'dashboard/list_template.html' %}
+
+{% block table_headers %}
+  <th scope="col" class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">شناسه</th>
+  <th scope="col" class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">تصویر</th>
+  <th scope="col" class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">نام و نام خانوادگی</th>
+  <th scope="col" class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">ایمیل کاربر</th>
+  <th scope="col" class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">شماره تماس</th>
+  <th scope="col" class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">تاریخ ایجاد</th>
+  <th scope="col" class="px-6 py-3 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">عملیات</th>
+{% endblock %}
+
+{% block table_rows %}
+  {% for profile in profiles %}
+    <tr class="hover:bg-gray-50 transition-colors duration-150">
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ profile.id }}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm">
+        <img src="{{ profile.image.url }}" alt="{{ profile.get_fullname }}" class="h-10 w-10 rounded-full object-cover" />
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ profile.get_fullname }}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ profile.user.email }}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ profile.phone_number|default:'-' }}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ profile.created_date|date:'Y/m/d - H:i' }}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+        <div class="flex items-center justify-center gap-2">
+          <a href="{% url 'dashboard:accounts:profile-update' profile.pk %}" class="inline-flex items-center px-3 py-1.5 bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-medium rounded-md transition-colors duration-200">
+            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>ویرایش
+          </a>
+          <a href="{% url 'dashboard:accounts:profile-delete' profile.pk %}" class="inline-flex items-center px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-medium rounded-md transition-colors duration-200">
+            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>حذف
+          </a>
+        </div>
+      </td>
+    </tr>
+  {% endfor %}
+{% endblock %}

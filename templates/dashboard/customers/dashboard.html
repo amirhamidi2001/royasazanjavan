@@ -207,27 +207,37 @@
                                     <div class="progress" style="height: 6px;">
                                       <div class="progress-bar {% if progress and progress.completion_percentage == 100 %}
                                           
+                                          
                         bg-success
+
 
                                         {% elif progress and progress.completion_percentage > 0 %}
                                           
+                                          
                         bg-primary
+
 
                                         {% else %}
                                           
+                                          
                         bg-secondary
+
 
                                         {% endif %}"
                                         role="progressbar"
                                         style="width: {% if progress %}
                                           {{ progress.completion_percentage }}
                                         {% else %}
+                                          
                                           0
+
                                         {% endif %}%;"
                                         aria-valuenow="{% if progress %}
                                           {{ progress.completion_percentage }}
                                         {% else %}
+                                          
                                           0
+
                                         {% endif %}"
                                         aria-valuemin="0"
                                         aria-valuemax="100"></div>
@@ -235,15 +245,21 @@
                                   </div>
                                   <span class="status {% if progress and progress.completion_percentage == 100 %}
                                       
+                                      
                     completed
+
 
                                     {% elif progress and progress.completion_percentage > 0 %}
                                       
+                                      
                     in-progress
+
 
                                     {% else %}
                                       
+                                      
                     not-started
+
 
                                     {% endif %}"
                                     style="font-size: 0.8rem;">
@@ -375,19 +391,25 @@
                                     <div class="progress-bar {% if progress.completion_percentage == 100 %}
                                         
                                         
+                                        
                                         bg-success
+
 
 
                                       {% elif progress.completion_percentage > 0 %}
                                         
                                         
+                                        
                                         bg-primary
+
 
 
                                       {% else %}
                                         
                                         
+                                        
                                         bg-secondary
+
 
 
                                       {% endif %}"
@@ -401,19 +423,25 @@
                                 <span class="status {% if progress.completion_percentage == 100 %}
                                     
                                     
+                                    
                                      completed
+
 
 
                                   {% elif progress.completion_percentage > 0 %}
                                     
                                     
+                                    
                                      in-progress
+
 
 
                                   {% else %}
                                     
                                     
+                                    
                                      not-started
+
 
 
                                   {% endif %}">
@@ -629,15 +657,15 @@
               </div>
               <!-- Orders Tab -->
               <div class="tab-pane fade" id="orders">
-                {% include 'dashboard/_orders_tab.html' %}
+                {% include 'dashboard/customers/_orders_tab.html' %}
               </div>
               <!-- Reviews Tab -->
               <div class="tab-pane fade" id="reviews">
-                {% include 'dashboard/_reviews_tab.html' %}
+                {% include 'dashboard/customers/_reviews_tab.html' %}
               </div>
               <!-- Settings Tab -->
               <div class="tab-pane fade" id="settings">
-                {% include 'dashboard/_settings_tab.html' %}
+                {% include 'dashboard/customers/_settings_tab.html' %}
               </div>
             </div>
           </div>

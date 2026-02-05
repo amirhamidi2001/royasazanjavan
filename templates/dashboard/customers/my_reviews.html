@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}
+  نظرات من | رویا سازان جوان
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'assets/css/dashboard.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <!-- Page Title -->
+  <div class="page-title light-background">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+      <h1 class="mb-2 mb-lg-0">نظرات من</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li>
+            <a href="{% url 'website:index' %}">صفحه اصلی</a>
+          </li>
+          <li>
+            <a href="{% url 'dashboard:dashboard' %}">داشبورد</a>
+          </li>
+          <li class="current">نظرات من</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <!-- End Page Title -->
+
+  <!-- Account Section -->
+  <section id="account" class="account section">
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+      <!-- Mobile Menu Toggle -->
+      <div class="mobile-menu d-lg-none mb-4">
+        <button class="mobile-menu-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#profileMenu">
+          <i class="bi bi-grid"></i>
+          <span>منو</span>
+        </button>
+      </div>
+
+      <div class="row g-4">
+        <!-- Profile Menu -->
+        <div class="col-lg-3">
+          <div class="profile-menu collapse d-lg-block" id="profileMenu">
+            <!-- User Info -->
+            <div class="user-info" data-aos="fade-right">
+              <div class="user-avatar">
+                {% if request.user.user_profile.image %}
+                  <img src="{{ request.user.user_profile.image.url }}" alt="{{ request.user.user_profile.get_fullname }}" loading="lazy" />
+                {% else %}
+                  <img src="{% static 'img/default-avatar.png' %}" alt="Avatar" loading="lazy" />
+                {% endif %}
+                <span class="status-badge"><i class="bi bi-check-circle"></i></span>
+              </div>
+              <h4>{{ request.user.user_profile.get_fullname }}</h4>
+              <p class="user-email">{{ request.user.email }}</p>
+              <div class="user-stats mt-3">
+                <div class="stat-item">
+                  <i class="bi bi-mortarboard"></i>
+                  <span>{{ request.user.enrolled_courses.count }} دوره</span>
+                </div>
+                <div class="stat-item">
+                  <i class="bi bi-cart"></i>
+                  <span>{{ request.cart_count }} در سبد</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="menu-nav">
+              <ul class="nav flex-column" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'dashboard:dashboard' %}">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>خلاصه</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'dashboard:my_courses' %}">
+                    <i class="bi bi-mortarboard"></i>
+                    <span>دوره‌های من</span>
+                    <span class="badge">{{ request.user.enrolled_courses.count }}</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'dashboard:my_orders' %}">
+                    <i class="bi bi-receipt"></i>
+                    <span>سفارشات</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link active" href="{% url 'dashboard:my_reviews' %}">
+                    <i class="bi bi-star"></i>
+                    <span>نظرات من</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'dashboard:profile_settings' %}">
+                    <i class="bi bi-gear"></i>
+                    <span>تنظیمات</span>
+                  </a>
+                </li>
+              </ul>
+              <div class="menu-footer">
+                <a href="{% url 'courses:course_list' %}" class="help-link">
+                  <i class="bi bi-collection"></i>
+                  <span>مشاهده دوره‌ها</span>
+                </a>
+                <a href="{% url 'accounts:logout' %}" class="logout-link">
+                  <i class="bi bi-box-arrow-right"></i>
+                  <span>خروج</span>
+                </a>
+              </div>
+            </nav>
+          </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="col-lg-9">
+          <div class="content-area">
+            <div class="section-header" data-aos="fade-up">
+              <h2>نظرات من</h2>
+            </div>
+
+            {% if reviews %}
+              <div class="reviews-grid">
+                {% for review in reviews %}
+                  <div class="review-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter }}00">
+                    <div class="review-header">
+                      <div class="review-course">
+                        <h5><a href="{% url 'courses:course_detail' review.course.slug %}">{{ review.course.title }}</a></h5>
+                        <div class="review-meta">
+                          <span class="review-date">{{ review.created_at|date:'Y/m/d' }}</span>
+                          <span class="review-rating">
+                            {% for i in '12345'|make_list %}
+                              {% if forloop.counter <= review.rating %}
+                                <i class="bi bi-star-fill text-warning"></i>
+                              {% else %}
+                                <i class="bi bi-star text-muted"></i>
+                              {% endif %}
+                            {% endfor %}
+                          </span>
+                        </div>
+                      </div>
+                      <div class="review-actions">
+                        <form method="post" action="{% url 'dashboard:delete_review' review.id %}" class="d-inline">
+                          {% csrf_token %}
+                          <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('آیا از حذف این نظر مطمئنید؟')">حذف</button>
+                        </form>
+                      </div>
+                    </div>
+                    <div class="review-body">
+                      <p>{{ review.comment|linebreaks }}</p>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div class="empty-state text-center py-5" data-aos="fade-up">
+                <div class="empty-state-icon mb-4">
+                  <i class="bi bi-star text-muted" style="font-size: 4rem;"></i>
+                </div>
+                <h4 class="mb-3">هنوز نظری ثبت نکرده‌اید</h4>
+                <p class="text-muted mb-4">پس از خرید و مشاهده دوره‌ها می‌توانید نظر خود را ثبت کنید.</p>
+                <a href="{% url 'courses:course_list' %}" class="btn btn-primary">مشاهده دوره‌ها</a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}

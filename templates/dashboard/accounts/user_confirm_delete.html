@@ -1,0 +1,27 @@
+{% extends 'dashboard/delete_template.html' %}
+
+{% block object_details %}
+  <p>
+    <strong>شناسه:</strong> {{ object.id }}
+  </p>
+  <p>
+    <strong>ایمیل:</strong> {{ object.email }}
+  </p>
+  <p>
+    <strong>نام:</strong> {{ object.user_profile.get_fullname }}
+  </p>
+  <p>
+    <strong>نوع کاربر:</strong> {{ object.get_type_display }}
+  </p>
+  <p>
+    <strong>وضعیت:</strong>
+    {% if object.is_active %}
+      <span class="text-green-600">فعال</span>
+    {% else %}
+      <span class="text-red-600">غیرفعال</span>
+    {% endif %}
+  </p>
+  <p>
+    <strong>تاریخ ثبت‌نام:</strong> {{ object.created_date|date:'Y/m/d - H:i' }}
+  </p>
+{% endblock %}

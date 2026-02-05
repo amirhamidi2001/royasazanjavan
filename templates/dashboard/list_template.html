@@ -1,0 +1,125 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+  <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+    <!-- Header -->
+    <div class="px-6 py-5 border-b border-slate-200 bg-slate-50">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold text-slate-800">{{ title }}</h2>
+
+        {% if create_url %}
+          <a href="{{ create_url }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>افزودن جدید
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Filters -->
+    {% if show_search or show_filters %}
+      <div class="px-6 py-4 border-b border-slate-200 bg-white">
+        <form method="get" class="flex flex-wrap gap-3 items-end">
+          {% if show_search %}
+            <div class="flex-1 min-w-[200px]">
+              <input type="text" name="search" value="{{ search_query }}" placeholder="جستجو..." class="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" />
+            </div>
+          {% endif %}
+
+          {% block extra_filters %}
+          {% endblock %}
+
+          <button type="submit" class="px-5 py-2.5 rounded-lg bg-slate-700 hover:bg-slate-800 text-white text-sm font-medium transition">جستجو</button>
+
+          {% if search_query or status_filter or type_filter %}
+            <a href="{{ request.path }}" class="px-5 py-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium transition">پاک کردن</a>
+          {% endif %}
+        </form>
+      </div>
+    {% endif %}
+
+    <!-- Table -->
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead class="bg-slate-50 border-b border-slate-200">
+          <tr class="text-right text-slate-600 font-semibold">
+            {% block table_headers %}
+            {% endblock %}
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-slate-200">
+          {% if object_list %}
+            {% block table_rows %}
+            {% endblock %}
+          {% else %}
+            <tr>
+              <td colspan="100" class="py-16 text-center">
+                <div class="flex flex-col items-center gap-4 text-slate-500">
+                  <svg class="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                  </svg>
+                  <p class="text-base">هیچ موردی یافت نشد</p>
+                </div>
+              </td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+      <div class="px-6 py-4 border-t border-slate-200 bg-slate-50">
+        <div class="flex flex-wrap gap-4 items-center justify-between text-sm">
+          <div class="text-slate-600">نمایش {{ page_obj.start_index }} تا {{ page_obj.end_index }} از {{ paginator.count }} مورد</div>
+
+          <nav class="flex gap-2 items-center">
+            {% if page_obj.has_previous %}
+              <a href="?page=1{% if search_query %}
+                  &search={{ search_query }}
+                {% endif %}{% if status_filter %}
+                  &status={{ status_filter }}
+                {% endif %}"
+                class="px-3 py-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-700">
+                اول
+              </a>
+
+              <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}
+                  &search={{ search_query }}
+                {% endif %}{% if status_filter %}
+                  &status={{ status_filter }}
+                {% endif %}"
+                class="px-3 py-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-700">
+                قبلی
+              </a>
+            {% endif %}
+
+            <span class="px-4 py-2 rounded-lg bg-blue-600 text-white font-medium">صفحه {{ page_obj.number }} از {{ paginator.num_pages }}</span>
+
+            {% if page_obj.has_next %}
+              <a href="?page={{ page_obj.next_page_number }}{% if search_query %}
+                  &search={{ search_query }}
+                {% endif %}{% if status_filter %}
+                  &status={{ status_filter }}
+                {% endif %}"
+                class="px-3 py-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-700">
+                بعدی
+              </a>
+
+              <a href="?page={{ paginator.num_pages }}{% if search_query %}
+                  &search={{ search_query }}
+                {% endif %}{% if status_filter %}
+                  &status={{ status_filter }}
+                {% endif %}"
+                class="px-3 py-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-700">
+                آخر
+              </a>
+            {% endif %}
+          </nav>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'dashboard/list_template.html' %}
+{% block table_headers %}
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">شناسه</th>
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">عنوان</th>
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">دوره</th>
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">ترتیب نمایش</th>
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">مدت زمان</th>
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">تاریخ ایجاد</th>
+  <th class="px-6 py-3 text-center text-xs font-bold text-gray-700 uppercase">عملیات</th>
+{% endblock %}
+{% block table_rows %}
+  {% for video in videos %}
+    <tr class="hover:bg-gray-50">
+      <td class="px-6 py-4 text-sm text-gray-900">{{ video.id }}</td>
+      <td class="px-6 py-4 text-sm text-gray-900 font-medium">{{ video.title }}</td>
+      <td class="px-6 py-4 text-sm text-gray-600">{{ video.course.title }}</td>
+      <td class="px-6 py-4 text-sm text-gray-600">{{ video.display_order }}</td>
+      <td class="px-6 py-4 text-sm text-gray-600">{{ video.duration }} دقیقه</td>
+      <td class="px-6 py-4 text-sm text-gray-600">{{ video.created_date|date:'Y/m/d' }}</td>
+      <td class="px-6 py-4 text-center">
+        <a href="{% url 'dashboard:courses:video-update' video.pk %}" class="inline-flex items-center px-3 py-1.5 bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-medium rounded-md">ویرایش</a>
+        <a href="{% url 'dashboard:courses:video-delete' video.pk %}" class="inline-flex items-center px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-medium rounded-md">حذف</a>
+      </td>
+    </tr>
+  {% endfor %}
+{% endblock %}

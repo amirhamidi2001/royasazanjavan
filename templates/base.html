@@ -13,7 +13,7 @@
     <meta name="keywords" content="" />
 
     <!-- Favicons -->
-    <link href="{% static 'assets/img/favicon.png' %}" rel="icon" />
+    <link href="{% static 'assets/img/favicon.ico' %}" rel="icon" />
     <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon" />
 
     <!-- Fonts -->
@@ -109,11 +109,15 @@
                     <p class="mb-0">دسترسی به حساب کاربری و مدیریت دوره ها</p>
                   </div>
                   <div class="dropdown-body">
+                    {% if user.is_staff %}
+                    <a class="dropdown-item d-flex align-items-center" href="{% url 'dashboard:accounts:user-list' %}">
+                    {% else %}
                     <a class="dropdown-item d-flex align-items-center" href="{% url 'dashboard:dashboard' %}">
+                    {% endif %}
                       <i class="bi bi-person-circle me-2"></i>
                       <span>پروفایل من</span>
                     </a>
-                    </div>
+                  </div>
                   {% if user.is_authenticated %}
                     <div class="dropdown-footer">
                       <form action="{% url 'accounts:logout' %}" method="post">

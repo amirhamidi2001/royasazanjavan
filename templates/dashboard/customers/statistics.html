@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}
+  آمار و تحلیل‌ها | رویا سازان جوان
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'assets/css/dashboard.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <!-- Page Title -->
+  <div class="page-title light-background">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+      <h1 class="mb-2 mb-lg-0">آمار و تحلیل‌ها</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li>
+            <a href="{% url 'website:index' %}">صفحه اصلی</a>
+          </li>
+          <li>
+            <a href="{% url 'dashboard:dashboard' %}">داشبورد</a>
+          </li>
+          <li class="current">آمار و تحلیل‌ها</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <!-- End Page Title -->
+
+  <!-- Account Section -->
+  <section id="account" class="account section">
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+      <!-- Mobile Menu Toggle -->
+      <div class="mobile-menu d-lg-none mb-4">
+        <button class="mobile-menu-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#profileMenu">
+          <i class="bi bi-grid"></i>
+          <span>منو</span>
+        </button>
+      </div>
+
+      <div class="row g-4">
+        <!-- Profile Menu -->
+        <div class="col-lg-3">
+          <div class="profile-menu collapse d-lg-block" id="profileMenu">
+            <!-- User Info -->
+            <div class="user-info" data-aos="fade-right">
+              <div class="user-avatar">
+                {% if request.user.user_profile.image %}
+                  <img src="{{ request.user.user_profile.image.url }}" alt="{{ request.user.user_profile.get_fullname }}" loading="lazy" />
+                {% else %}
+                  <img src="{% static 'img/default-avatar.png' %}" alt="Avatar" loading="lazy" />
+                {% endif %}
+                <span class="status-badge"><i class="bi bi-check-circle"></i></span>
+              </div>
+              <h4>{{ request.user.user_profile.get_fullname }}</h4>
+              <p class="user-email">{{ request.user.email }}</p>
+              <div class="user-stats mt-3">
+                <div class="stat-item">
+                  <i class="bi bi-mortarboard"></i>
+                  <span>{{ request.user.enrolled_courses.count }} دوره</span>
+                </div>
+                <div class="stat-item">
+                  <i class="bi bi-cart"></i>
+                  <span>{{ request.cart_count }} در سبد</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="menu-nav">
+              <ul class="nav flex-column" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'dashboard:dashboard' %}">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>خلاصه</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'dashboard:my_courses' %}">
+                    <i class="bi bi-mortarboard"></i>
+                    <span>دوره‌های من</span>
+                    <span class="badge">{{ request.user.enrolled_courses.count }}</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'dashboard:my_orders' %}">
+                    <i class="bi bi-receipt"></i>
+                    <span>سفارشات</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'dashboard:my_reviews' %}">
+                    <i class="bi bi-star"></i>
+                    <span>نظرات من</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link active" href="{% url 'dashboard:statistics' %}">
+                    <i class="bi bi-graph-up"></i>
+                    <span>آمار و تحلیل</span>
+                  </a>
+                </li>
+              </ul>
+              <div class="menu-footer">
+                <a href="{% url 'courses:course_list' %}" class="help-link">
+                  <i class="bi bi-collection"></i>
+                  <span>مشاهده دوره‌ها</span>
+                </a>
+                <a href="{% url 'accounts:logout' %}" class="logout-link">
+                  <i class="bi bi-box-arrow-right"></i>
+                  <span>خروج</span>
+                </a>
+              </div>
+            </nav>
+          </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="col-lg-9">
+          <div class="content-area">
+            <div class="section-header" data-aos="fade-up">
+              <h2>آمار و تحلیل‌های فعالیت‌ها</h2>
+            </div>
+
+            <!-- Course Statistics -->
+            <div class="stats-section mb-5" data-aos="fade-up">
+              <h4 class="mb-4">آمار دوره‌ها</h4>
+              <div class="row g-3">
+                <div class="col-md-3 col-sm-6">
+                  <div class="stat-card bg-primary text-white p-3 rounded">
+                    <h3 class="stat-number">{{ course_stats.total }}</h3>
+                    <p class="stat-label mb-0">کل دوره‌ها</p>
+                  </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                  <div class="stat-card bg-success text-white p-3 rounded">
+                    <h3 class="stat-number">{{ course_stats.completed }}</h3>
+                    <p class="stat-label mb-0">تکمیل شده</p>
+                  </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                  <div class="stat-card bg-warning text-white p-3 rounded">
+                    <h3 class="stat-number">{{ course_stats.in_progress }}</h3>
+                    <p class="stat-label mb-0">در حال یادگیری</p>
+                  </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                  <div class="stat-card bg-secondary text-white p-3 rounded">
+                    <h3 class="stat-number">{{ course_stats.not_started }}</h3>
+                    <p class="stat-label mb-0">شروع نشده</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Learning Statistics -->
+            <div class="stats-section mb-5" data-aos="fade-up" data-aos-delay="100">
+              <h4 class="mb-4">آمار یادگیری</h4>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="stat-card bg-light p-3 rounded">
+                    <h3 class="stat-number">{{ learning_stats.total_duration }}</h3>
+                    <p class="stat-label text-muted mb-0">ساعت آموزش</p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="stat-card bg-light p-3 rounded">
+                    <h3 class="stat-number">{{ learning_stats.videos_watched }}</h3>
+                    <p class="stat-label text-muted mb-0">ویدیوی مشاهده شده</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Financial Statistics -->
+            <div class="stats-section mb-5" data-aos="fade-up" data-aos-delay="200">
+              <h4 class="mb-4">آمار مالی</h4>
+              <div class="row g-3">
+                <div class="col-12">
+                  <div class="stat-card bg-light p-3 rounded">
+                    <h3 class="stat-number">{{ financial_stats.total_spent|floatformat:'0'|intcomma }}</h3>
+                    <p class="stat-label text-muted mb-0">کل مبلغ خریداری شده (تومان)</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Engagement Statistics -->
+            <div class="stats-section mb-5" data-aos="fade-up" data-aos-delay="300">
+              <h4 class="mb-4">آمار مشارکت</h4>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="stat-card bg-light p-3 rounded">
+                    <h3 class="stat-number">{{ engagement_stats.avg_rating }}</h3>
+                    <p class="stat-label text-muted mb-0">میانگین امتیاز داده شده</p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="stat-card bg-light p-3 rounded">
+                    <h3 class="stat-number">{{ engagement_stats.reviews_count }}</h3>
+                    <p class="stat-label text-muted mb-0">تعداد نظر ثبت شده</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}

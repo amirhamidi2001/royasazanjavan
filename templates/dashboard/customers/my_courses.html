@@ -1,0 +1,414 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}
+  دوره‌های من | رویا سازان جوان
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'assets/css/dashboard.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <!-- Page Title -->
+  <div class="page-title light-background">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+      <h1 class="mb-2 mb-lg-0">دوره‌های من</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li>
+            <a href="{% url 'website:index' %}">صفحه اصلی</a>
+          </li>
+          <li>
+            <a href="{% url 'dashboard:dashboard' %}">داشبورد</a>
+          </li>
+          <li class="current">دوره‌های من</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <!-- End Page Title -->
+
+  <!-- Account Section -->
+  <section id="account" class="account section">
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+      <!-- Mobile Menu Toggle -->
+      <div class="mobile-menu d-lg-none mb-4">
+        <button class="mobile-menu-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#profileMenu">
+          <i class="bi bi-grid"></i>
+          <span>منو</span>
+        </button>
+      </div>
+
+      <div class="row g-4">
+        <!-- Profile Menu -->
+        <div class="col-lg-3">
+          <div class="profile-menu collapse d-lg-block" id="profileMenu">
+            <!-- User Info -->
+            <div class="user-info" data-aos="fade-right">
+              <div class="user-avatar">
+                {% if request.user.user_profile.image %}
+                  <img src="{{ request.user.user_profile.image.url }}" alt="{{ request.user.user_profile.get_fullname }}" loading="lazy" />
+                {% else %}
+                  <img src="{% static 'img/default-avatar.png' %}" alt="Avatar" loading="lazy" />
+                {% endif %}
+                <span class="status-badge"><i class="bi bi-check-circle"></i></span>
+              </div>
+              <h4>{{ request.user.user_profile.get_fullname }}</h4>
+              <p class="user-email">{{ request.user.email }}</p>
+              <div class="user-stats mt-3">
+                <div class="stat-item">
+                  <i class="bi bi-mortarboard"></i>
+                  <span>{{ courses_with_progress|length }} دوره</span>
+                </div>
+                <div class="stat-item">
+                  <i class="bi bi-cart"></i>
+                  <span>{{ request.cart_count }} در سبد</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="menu-nav">
+              <ul class="nav flex-column" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'dashboard:dashboard' %}">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>خلاصه</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link active" href="{% url 'dashboard:my_courses' %}">
+                    <i class="bi bi-mortarboard"></i>
+                    <span>دوره‌های من</span>
+                    <span class="badge">{{ courses_with_progress|length }}</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'dashboard:my_orders' %}">
+                    <i class="bi bi-receipt"></i>
+                    <span>سفارشات</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'dashboard:my_reviews' %}">
+                    <i class="bi bi-star"></i>
+                    <span>نظرات من</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'dashboard:profile_settings' %}">
+                    <i class="bi bi-gear"></i>
+                    <span>تنظیمات</span>
+                  </a>
+                </li>
+              </ul>
+              <div class="menu-footer">
+                <a href="{% url 'courses:course_list' %}" class="help-link">
+                  <i class="bi bi-collection"></i>
+                  <span>مشاهده دوره‌ها</span>
+                </a>
+                <a href="{% url 'accounts:logout' %}" class="logout-link">
+                  <i class="bi bi-box-arrow-right"></i>
+                  <span>خروج</span>
+                </a>
+              </div>
+            </nav>
+          </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="col-lg-9">
+          <div class="content-area">
+            <div class="section-header" data-aos="fade-up">
+              <h2>دوره‌های من</h2>
+              <div class="header-actions">
+                <!-- Search Box -->
+                <form method="get" class="search-form d-inline-block me-3">
+                  <div class="input-group">
+                    <input type="text" class="form-control" name="search" placeholder="جستجوی دوره..." value="{{ search_query }}" />
+                    <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
+                  </div>
+                </form>
+
+                <!-- Filter Dropdown -->
+                <div class="dropdown">
+                  <button class="filter-btn" data-bs-toggle="dropdown">
+                    <i class="bi bi-funnel"></i>
+                    <span>فیلتر</span>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a class="dropdown-item" href="?status=all">همه دوره‌ها</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="?status=in_progress">در حال یادگیری</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="?status=completed">تکمیل شده</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="?status=not_started">شروع نشده</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {% if courses_with_progress %}
+              <div class="orders-grid">
+                {% for item in courses_with_progress %}
+                  {% with progress=item.progress %}
+                    <div class="order-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter }}00">
+                      <div class="order-header">
+                        <div class="order-id">
+                          <span class="label">دوره:</span>
+                          <span class="value">{{ item.course.title|truncatechars:40 }}</span>
+                        </div>
+                        <div class="order-date">ثبت‌نام در: {{ item.course.enrolled_date|date:'Y/m/d' }}</div>
+                      </div>
+                      <div class="order-content">
+                        <div class="product-grid">
+                          {% if item.course.thumbnail %}
+                            <img src="{{ item.course.thumbnail.url }}" alt="{{ item.course.title }}" loading="lazy" style="width: 100%; height: 120px; object-fit: cover;" />
+                          {% else %}
+                            <img src="{% static 'assets/img/course/default-thumbnail.webp' %}" alt="{{ item.course.title }}" loading="lazy" style="width: 100%; height: 120px; object-fit: cover;" />
+                          {% endif %}
+                        </div>
+                        <div class="order-info">
+                          <!-- Progress Bar -->
+                          <div class="info-row">
+                            <span>پیشرفت</span>
+                            <div class="progress-wrapper" style="flex: 1; margin-right: 10px;">
+                              <div class="progress" style="height: 8px;">
+                                <div class="progress-bar {% if progress and progress.completion_percentage == 100 %}
+                                    
+                                    
+                                    bg-success
+
+
+                                  {% elif progress and progress.completion_percentage > 0 %}
+                                    
+                                    
+                                    bg-primary
+
+
+                                  {% else %}
+                                    
+                                    
+                                    bg-secondary
+
+
+                                  {% endif %}"
+                                  role="progressbar"
+                                  style="width: {% if progress %}
+                                    {{ progress.completion_percentage }}
+                                  {% else %}
+                                    
+                                    
+                                    0
+
+
+                                  {% endif %}%;"
+                                  aria-valuenow="{% if progress %}
+                                    {{ progress.completion_percentage }}
+                                  {% else %}
+                                    
+                                    
+                                    0
+
+
+                                  {% endif %}"
+                                  aria-valuemin="0"
+                                  aria-valuemax="100"></div>
+                              </div>
+                            </div>
+                            <span class="status {% if progress and progress.completion_percentage == 100 %}
+                                
+                                
+                                completed
+
+
+                              {% elif progress and progress.completion_percentage > 0 %}
+                                
+                                
+                                in-progress
+
+
+                              {% else %}
+                                
+                                
+                                not-started
+
+
+                              {% endif %}">
+                              {% if progress %}
+                                {{ progress.completion_percentage }}%
+                              {% else %}
+                                ۰%
+                              {% endif %}
+                            </span>
+                          </div>
+                          <!-- Videos Count -->
+                          <div class="info-row">
+                            <span>ویدیوها</span>
+                            <span>
+                              {% if progress %}
+                                {{ progress.watched_videos.count }}/{{ item.course.get_total_videos }}
+                              {% else %}
+                                0/{{ item.course.get_total_videos }}
+                              {% endif %}
+                            </span>
+                          </div>
+                          <!-- Duration -->
+                          <div class="info-row">
+                            <span>مدت زمان</span>
+                            <span>{{ item.course.duration }} ساعت</span>
+                          </div>
+                          <!-- Last Accessed -->
+                          <div class="info-row">
+                            <span>آخرین دسترسی</span>
+                            <span>
+                              {% if progress and progress.last_accessed %}
+                                {{ progress.last_accessed|date:'Y/m/d H:i' }}
+                              {% else %}
+                                هنوز شروع نشده
+                              {% endif %}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="order-footer">
+                        <a href="{% url 'courses:course_detail' item.course.slug %}" class="btn-track">
+                          {% if progress and progress.completion_percentage > 0 %}
+                            ادامه یادگیری
+                          {% else %}
+                            شروع یادگیری
+                          {% endif %}
+                        </a>
+                        <button type="button" class="btn-details" data-bs-toggle="collapse" data-bs-target="#courseDetails{{ forloop.counter }}" aria-expanded="false">جزئیات بیشتر</button>
+                      </div>
+                      <!-- Detailed Progress -->
+                      <div class="collapse order-details" id="courseDetails{{ forloop.counter }}">
+                        <div class="details-content">
+                          <!-- Course Details -->
+                          <div class="detail-section">
+                            <h5>اطلاعات دوره</h5>
+                            <div class="info-grid">
+                              <div class="info-item">
+                                <span class="label">مدرس:</span>
+                                <span class="value">{{ item.course.instructor.user_profile.get_fullname }}</span>
+                              </div>
+                              <div class="info-item">
+                                <span class="label">قیمت:</span>
+                                <span class="value">{{ item.course.price|floatformat:'0' }} تومان</span>
+                              </div>
+                            </div>
+                          </div>
+                          <!-- Watched Videos -->
+                          <div class="detail-section">
+                            <h5>
+                              ویدیوهای مشاهده شده{% if progress %}
+                                ({{ progress.watched_videos.count }})
+                              {% else %}
+                                (0)
+                              {% endif %}
+                            </h5>
+                            {% if progress and progress.watched_videos.count > 0 %}
+                              <div class="order-items">
+                                {% for video in progress.watched_videos.all|slice:':5' %}
+                                  <div class="item">
+                                    <div class="video-icon">
+                                      <i class="bi bi-play-circle-fill text-success"></i>
+                                    </div>
+                                    <div class="item-info">
+                                      <h6>{{ video.title|truncatechars:50 }}</h6>
+                                      <div class="item-meta">
+                                        <span class="duration">{{ video.duration }} دقیقه</span>
+                                        <span class="view-date">{{ progress.last_accessed|date:'Y/m/d' }}</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                {% endfor %}
+                                {% if progress.watched_videos.count > 5 %}
+                                  <div class="more-videos text-center mt-3">
+                                    <span class="text-muted">و {{ progress.watched_videos.count|add:'-5' }} ویدیوی دیگر</span>
+                                  </div>
+                                {% endif %}
+                              </div>
+                            {% else %}
+                              <p class="text-muted">هنوز هیچ ویدیویی مشاهده نکرده‌اید.</p>
+                            {% endif %}
+                          </div>
+                          <!-- Remaining Videos -->
+                          <div class="detail-section">
+                            <h5>ویدیوهای باقی‌مانده</h5>
+                            {% with unwatched_videos=item.course.videos.all|slice:':3' %}
+                              {% if unwatched_videos %}
+                                <div class="order-items">
+                                  {% for video in unwatched_videos %}
+                                    <div class="item">
+                                      <div class="video-icon">
+                                        <i class="bi bi-play-circle text-muted"></i>
+                                      </div>
+                                      <div class="item-info">
+                                        <h6>{{ video.title|truncatechars:50 }}</h6>
+                                        <div class="item-meta">
+                                          <span class="duration">{{ video.duration }} دقیقه</span>
+                                          <span class="order">قسمت {{ video.display_order }}</span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  {% endfor %}
+                                </div>
+                              {% else %}
+                                <p class="text-muted">هیچ ویدیویی در این دوره وجود ندارد.</p>
+                              {% endif %}
+                            {% endwith %}
+                          </div>
+                          <!-- Progress Statistics -->
+                          {% if progress %}
+                            <div class="detail-section">
+                              <h5>آمار پیشرفت</h5>
+                              <div class="progress-stats">
+                                <div class="stat-item">
+                                  <div class="stat-value">{{ progress.completion_percentage }}%</div>
+                                  <div class="stat-label">تکمیل شده</div>
+                                </div>
+                                <div class="stat-item">
+                                  <div class="stat-value">{{ item.course.get_total_videos|add:'-progress.watched_videos.count' }}</div>
+                                  <div class="stat-label">ویدیو باقی‌مانده</div>
+                                </div>
+                              </div>
+                            </div>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </div>
+                  {% endwith %}
+                {% endfor %}
+              </div>
+
+              <!-- Statistics Summary -->
+            {% else %}
+              <!-- No Courses Enrolled -->
+              <div class="empty-state text-center py-5" data-aos="fade-up">
+                <div class="empty-state-icon mb-4">
+                  <i class="bi bi-book text-muted" style="font-size: 4rem;"></i>
+                </div>
+                <h4 class="mb-3">هنوز در دوره‌ای ثبت‌نام نکرده‌اید</h4>
+                <p class="text-muted mb-4">برای مشاهده دوره‌های خود، ابتدا در دوره‌های آموزشی ثبت‌نام کنید.</p>
+                <a href="{% url 'courses:course_list' %}" class="btn btn-primary">مشاهده دوره‌ها</a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}

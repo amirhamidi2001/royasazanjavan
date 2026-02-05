@@ -1,0 +1,30 @@
+{% extends 'dashboard/list_template.html' %}
+{% block table_headers %}
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">شناسه</th>
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">دانشجو</th>
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">دوره</th>
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">پیشرفت</th>
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">تاریخ ثبت‌نام</th>
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">آخرین دسترسی</th>
+  <th class="px-6 py-3 text-center text-xs font-bold text-gray-700 uppercase">عملیات</th>
+{% endblock %}
+{% block table_rows %}
+  {% for progress in progress_items %}
+    <tr class="hover:bg-gray-50">
+      <td class="px-6 py-4 text-sm text-gray-900">{{ progress.id }}</td>
+      <td class="px-6 py-4 text-sm text-gray-600">{{ progress.user.email }}</td>
+      <td class="px-6 py-4 text-sm text-gray-600">{{ progress.course.title }}</td>
+      <td class="px-6 py-4 text-sm">
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div class="bg-blue-600 h-2 rounded-full" style="width: {{ progress.completion_percentage }}%"></div>
+        </div>
+        <span class="text-xs text-gray-600">{{ progress.completion_percentage }}%</span>
+      </td>
+      <td class="px-6 py-4 text-sm text-gray-600">{{ progress.enrolled_date|date:'Y/m/d' }}</td>
+      <td class="px-6 py-4 text-sm text-gray-600">{{ progress.last_accessed|date:'Y/m/d' }}</td>
+      <td class="px-6 py-4 text-center">
+        <a href="{% url 'dashboard:courses:progress-delete' progress.pk %}" class="inline-flex items-center px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-medium rounded-md">حذف</a>
+      </td>
+    </tr>
+  {% endfor %}
+{% endblock %}

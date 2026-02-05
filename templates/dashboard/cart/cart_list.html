@@ -1,0 +1,23 @@
+{% extends 'dashboard/list_template.html' %}
+{% block table_headers %}
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">شناسه</th>
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">کاربر</th>
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">تعداد آیتم</th>
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">مبلغ کل</th>
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">تاریخ ایجاد</th>
+  <th class="px-6 py-3 text-center text-xs font-bold text-gray-700 uppercase">عملیات</th>
+{% endblock %}
+{% block table_rows %}
+  {% for cart in carts %}
+    <tr class="hover:bg-gray-50">
+      <td class="px-6 py-4 text-sm text-gray-900">{{ cart.id }}</td>
+      <td class="px-6 py-4 text-sm text-gray-600">{{ cart.user.email }}</td>
+      <td class="px-6 py-4 text-sm text-gray-600">{{ cart.get_items_count }}</td>
+      <td class="px-6 py-4 text-sm text-gray-900 font-medium">{{ cart.get_total_price|floatformat:0 }} تومان</td>
+      <td class="px-6 py-4 text-sm text-gray-600">{{ cart.created_date|date:'Y/m/d' }}</td>
+      <td class="px-6 py-4 text-center">
+        <a href="{% url 'dashboard:cart:cart-delete' cart.pk %}" class="inline-flex items-center px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-medium rounded-md">حذف</a>
+      </td>
+    </tr>
+  {% endfor %}
+{% endblock %}

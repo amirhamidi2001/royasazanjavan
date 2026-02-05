@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      {% block title %}
+        پنل مدیریت
+      {% endblock %}
+    </title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+      * {
+        font-family: 'Vazirmatn', sans-serif;
+      }
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #475569;
+        border-radius: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #020617;
+      }
+    </style>
+
+    {% block extra_css %}
+    {% endblock %}
+  </head>
+
+  <body class="bg-slate-100 text-slate-800">
+    <!-- Top Navbar -->
+    <nav class="fixed top-0 inset-x-0 z-50 backdrop-blur bg-white/80 border-b border-slate-200">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="flex justify-between items-center h-16">
+          <h1 class="text-lg font-bold text-slate-800">پنل مدیریت حسابداری</h1>
+          <div class="flex items-center gap-6">
+            <span class="text-sm text-slate-600">{{ request.user.email }}</span>
+            <a href="{% url 'accounts:logout' %}" class="text-sm font-medium text-red-600 hover:text-red-700">خروج</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="flex pt-16">
+      <!-- Sidebar -->
+      <aside class="fixed right-0 top-16 w-64 h-[calc(100vh-4rem)] bg-slate-900 text-slate-200 shadow-xl overflow-y-auto">
+        <div class="p-5 space-y-6">
+          <nav class="space-y-6 text-sm">
+            <div>
+              <h3 class="text-xs text-slate-400 mb-3">کاربران</h3>
+              <div class="space-y-1">
+                <a href="{% url 'dashboard:accounts:user-list' %}" class="sidebar-link">کاربران</a>
+                <a href="{% url 'dashboard:accounts:profile-list' %}" class="sidebar-link">پروفایل‌ها</a>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-xs text-slate-400 mb-3">مقالات</h3>
+              <div class="space-y-1">
+                <a href="{% url 'dashboard:articles:article-list' %}" class="sidebar-link">مقالات</a>
+                <a href="{% url 'dashboard:articles:category-list' %}" class="sidebar-link">دسته‌بندی‌ها</a>
+                <a href="{% url 'dashboard:articles:tag-list' %}" class="sidebar-link">برچسب‌ها</a>
+                <a href="{% url 'dashboard:articles:comment-list' %}" class="sidebar-link">نظرات</a>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-xs text-slate-400 mb-3">دوره‌ها</h3>
+              <div class="space-y-1">
+                <a href="{% url 'dashboard:courses:course-list' %}" class="sidebar-link">دوره‌ها</a>
+                <a href="{% url 'dashboard:courses:video-list' %}" class="sidebar-link">ویدیوها</a>
+                <a href="{% url 'dashboard:courses:progress-list' %}" class="sidebar-link">پیشرفت دوره‌ها</a>
+                <a href="{% url 'dashboard:courses:rating-list' %}" class="sidebar-link">امتیازات</a>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-xs text-slate-400 mb-3">سفارشات</h3>
+              <div class="space-y-1">
+                <a href="{% url 'dashboard:cart:cart-list' %}" class="sidebar-link">سبدهای خرید</a>
+                <a href="{% url 'dashboard:orders:order-list' %}" class="sidebar-link">سفارشات</a>
+                <a href="{% url 'dashboard:orders:coupon-list' %}" class="sidebar-link">کدهای تخفیف</a>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-xs text-slate-400 mb-3">وب‌سایت</h3>
+              <div class="space-y-1">
+                <a href="{% url 'dashboard:website:consultation-list' %}" class="sidebar-link">درخواست‌های مشاوره</a>
+                <a href="{% url 'dashboard:website:contact-list' %}" class="sidebar-link">تماس‌ها</a>
+                <a href="{% url 'dashboard:website:job-list' %}" class="sidebar-link">درخواست‌های شغلی</a>
+                <a href="{% url 'dashboard:website:newsletter-list' %}" class="sidebar-link">خبرنامه</a>
+              </div>
+            </div>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="mr-64 flex-1 p-8">
+        {% if messages %}
+          <div class="mb-6 space-y-3">
+            {% for message in messages %}
+              <div class="rounded-xl p-4 border text-sm shadow-sm
+                {% if message.tags == 'success' %}
+                   bg-emerald-50 border-emerald-200 text-emerald-800
+
+                {% elif message.tags == 'error' %}
+                   bg-rose-50 border-rose-200 text-rose-800
+
+                {% elif message.tags == 'warning' %}
+                   bg-amber-50 border-amber-200 text-amber-800
+
+                {% else %}
+                   bg-sky-50 border-sky-200 text-sky-800
+                {% endif %}">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <div class="bg-white rounded-2xl shadow p-6">
+          {% block content %}
+          {% endblock %}
+        </div>
+      </main>
+    </div>
+
+    <style>
+      .sidebar-link {
+        display: block;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        color: #e2e8f0;
+        transition: all 0.2s;
+      }
+      .sidebar-link:hover {
+        background-color: #1e293b;
+        color: #38bdf8;
+      }
+    </style>
+
+    {% block extra_js %}
+    {% endblock %}
+  </body>
+</html>

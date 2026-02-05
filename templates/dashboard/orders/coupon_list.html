@@ -1,0 +1,26 @@
+{% extends 'dashboard/list_template.html' %}
+{% block table_headers %}
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">شناسه</th>
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">کد</th>
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">تخفیف</th>
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">وضعیت</th>
+  <th class="px-6 py-3 text-center text-xs font-bold text-gray-700 uppercase">عملیات</th>
+{% endblock %}
+{% block table_rows %}
+  {% for coupon in coupons %}
+    <tr class="hover:bg-gray-50">
+      <td class="px-6 py-4 text-sm text-gray-900">{{ coupon.id }}</td>
+      <td class="px-6 py-4 text-sm text-gray-900">{{ coupon.code }}</td>
+      <td class="px-6 py-4 text-sm text-gray-600">{{ coupon.discount_percentage }}%</td>
+      <td class="px-6 py-4 text-sm">
+        {% if coupon.is_active %}
+          <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">فعال</span>
+        {% endif %}
+      </td>
+      <td class="px-6 py-4 text-center">
+        <a href="{% url 'dashboard:orders:coupon-update' coupon.pk %}" class="inline-flex items-center px-3 py-1.5 bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-medium rounded-md">ویرایش</a>
+        <a href="{% url 'dashboard:orders:coupon-delete' coupon.pk %}" class="inline-flex items-center px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-medium rounded-md">حذف</a>
+      </td>
+    </tr>
+  {% endfor %}
+{% endblock %}

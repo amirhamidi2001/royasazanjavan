@@ -1,0 +1,19 @@
+{% extends 'dashboard/delete_template.html' %}
+
+{% block object_details %}
+  <p>
+    <strong>شناسه:</strong> {{ object.id }}
+  </p>
+  <p>
+    <strong>نام و نام خانوادگی:</strong> {{ object.get_fullname }}
+  </p>
+  <p>
+    <strong>ایمیل کاربر:</strong> {{ object.user.email }}
+  </p>
+  <p>
+    <strong>شماره تماس:</strong> {{ object.phone_number|default:'-' }}
+  </p>
+  <p>
+    <strong>تاریخ ایجاد:</strong> {{ object.created_date|date:'Y/m/d - H:i' }}
+  </p>
+{% endblock %}

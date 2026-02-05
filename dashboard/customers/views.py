@@ -9,7 +9,11 @@ from django.db.models import Q, Count, Avg
 from cart.cart import CartSession
 from orders.models import Order
 from courses.models import Course, CourseProgress, CourseRating
-from .forms import ProfileUpdateForm, EmailUpdateForm, PasswordChangeForm
+from dashboard.customers.forms import (
+    ProfileUpdateForm,
+    EmailUpdateForm,
+    PasswordChangeForm,
+)
 
 
 @login_required
@@ -61,7 +65,7 @@ def dashboard_view(request):
         },
     }
 
-    return render(request, "dashboard/dashboard.html", context)
+    return render(request, "dashboard/customers/dashboard.html", context)
 
 
 @login_required
@@ -119,7 +123,7 @@ def my_courses_view(request):
         "status_filter": status_filter,
     }
 
-    return render(request, "dashboard/my_courses.html", context)
+    return render(request, "dashboard/customers/my_courses.html", context)
 
 
 @login_required
@@ -139,7 +143,7 @@ def my_orders_view(request):
         "status_filter": status_filter,
     }
 
-    return render(request, "dashboard/my_orders.html", context)
+    return render(request, "dashboard/customers/my_orders.html", context)
 
 
 @login_required
@@ -167,7 +171,7 @@ def profile_settings_view(request):
         "profile": profile,
     }
 
-    return render(request, "dashboard/profile_settings.html", context)
+    return render(request, "dashboard/customers/profile_settings.html", context)
 
 
 @login_required
@@ -204,7 +208,7 @@ def account_settings_view(request):
         "password_form": password_form,
     }
 
-    return render(request, "dashboard/account_settings.html", context)
+    return render(request, "dashboard/customers/account_settings.html", context)
 
 
 @login_required
@@ -218,7 +222,7 @@ def my_reviews_view(request):
         "reviews": reviews,
     }
 
-    return render(request, "dashboard/my_reviews.html", context)
+    return render(request, "dashboard/customers/my_reviews.html", context)
 
 
 @login_required
@@ -290,7 +294,7 @@ def statistics_view(request):
         },
     }
 
-    return render(request, "dashboard/statistics.html", context)
+    return render(request, "dashboard/customers/statistics.html", context)
 
 
 @login_required

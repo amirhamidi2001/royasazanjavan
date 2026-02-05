@@ -1,0 +1,260 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}
+  تنظیمات پروفایل | رویا سازان جوان
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'assets/css/dashboard.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <!-- Page Title -->
+  <div class="page-title light-background">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+      <h1 class="mb-2 mb-lg-0">تنظیمات پروفایل</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li>
+            <a href="{% url 'website:index' %}">صفحه اصلی</a>
+          </li>
+          <li>
+            <a href="{% url 'dashboard:dashboard' %}">داشبورد</a>
+          </li>
+          <li class="current">تنظیمات پروفایل</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <!-- End Page Title -->
+
+  <!-- Account Section -->
+  <section id="account" class="account section">
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+      <!-- Mobile Menu Toggle -->
+      <div class="mobile-menu d-lg-none mb-4">
+        <button class="mobile-menu-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#profileMenu">
+          <i class="bi bi-grid"></i>
+          <span>منو</span>
+        </button>
+      </div>
+
+      <div class="row g-4">
+        <!-- Profile Menu -->
+        <div class="col-lg-3">
+          <div class="profile-menu collapse d-lg-block" id="profileMenu">
+            <!-- User Info -->
+            <div class="user-info" data-aos="fade-right">
+              <div class="user-avatar">
+                {% if request.user.user_profile.image %}
+                  <img src="{{ request.user.user_profile.image.url }}" alt="{{ request.user.user_profile.get_fullname }}" loading="lazy" />
+                {% else %}
+                  <img src="{% static 'img/default-avatar.png' %}" alt="Avatar" loading="lazy" />
+                {% endif %}
+                <span class="status-badge"><i class="bi bi-check-circle"></i></span>
+              </div>
+              <h4>{{ request.user.user_profile.get_fullname }}</h4>
+              <p class="user-email">{{ request.user.email }}</p>
+              <div class="user-stats mt-3">
+                <div class="stat-item">
+                  <i class="bi bi-mortarboard"></i>
+                  <span>{{ request.user.enrolled_courses.count }} دوره</span>
+                </div>
+                <div class="stat-item">
+                  <i class="bi bi-cart"></i>
+                  <span>{{ request.cart_count }} در سبد</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="menu-nav">
+              <ul class="nav flex-column" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'dashboard:dashboard' %}">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>خلاصه</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'dashboard:my_courses' %}">
+                    <i class="bi bi-mortarboard"></i>
+                    <span>دوره‌های من</span>
+                    <span class="badge">{{ request.user.enrolled_courses.count }}</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'dashboard:my_orders' %}">
+                    <i class="bi bi-receipt"></i>
+                    <span>سفارشات</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'dashboard:my_reviews' %}">
+                    <i class="bi bi-star"></i>
+                    <span>نظرات من</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link active" href="{% url 'dashboard:profile_settings' %}">
+                    <i class="bi bi-gear"></i>
+                    <span>تنظیمات</span>
+                  </a>
+                </li>
+              </ul>
+              <div class="menu-footer">
+                <a href="{% url 'courses:course_list' %}" class="help-link">
+                  <i class="bi bi-collection"></i>
+                  <span>مشاهده دوره‌ها</span>
+                </a>
+                <a href="{% url 'accounts:logout' %}" class="logout-link">
+                  <i class="bi bi-box-arrow-right"></i>
+                  <span>خروج</span>
+                </a>
+              </div>
+            </nav>
+          </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="col-lg-9">
+          <div class="content-area">
+            <div class="section-header" data-aos="fade-up">
+              <h2>تنظیمات پروفایل</h2>
+            </div>
+
+            <form method="post" enctype="multipart/form-data" data-aos="fade-up">
+              {% csrf_token %}
+
+              <div class="row g-3">
+                <!-- Profile Image -->
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="id_image">تصویر پروفایل</label>
+                    <div class="avatar-upload">
+                      <div class="avatar-preview">
+                        {% if request.user.user_profile.image %}
+                          <img id="imagePreview" src="{{ request.user.user_profile.image.url }}" alt="پروفایل" width="300px" height="300px" />
+                        {% else %}
+                          <img id="imagePreview" src="{% static 'img/default-avatar.png' %}" alt="پروفایل" width="300px" height="300px" />
+                        {% endif %}
+                      </div>
+                      <div class="avatar-edit">
+                        <input type="file" id="id_image" name="image" accept="image/*" class="form-control" />
+                        <label for="id_image">انتخاب تصویر</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- First Name -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="id_first_name">نام</label>
+                    <input type="text" class="form-control" id="id_first_name" name="first_name" value="{{ profile_form.first_name.value|default_if_none:'' }}" />
+                    {% if profile_form.first_name.errors %}
+                      <div class="invalid-feedback d-block">{{ profile_form.first_name.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <!-- Last Name -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="id_last_name">نام خانوادگی</label>
+                    <input type="text" class="form-control" id="id_last_name" name="last_name" value="{{ profile_form.last_name.value|default_if_none:'' }}" />
+                    {% if profile_form.last_name.errors %}
+                      <div class="invalid-feedback d-block">{{ profile_form.last_name.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <!-- Bio -->
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="id_bio">درباره من</label>
+                    <textarea class="form-control" id="id_bio" name="bio" rows="4">{{ profile_form.bio.value|default_if_none:'' }}</textarea>
+                    {% if profile_form.bio.errors %}
+                      <div class="invalid-feedback d-block">{{ profile_form.bio.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="id_phone_number">شماره تلفن</label>
+                    <input type="text" class="form-control" id="id_phone_number" name="phone_number" value="{{ profile_form.phone_number.value|default_if_none:'' }}" />
+                    {% if profile_form.phone_number.errors %}
+                      <div class="invalid-feedback d-block">{{ profile_form.phone_number.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <!-- Date of Birth -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="id_date_of_birth">تاریخ تولد</label>
+                    <input type="date" class="form-control" id="id_date_of_birth" name="date_of_birth" value="{{ profile_form.date_of_birth.value|default_if_none:'' }}" />
+                    {% if profile_form.date_of_birth.errors %}
+                      <div class="invalid-feedback d-block">{{ profile_form.date_of_birth.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <!-- Social Media -->
+                <div class="col-12">
+                  <h5 class="mt-4 mb-3">شبکه‌های اجتماعی</h5>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="id_telegram_id">تلگرام</label>
+                    <input type="text" class="form-control" id="id_telegram_id" name="telegram_id" value="{{ profile_form.telegram_id.value|default_if_none:'' }}" />
+                    {% if profile_form.telegram_id.errors %}
+                      <div class="invalid-feedback d-block">{{ profile_form.telegram_id.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="id_instagram_id">اینستاگرام</label>
+                    <input type="text" class="form-control" id="id_instagram_id" name="instagram_id" value="{{ profile_form.instagram_id.value|default_if_none:'' }}" />
+                    {% if profile_form.instagram_id.errors %}
+                      <div class="invalid-feedback d-block">{{ profile_form.instagram_id.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="col-12">
+                  <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/dashboard.js' %}"></script>
+  <script>
+    // Preview image before upload
+    document.getElementById('id_image').addEventListener('change', function () {
+      const file = this.files[0]
+      if (file) {
+        const reader = new FileReader()
+        reader.onload = function (e) {
+          document.getElementById('imagePreview').setAttribute('src', e.target.result)
+        }
+        reader.readAsDataURL(file)
+      }
+    })
+  </script>
+{% endblock %}

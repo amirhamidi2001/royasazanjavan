@@ -1,0 +1,30 @@
+{% extends 'dashboard/list_template.html' %}
+{% block table_headers %}
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">شماره سفارش</th>
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">کاربر</th>
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">مبلغ نهایی</th>
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">وضعیت</th>
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">تاریخ</th>
+  <th class="px-6 py-3 text-center text-xs font-bold text-gray-700 uppercase">عملیات</th>
+{% endblock %}
+{% block table_rows %}
+  {% for order in orders %}
+    <tr class="hover:bg-gray-50">
+      <td class="px-6 py-4 text-sm text-gray-900">{{ order.order_number }}</td>
+      <td class="px-6 py-4 text-sm text-gray-600">{{ order.user.email }}</td>
+      <td class="px-6 py-4 text-sm text-gray-900">{{ order.final_price|floatformat:0 }} تومان</td>
+      <td class="px-6 py-4 text-sm">
+        {% if order.status == 'paid' %}
+          <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">پرداخت شده</span>
+        {% else %}
+          <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">{{ order.get_status_display }}</span>
+        {% endif %}
+      </td>
+      <td class="px-6 py-4 text-sm text-gray-600">{{ order.created_date|date:'Y/m/d' }}</td>
+      <td class="px-6 py-4 text-center">
+        <a href="{% url 'dashboard:orders:order-update' order.pk %}" class="inline-flex items-center px-3 py-1.5 bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-medium rounded-md">ویرایش</a>
+        <a href="{% url 'dashboard:orders:order-delete' order.pk %}" class="inline-flex items-center px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-medium rounded-md">حذف</a>
+      </td>
+    </tr>
+  {% endfor %}
+{% endblock %}

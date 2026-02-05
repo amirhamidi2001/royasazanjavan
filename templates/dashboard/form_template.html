@@ -1,0 +1,173 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+
+  <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+
+    <!-- Header -->
+    <div class="px-6 py-5 border-b border-slate-200 bg-slate-50">
+      <h2 class="text-lg font-bold text-slate-800">
+        {{ title }}
+      </h2>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="p-6 space-y-6">
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+        <div class="rounded-xl border border-red-200 bg-red-50 p-4">
+          <div class="flex gap-3">
+            <svg class="w-5 h-5 text-red-500 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                clip-rule="evenodd" />
+            </svg>
+            <div class="text-sm text-red-700">
+              {{ form.non_field_errors }}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+      <!-- Fields -->
+      <div class="space-y-5">
+        {% for field in form %}
+          <div>
+            <label for="{{ field.id_for_label }}" class="block text-sm font-semibold text-slate-700 mb-2">
+              {{ field.label }}
+              {% if field.field.required %}
+                <span class="text-red-500">*</span>
+              {% endif %}
+            </label>
+
+            {% if field.field.widget.input_type == 'checkbox' %}
+              <div class="flex items-center gap-2">
+                {{ field }}
+                <span class="text-sm text-slate-600">
+                  {{ field.help_text }}
+                </span>
+              </div>
+
+            {% elif field.field.widget.input_type == 'select' %}
+              <select
+                name="{{ field.name }}"
+                id="{{ field.id_for_label }}"
+                class="w-full rounded-xl border px-4 py-2.5 text-sm bg-white
+                {% if field.errors %}border-red-500{% else %}border-slate-300{% endif %}
+                focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                {% if field.field.required %}required{% endif %}
+                {% if 'multiple' in field.field.widget.attrs %}multiple{% endif %}
+              >
+                {% if not field.field.required and 'multiple' not in field.field.widget.attrs %}
+                  <option value="">---------</option>
+                {% endif %}
+                {% for value, label in field.field.choices %}
+                  <option value="{{ value }}" {% if value in field.value or value == field.value %}selected{% endif %}>
+                    {{ label }}
+                  </option>
+                {% endfor %}
+              </select>
+
+            {% elif field.field.widget.input_type == 'textarea' %}
+              <textarea
+                name="{{ field.name }}"
+                id="{{ field.id_for_label }}"
+                rows="5"
+                class="w-full rounded-xl border px-4 py-2.5 text-sm resize-none
+                {% if field.errors %}border-red-500{% else %}border-slate-300{% endif %}
+                focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                {% if field.field.required %}required{% endif %}
+                placeholder="{{ field.field.widget.attrs.placeholder|default:'' }}"
+              >{{ field.value|default:'' }}</textarea>
+
+            {% elif field.field.widget.input_type == 'file' %}
+              <input
+                type="file"
+                name="{{ field.name }}"
+                id="{{ field.id_for_label }}"
+                class="w-full rounded-xl border px-4 py-2.5 text-sm
+                {% if field.errors %}border-red-500{% else %}border-slate-300{% endif %}
+                file:ml-4 file:px-4 file:py-2 file:rounded-lg
+                file:border-0 file:bg-blue-50 file:text-blue-700 file:font-medium
+                hover:file:bg-blue-100"
+                {% if field.field.required %}required{% endif %}
+              />
+
+              {% if field.value and field.value.url %}
+                <div class="mt-3">
+                  <img src="{{ field.value.url }}" class="h-20 w-20 rounded-xl object-cover border border-slate-200" />
+                </div>
+              {% endif %}
+
+            {% else %}
+              <input
+                type="{{ field.field.widget.input_type|default:'text' }}"
+                name="{{ field.name }}"
+                id="{{ field.id_for_label }}"
+                value="{{ field.value|default:'' }}"
+                class="w-full rounded-xl border px-4 py-2.5 text-sm
+                {% if field.errors %}border-red-500{% else %}border-slate-300{% endif %}
+                focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                {% if field.field.required %}required{% endif %}
+                placeholder="{{ field.field.widget.attrs.placeholder|default:'' }}"
+              />
+            {% endif %}
+
+            {% if field.help_text and field.field.widget.input_type != 'checkbox' %}
+              <p class="mt-1 text-xs text-slate-500">
+                {{ field.help_text }}
+              </p>
+            {% endif %}
+
+            {% if field.errors %}
+              <div class="mt-1 text-sm text-red-600">
+                {% for error in field.errors %}
+                  <p>{{ error }}</p>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- Actions -->
+      <div class="flex justify-end gap-3 pt-6 border-t border-slate-200">
+        <a
+          href="{{ request.META.HTTP_REFERER|default:'/' }}"
+          class="px-5 py-2.5 rounded-lg text-sm font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition"
+        >
+          انصراف
+        </a>
+
+        <button
+          type="submit"
+          class="px-5 py-2.5 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition flex items-center gap-2"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+          </svg>
+          {{ submit_text|default:"ذخیره" }}
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  select[multiple] {
+    min-height: 130px;
+  }
+  input[type="checkbox"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 0.375rem;
+    border: 2px solid #cbd5f5;
+    accent-color: #2563eb;
+    cursor: pointer;
+  }
+</style>
+{% endblock %}

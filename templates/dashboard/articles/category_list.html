@@ -1,0 +1,24 @@
+{% extends 'dashboard/list_template.html' %}
+{% block table_headers %}
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">شناسه</th>
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">نام</th>
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">Slug</th>
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">توضیحات</th>
+  <th class="px-6 py-3 text-right text-xs font-bold text-gray-700 uppercase">تاریخ ایجاد</th>
+  <th class="px-6 py-3 text-center text-xs font-bold text-gray-700 uppercase">عملیات</th>
+{% endblock %}
+{% block table_rows %}
+  {% for category in categories %}
+    <tr class="hover:bg-gray-50">
+      <td class="px-6 py-4 text-sm text-gray-900">{{ category.id }}</td>
+      <td class="px-6 py-4 text-sm text-gray-900 font-medium">{{ category.name }}</td>
+      <td class="px-6 py-4 text-sm text-gray-600">{{ category.slug }}</td>
+      <td class="px-6 py-4 text-sm text-gray-600">{{ category.description|truncatewords:10 }}</td>
+      <td class="px-6 py-4 text-sm text-gray-600">{{ category.created_at|date:'Y/m/d' }}</td>
+      <td class="px-6 py-4 text-center">
+        <a href="{% url 'dashboard:articles:category-update' category.pk %}" class="inline-flex items-center px-3 py-1.5 bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-medium rounded-md">ویرایش</a>
+        <a href="{% url 'dashboard:articles:category-delete' category.pk %}" class="inline-flex items-center px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-medium rounded-md">حذف</a>
+      </td>
+    </tr>
+  {% endfor %}
+{% endblock %}
