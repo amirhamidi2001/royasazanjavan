@@ -176,7 +176,6 @@
                       </a>
                     </div>
                   </div>
-
                   {% if enrolled_courses %}
                     <div class="orders-grid">
                       {% for item in enrolled_courses|slice:':4' %}
@@ -189,7 +188,6 @@
                               </div>
                               <div class="order-date">ثبت‌نام در: {{ item.enrolled_date|date:'Y/m/d' }}</div>
                             </div>
-
                             <div class="order-content">
                               <div class="product-grid">
                                 {% if item.course.thumbnail %}
@@ -198,7 +196,6 @@
                                   <img src="{% static 'assets/img/course/default-thumbnail.webp' %}" alt="{{ item.course.title }}" loading="lazy" style="width: 100%; height: 100px; object-fit: cover;" />
                                 {% endif %}
                               </div>
-
                               <div class="order-info">
                                 <!-- Progress Bar -->
                                 <div class="info-row">
@@ -207,21 +204,15 @@
                                     <div class="progress" style="height: 6px;">
                                       <div class="progress-bar {% if progress and progress.completion_percentage == 100 %}
                                           
-                                          
-                        bg-success
-
+                                          bg-success
 
                                         {% elif progress and progress.completion_percentage > 0 %}
                                           
-                                          
-                        bg-primary
-
+                                          bg-primary
 
                                         {% else %}
                                           
-                                          
-                        bg-secondary
-
+                                          bg-secondary
 
                                         {% endif %}"
                                         role="progressbar"
@@ -236,7 +227,7 @@
                                           {{ progress.completion_percentage }}
                                         {% else %}
                                           
-                                          0
+                                                  0
 
                                         {% endif %}"
                                         aria-valuemin="0"
@@ -245,21 +236,15 @@
                                   </div>
                                   <span class="status {% if progress and progress.completion_percentage == 100 %}
                                       
-                                      
-                    completed
-
+                                       completed
 
                                     {% elif progress and progress.completion_percentage > 0 %}
                                       
-                                      
-                    in-progress
-
+                                       in-progress
 
                                     {% else %}
                                       
-                                      
-                    not-started
-
+                                       not-started
 
                                     {% endif %}"
                                     style="font-size: 0.8rem;">
@@ -270,19 +255,16 @@
                                     {% endif %}
                                   </span>
                                 </div>
-
                                 <!-- Instructor -->
                                 <div class="info-row">
                                   <span>مدرس</span>
                                   <span>{{ item.course.instructor.user_profile.get_fullname|truncatechars:20 }}</span>
                                 </div>
-
                                 <!-- Duration -->
                                 <div class="info-row">
                                   <span>مدت زمان</span>
                                   <span>{{ item.course.duration }} ساعت</span>
                                 </div>
-
                                 <!-- Last Accessed -->
                                 <div class="info-row">
                                   <span>آخرین فعالیت</span>
@@ -296,7 +278,6 @@
                                 </div>
                               </div>
                             </div>
-
                             <div class="order-footer">
                               <a href="{% url 'courses:course_detail' item.course.slug %}" class="btn-track">
                                 <i class="bi bi-play-circle me-1"></i>
@@ -311,7 +292,6 @@
                         {% endwith %}
                       {% endfor %}
                     </div>
-
                     <!-- View All Link (for mobile) -->
                     <div class="text-center mt-4 d-block d-lg-none">
                       <a href="#courses" data-bs-toggle="tab" class="btn btn-outline-primary">
@@ -390,27 +370,15 @@
                                   <div class="progress" style="height: 8px;">
                                     <div class="progress-bar {% if progress.completion_percentage == 100 %}
                                         
-                                        
-                                        
                                         bg-success
-
-
 
                                       {% elif progress.completion_percentage > 0 %}
                                         
-                                        
-                                        
                                         bg-primary
-
-
 
                                       {% else %}
                                         
-                                        
-                                        
                                         bg-secondary
-
-
 
                                       {% endif %}"
                                       role="progressbar"
@@ -422,27 +390,15 @@
                                 </div>
                                 <span class="status {% if progress.completion_percentage == 100 %}
                                     
-                                    
-                                    
                                      completed
-
-
 
                                   {% elif progress.completion_percentage > 0 %}
                                     
-                                    
-                                    
                                      in-progress
-
-
 
                                   {% else %}
                                     
-                                    
-                                    
                                      not-started
-
-
 
                                   {% endif %}">
                                   {{ progress.completion_percentage }}%
@@ -588,7 +544,7 @@
                     {% endfor %}
                   </div>
                   <!-- Statistics Summary -->
-                  <div class="stats-summary mt-5" data-aos="fade-up">
+                  {% comment %} <div class="stats-summary mt-5" data-aos="fade-up">
                     <div class="row g-3">
                       <div class="col-md-3">
                         <div class="stat-card bg-light p-3 rounded">
@@ -642,7 +598,7 @@
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div> {% endcomment %}
                 {% else %}
                   <!-- No Courses Enrolled -->
                   <div class="empty-state text-center py-5" data-aos="fade-up">

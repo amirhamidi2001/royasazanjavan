@@ -184,7 +184,7 @@
 
 /* Statistics Cards */
 .stat-card {
-  background: #fff;
+  background: #000;
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
@@ -225,7 +225,7 @@
 
 .stat-info p {
   margin: 0;
-  color: #000;
+  color: #ccc;
   font-size: 13px;
 }
 
@@ -537,7 +537,7 @@
 
 /* Empty State */
 .empty-state {
-  background: #f8f9fa;
+  background: #000000;
   border-radius: 10px;
   padding: 60px 30px;
 }

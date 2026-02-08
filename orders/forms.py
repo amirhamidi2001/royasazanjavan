@@ -31,7 +31,6 @@ class OrderCreateForm(forms.ModelForm):
             "city",
             "state",
             "zip_code",
-            "country",
             "notes",
         ]
         widgets = {
@@ -62,7 +61,6 @@ class OrderCreateForm(forms.ModelForm):
             "zip_code": forms.TextInput(
                 attrs={"class": "form-control", "placeholder": "کد پستی"}
             ),
-            "country": forms.Select(attrs={"class": "form-select"}),
             "notes": forms.Textarea(
                 attrs={
                     "class": "form-control",

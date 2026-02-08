@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+  <link rel="stylesheet" href="{% static 'css/checkout.css' %}" />
 {% endblock %}
 
 {% block content %}
@@ -39,14 +39,12 @@
           <div class="checkout-container" data-aos="fade-up">
             <form class="checkout-form" method="POST" action="{% url 'orders:checkout' %}">
               {% csrf_token %}
-              
+
               <!-- Display form errors -->
               {% if form.non_field_errors %}
-                <div class="alert alert-danger">
-                  {{ form.non_field_errors }}
-                </div>
+                <div class="alert alert-danger">{{ form.non_field_errors }}</div>
               {% endif %}
-              
+
               <!-- Customer Information -->
               <div class="checkout-section" id="customer-info">
                 <div class="section-header">
@@ -92,7 +90,7 @@
                 <div class="section-header">
                   <div class="section-number">2</div>
                   <h3>آدرس (اختیاری)</h3>
-                  <p class="text-muted small">برای دوره‌های آنلاین نیازی به آدرس نیست، اما می‌توانید برای صدور فاکتور ذخیره کنید</p>
+                  <p>برای دوره‌های آنلاین نیازی به آدرس نیست.</p>
                 </div>
                 <div class="section-content">
                   <div class="form-group">
@@ -131,13 +129,6 @@
                         <div class="invalid-feedback d-block">{{ form.zip_code.errors.0 }}</div>
                       {% endif %}
                     </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="id_country">کشور</label>
-                    {{ form.country }}
-                    {% if form.country.errors %}
-                      <div class="invalid-feedback d-block">{{ form.country.errors.0 }}</div>
-                    {% endif %}
                   </div>
                 </div>
               </div>
@@ -195,27 +186,25 @@
                   <div class="form-check terms-check">
                     <input class="form-check-input" type="checkbox" id="id_terms" name="terms" required />
                     <label class="form-check-label" for="id_terms">
-                      <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">شرایط و قوانین</a> 
-                      و 
-                      <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">حریم خصوصی</a> 
+                      <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">شرایط و قوانین</a>
+                      و
+                      <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">حریم خصوصی</a>
                       را مطالعه کرده و می‌پذیرم *
                     </label>
                     {% if form.terms.errors %}
                       <div class="invalid-feedback d-block">{{ form.terms.errors.0 }}</div>
                     {% endif %}
                   </div>
-                  
+
                   <div class="place-order-container">
                     <button type="submit" class="btn btn-primary place-order-btn">
                       <span class="btn-text">پرداخت و ثبت نهایی</span>
                       <span class="btn-price">{{ total|floatformat:0|intcomma }} تومان</span>
                     </button>
                   </div>
-                  
+
                   <div class="text-center mt-3">
-                    <a href="{% url 'cart:cart_detail' %}" class="btn btn-link">
-                      <i class="bi bi-arrow-right"></i> بازگشت به سبد خرید
-                    </a>
+                    <a href="{% url 'cart:cart_detail' %}" class="btn btn-link"><i class="bi bi-arrow-right"></i> بازگشت به سبد خرید</a>
                   </div>
                 </div>
               </div>
@@ -234,50 +223,28 @@
             <div class="order-summary-content">
               <div class="order-items">
                 {% for item in cart_items %}
-                <div class="order-item">
-                  <div class="order-item-image">
-                    {% if item.course_obj.thumbnail %}
-                      <img src="{{ item.course_obj.thumbnail.url }}" 
-                           alt="{{ item.course_obj.title }}" 
-                           class="img-fluid" />
-                    {% else %}
-                      <img src="{% static 'img/default-course.jpg' %}" 
-                           alt="{{ item.course_obj.title }}" 
-                           class="img-fluid" />
-                    {% endif %}
-                  </div>
-                  <div class="order-item-details">
-                    <h4>{{ item.course_obj.title }}</h4>
-                    <p class="order-item-variant">
-                      <i class="bi bi-person"></i> {{ item.course_obj.instructor.get_full_name|default:item.course_obj.instructor.email }}
-                      <br>
-                      <i class="bi bi-clock"></i> {{ item.course_obj.duration }} ساعت
-                    </p>
-                    <div class="order-item-price">
-                      <span class="quantity">{{ item.quantity }} ×</span>
-                      <span class="price">{{ item.course_obj.price|floatformat:0|intcomma }} تومان</span>
+                  <div class="order-item">
+                    <div class="order-item-image">
+                      {% if item.course_obj.thumbnail %}
+                        <img src="{{ item.course_obj.thumbnail.url }}" alt="{{ item.course_obj.title }}" class="img-fluid" />
+                      {% else %}
+                        <img src="{% static 'img/default-course.jpg' %}" alt="{{ item.course_obj.title }}" class="img-fluid" />
+                      {% endif %}
+                    </div>
+                    <div class="order-item-details">
+                      <h4>{{ item.course_obj.title }}</h4>
+                      <p class="order-item-variant">
+                        <i class="bi bi-person"></i> {{ item.course_obj.instructor.get_full_name|default:item.course_obj.instructor.email }}
+                        <br />
+                        <i class="bi bi-clock"></i> {{ item.course_obj.duration }} ساعت
+                      </p>
+                      <div class="order-item-price">
+                        <span class="quantity">{{ item.quantity }} ×</span>
+                        <span class="price">{{ item.course_obj.price|floatformat:0|intcomma }} تومان</span>
+                      </div>
                     </div>
                   </div>
-                </div>
                 {% endfor %}
-              </div>
-
-              <!-- Promo Code -->
-              <div class="promo-code">
-                <form method="POST" action="{% url 'orders:apply_coupon' %}" id="coupon-form">
-                  {% csrf_token %}
-                  <div class="input-group">
-                    <input type="text" 
-                           name="code" 
-                           class="form-control" 
-                           placeholder="کد تخفیف" 
-                           id="coupon-code-input" />
-                    <button class="btn btn-outline-primary" type="submit" id="apply-coupon-btn">
-                      اعمال
-                    </button>
-                  </div>
-                </form>
-                <div id="coupon-message" class="mt-2"></div>
               </div>
 
               <!-- Order Totals -->
@@ -286,21 +253,21 @@
                   <span>جمع کل دوره‌ها</span>
                   <span id="subtotal-amount">{{ subtotal|floatformat:0|intcomma }} تومان</span>
                 </div>
-                
+
                 {% if discount_amount > 0 %}
-                <div class="order-discount d-flex justify-content-between text-success">
-                  <span>تخفیف</span>
-                  <span id="discount-amount">-{{ discount_amount|floatformat:0|intcomma }} تومان</span>
-                </div>
+                  <div class="order-discount d-flex justify-content-between text-success">
+                    <span>تخفیف</span>
+                    <span id="discount-amount">-{{ discount_amount|floatformat:0|intcomma }} تومان</span>
+                  </div>
                 {% endif %}
-                
+
                 {% if tax_amount > 0 %}
-                <div class="order-tax d-flex justify-content-between">
-                  <span>مالیات</span>
-                  <span id="tax-amount">{{ tax_amount|floatformat:0|intcomma }} تومان</span>
-                </div>
+                  <div class="order-tax d-flex justify-content-between">
+                    <span>مالیات</span>
+                    <span id="tax-amount">{{ tax_amount|floatformat:0|intcomma }} تومان</span>
+                  </div>
                 {% endif %}
-                
+
                 <div class="order-total d-flex justify-content-between">
                   <span>مبلغ قابل پرداخت</span>
                   <span id="total-amount">{{ total|floatformat:0|intcomma }} تومان</span>
@@ -319,14 +286,22 @@
                   <i class="bi bi-wallet2" title="کیف پول"></i>
                 </div>
               </div>
-              
+
               <!-- Benefits -->
               <div class="checkout-benefits mt-4">
                 <ul class="list-unstyled">
-                  <li><i class="bi bi-check-circle-fill text-success"></i> دسترسی فوری بعد از پرداخت</li>
-                  <li><i class="bi bi-check-circle-fill text-success"></i> گواهی معتبر پایان دوره</li>
-                  <li><i class="bi bi-check-circle-fill text-success"></i> پشتیبانی ۲۴ ساعته</li>
-                  <li><i class="bi bi-check-circle-fill text-success"></i> ضمانت بازگشت وجه</li>
+                  <li>
+                    <i class="bi bi-check-circle-fill text-success"></i> دسترسی فوری بعد از پرداخت
+                  </li>
+                  <li>
+                    <i class="bi bi-check-circle-fill text-success"></i> گواهی معتبر پایان دوره
+                  </li>
+                  <li>
+                    <i class="bi bi-check-circle-fill text-success"></i> پشتیبانی ۲۴ ساعته
+                  </li>
+                  <li>
+                    <i class="bi bi-check-circle-fill text-success"></i> ضمانت بازگشت وجه
+                  </li>
                 </ul>
               </div>
             </div>
@@ -383,9 +358,8 @@
     </div>
   </section>
   <!-- /Checkout Section -->
-  
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'assets/js/checkout.js' %}"></script>
+  <script src="{% static 'assets/js/checkout.js' %}"></script>
 {% endblock %}

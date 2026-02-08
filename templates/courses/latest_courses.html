@@ -7,42 +7,49 @@
   <div class="container" data-aos="fade-up" data-aos-delay="100">
     <div class="row g-5">
       {% for course in courses %}
-      <div class="col-lg-3 col-md-6">
-        <div class="product-item">
-          <div class="product-image">
-            <div class="product-badge">{{ course.duration }} ساعت</div>
-            {% if course.thumbnail %}
-              <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="img-fluid" loading="lazy" />
-            {% endif %}
-            <a href="{% url 'courses:course_detail' course.slug %}" class="cart-btn text-center" style="text-decoration: none;">شروع یادگیری</a>
-          </div>
-          
-          <div class="product-info">
-            <div class="product-category">{{ course.instructor.user_profile.get_fullname }}</div>
-            <h4 class="product-name">
-                <a href="{% url 'courses:course_detail' course.slug %}">{{ course.title|truncatechars:40 }}</a>
-            </h4>
-            
-            <div class="product-rating">
-              <div class="stars">
-                {# Simple logic to show stars based on rating #}
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star{% if course.get_average_rating < 5 %}-half{% endif %}"></i>
-              </div>
-              <span class="rating-count">({{ course.get_students_count }} دانشجو)</span>
+        <div class="col-lg-3 col-md-6">
+          <div class="product-item">
+            <div class="product-image">
+              <div class="product-badge">{{ course.duration }} ساعت</div>
+              {% if course.thumbnail %}
+                <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="img-fluid" loading="lazy" />
+              {% endif %}
+              <a href="{% url 'courses:course_detail' course.slug %}" class="cart-btn text-center" style="text-decoration: none;">شروع یادگیری</a>
             </div>
-            
-            <div class="product-price">
-                {% if course.price == 0 %}Free{% else %}${{ course.price }}{% endif %}
+
+            <div class="product-info">
+              <div class="product-category">{{ course.instructor.user_profile.get_fullname }}</div>
+              <h4 class="product-name"><a href="{% url 'courses:course_detail' course.slug %}">{{ course.title|truncatechars:40 }}</a></h4>
+
+              <div class="product-rating">
+                <div class="stars">
+                  {% with rating=course.get_average_rating|stringformat:'.0f'|add:0 %}
+                    {% for i in '12345'|make_list %}
+                      {% if forloop.counter <= course.get_average_rating %}
+                        <i class="bi bi-star-fill"></i>
+                      {% else %}
+                        <i class="bi bi-star"></i>
+                      {% endif %}
+                    {% endfor %}
+                  {% endwith %}
+                </div>
+                <span class="rating-count">({{ course.get_students_count }} دانشجو)</span>
+              </div>
+
+              <div class="product-price">
+                {% if course.price == 0 %}
+                  Free
+                {% else %}
+                  ${{ course.price }}
+                {% endif %}
+              </div>
             </div>
           </div>
         </div>
-      </div>
       {% empty %}
-        <div class="col-12 text-center"><h2>در حال حاضر هیچ دوره ای موجود نیست.</h2></div>
+        <div class="col-12 text-center">
+          <h2>در حال حاضر هیچ دوره ای موجود نیست.</h2>
+        </div>
       {% endfor %}
     </div>
   </div>

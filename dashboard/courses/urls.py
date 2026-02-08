@@ -29,6 +29,11 @@ urlpatterns = [
     # Progress URLs
     path("progress/", views.CourseProgressListView.as_view(), name="progress-list"),
     path(
+        "progress/create/",
+        views.CourseProgressCreateView.as_view(),
+        name="progress-create",
+    ),
+    path(
         "progress/<int:pk>/delete/",
         views.CourseProgressDeleteView.as_view(),
         name="progress-delete",

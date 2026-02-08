@@ -43,7 +43,6 @@ class Order(models.Model):
     city = models.CharField(_("شهر"), max_length=100, blank=True)
     state = models.CharField(_("استان"), max_length=100, blank=True)
     zip_code = models.CharField(_("کد پستی"), max_length=20, blank=True)
-    country = models.CharField(_("کشور"), max_length=100, default="IR")
 
     # Payment Information
     total_price = models.DecimalField(

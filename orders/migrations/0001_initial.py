@@ -146,10 +146,6 @@ class Migration(migrations.Migration):
                     models.CharField(blank=True, max_length=20, verbose_name="کد پستی"),
                 ),
                 (
-                    "country",
-                    models.CharField(default="IR", max_length=100, verbose_name="کشور"),
-                ),
-                (
                     "total_price",
                     models.DecimalField(
                         decimal_places=2,

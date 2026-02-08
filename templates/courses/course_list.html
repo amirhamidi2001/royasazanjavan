@@ -72,8 +72,13 @@
                   <div class="product-meta">
                     <div class="product-price">{{ course.price }}</div>
                     <div class="product-rating">
-                      <i class="bi bi-star-fill"></i>
-                      {{ course.avg_rating }} <span>({{ course.total_students }})</span>
+                      {% if course.avg_rating %}
+                        <i class="bi bi-star-fill"></i>
+                        {{ course.avg_rating }}
+                      {% else %}
+                        <i class="bi bi-star"></i>
+                      {% endif %}
+                      <span>({{ course.total_students }})</span>
                     </div>
                   </div>
                 </div>

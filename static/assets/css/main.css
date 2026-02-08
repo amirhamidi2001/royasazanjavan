@@ -5473,7 +5473,8 @@ section,
   padding: 12px 16px;
   font-size: 0.95rem;
   height: auto;
-  background-color: var(--surface-color);
+  background-color: #000000;
+  color: #cccccc;
   transition: all 0.25s ease;
 }
 
@@ -7447,7 +7448,7 @@ section,
 .account .content-area .orders-grid .order-card .order-details .details-content .detail-section .info-grid .info-item .label {
   display: block;
   font-size: 13px;
-  color: color-mix(in srgb, var(--default-color), transparent 40%);
+  color: #101010;
   margin-bottom: 4px;
 }
 
@@ -7492,7 +7493,7 @@ section,
   display: flex;
   gap: 12px;
   font-size: 13px;
-  color: color-mix(in srgb, var(--default-color), transparent 40%);
+  color: #101010;
 }
 
 .account .content-area .orders-grid .order-card .order-details .details-content .detail-section .order-items .item .item-price {
@@ -8353,6 +8354,8 @@ section,
   border-radius: 10px;
   font-size: 14px;
   transition: all 0.3s ease;
+  background-color: #000000;
+  color: #cccccc;
 }
 
 .account .settings-content .settings-form .form-control:focus {

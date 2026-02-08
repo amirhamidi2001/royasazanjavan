@@ -18,7 +18,7 @@
             </div>
           </div>
           <div class="rating">
-            {% for i in 12345 %}
+            {% for i in '12345'|make_list %}
               {% if forloop.counter <= review.rating %}
                 <i class="bi bi-star-fill text-warning"></i>
               {% else %}
@@ -42,10 +42,9 @@
   </div>
 {% else %}
   <div class="empty-state text-center py-5">
-    <i class="bi bi-star" style="font-size: 5rem; color: #ddd;"></i>
+    <i class="bi bi-star-fill" style="font-size: 5rem; color: #ffcc33;"></i>
     <h3 class="mt-4">هنوز نظری ثبت نکرده‌اید</h3>
-    <p class="text-muted">با ثبت نظر، به بهبود کیفیت دوره‌ها کمک کنید</p>
-    <a href="#courses" data-bs-toggle="tab" class="btn btn-primary mt-3"><i class="bi bi-mortarboard"></i> دوره‌های من</a>
+    <p>با ثبت نظر، به بهبود کیفیت دوره‌ها کمک کنید</p>
   </div>
 {% endif %}
 

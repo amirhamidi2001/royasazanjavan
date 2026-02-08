@@ -268,7 +268,26 @@ class CourseProgressListView(DashboardMixin, ListView):
         context["search_query"] = self.request.GET.get("search", "")
         context["course_filter"] = self.request.GET.get("course", "")
         context["courses"] = Course.objects.all()
-        context["title"] = "مدیریت پیشرفت دوره‌ها"
+        context["title"] = "مدیریت دسترسی دوره‌ها"
+        context["create_url"] = reverse_lazy("dashboard:courses:progress-create")
+        return context
+
+
+class CourseProgressCreateView(DashboardMixin, SuccessMessageMixin, CreateView):
+    """
+    اعطای دسترسی جدید (ثبت‌نام دانشجو در دوره)
+    """
+
+    model = CourseProgress
+    template_name = "dashboard/courses/progress_form.html"
+    fields = ["user", "course"]
+    success_url = reverse_lazy("dashboard:courses:progress-list")
+    success_message = "دسترسی دوره با موفقیت برای کاربر ایجاد شد."
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "اعطای دسترسی به دوره"
+        context["submit_text"] = "ثبت‌نام دانشجو"
         return context
 
 

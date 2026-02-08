@@ -76,7 +76,6 @@ class OrderAdmin(admin.ModelAdmin):
                     "city",
                     "state",
                     "zip_code",
-                    "country",
                 ),
                 "classes": ("collapse",),
             },
