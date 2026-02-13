@@ -23,6 +23,29 @@
   </div>
   <!-- End Page Title -->
 
+  <!-- Messages Section -->
+  {% if messages %}
+    <div class="container mt-4">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          <i class="bi bi-{% if message.tags == 'success' %}
+              check-circle
+            {% elif message.tags == 'error' or message.tags == 'danger' %}
+              exclamation-circle
+            {% elif message.tags == 'warning' %}
+              exclamation-triangle
+            {% else %}
+              info-circle
+            {% endif %}">
+
+          </i>
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
   <!-- Cart Section -->
   <section id="cart" class="cart section">
     <div class="container" data-aos="fade-up" data-aos-delay="100">
@@ -33,7 +56,7 @@
               <div class="cart-header d-none d-lg-block">
                 <div class="row align-items-center">
                   <div class="col-lg-6">
-                    <h5>دوره</h5>
+                    <h5>محصول</h5>
                   </div>
                   <div class="col-lg-3 text-center">
                     <h5>قیمت</h5>
@@ -46,41 +69,90 @@
 
               {% for item in cart_items %}
                 <!-- Cart Item -->
-                <div class="cart-item" data-course-id="{{ item.course_obj.id }}">
+                <div class="cart-item" data-product-id="{{ item.product_obj.id }}" data-product-type="{{ item.product_type }}">
                   <div class="row align-items-center">
+                    <!-- Product Image and Info -->
                     <div class="col-lg-6 col-12 mt-3 mt-lg-0 mb-lg-0 mb-3">
                       <div class="product-info d-flex align-items-center">
                         <div class="product-image">
-                          {% if item.course_obj.thumbnail %}
-                            <img src="{{ item.course_obj.thumbnail.url }}" alt="{{ item.course_obj.title }}" class="img-fluid" loading="lazy" />
-                          {% else %}
-                            <img src="{% static 'assets/img/logo.webp' %}" alt="{{ item.course_obj.title }}" class="img-fluid" loading="lazy" />
+                          {% if item.product_type == 'course' %}
+                            {# برای دوره‌ها #}
+                            {% if item.product_obj.thumbnail %}
+                              <img src="{{ item.product_obj.thumbnail.url }}" alt="{{ item.product_obj.title }}" class="img-fluid" loading="lazy" />
+                            {% else %}
+                              <img src="{% static 'assets/img/logo.webp' %}" alt="{{ item.product_obj.title }}" class="img-fluid" loading="lazy" />
+                            {% endif %}
+                          {% elif item.product_type == 'product' %}
+                            {# برای محصولات #}
+                            {% if item.product_obj.image %}
+                              <img src="{{ item.product_obj.image.url }}" alt="{{ item.product_obj.title }}" class="img-fluid" loading="lazy" />
+                            {% else %}
+                              <img src="{% static 'assets/img/logo.webp' %}" alt="{{ item.product_obj.title }}" class="img-fluid" loading="lazy" />
+                            {% endif %}
                           {% endif %}
                         </div>
+
                         <div class="product-details">
-                          <h6 class="product-title"><a href="{% url 'courses:course_detail' item.course_obj.slug %}">{{ item.course_obj.title }}</a></h6>
+                          <h6 class="product-title">
+                            {% if item.product_type == 'course' %}
+                              <a href="{% url 'courses:course_detail' item.product_obj.slug %}">{{ item.product_obj.title }}</a>
+                            {% elif item.product_type == 'product' %}
+                              <a href="{% url 'shop:product_detail' item.product_obj.slug %}">{{ item.product_obj.title }}</a>
+                            {% endif %}
+                          </h6>
+
                           <div class="product-meta">
-                            <span class="product-instructor">
-                              <i class="bi bi-person"></i>
-                              {{ item.course_obj.instructor.get_full_name|default:item.course_obj.instructor.email }}
-                            </span>
-                            <span class="product-duration">
-                              <i class="bi bi-clock"></i>
-                              {{ item.course_obj.duration }} ساعت
-                            </span>
+                            {% if item.product_type == 'course' %}
+                              {# اطلاعات دوره #}
+                              <span class="product-type-badge badge bg-primary"><i class="bi bi-mortarboard"></i> دوره آموزشی</span>
+                              <span class="product-instructor">
+                                <i class="bi bi-person"></i>
+                                {{ item.product_obj.instructor.get_full_name|default:item.product_obj.instructor.email }}
+                              </span>
+                              {% if item.product_obj.duration %}
+                                <span class="product-duration">
+                                  <i class="bi bi-clock"></i>
+                                  {{ item.product_obj.duration }} ساعت
+                                </span>
+                              {% endif %}
+                            {% elif item.product_type == 'product' %}
+                              {# اطلاعات محصول #}
+                              <span class="product-type-badge badge bg-success"><i class="bi bi-box-seam"></i> محصول فروشگاه</span>
+                              <span class="product-category">
+                                <i class="bi bi-tag"></i>
+                                {% if item.product_obj.category %}
+                                  {{ item.product_obj.category.name }}
+                                {% else %}
+                                  محصول فروشگاه
+                                {% endif %}
+                              </span>
+                              {% if item.product_obj.is_discounted %}
+                                <span class="badge bg-danger">{{ item.product_obj.get_discount_percentage }}% تخفیف</span>
+                              {% endif %}
+                            {% endif %}
                           </div>
                         </div>
                       </div>
                     </div>
 
+                    <!-- Price -->
                     <div class="col-lg-3 col-12 mt-3 mt-lg-0 text-center">
                       <div class="price-tag">
-                        <span class="current-price">{{ item.course_obj.price|floatformat:0|intcomma }} تومان</span>
+                        {% if item.product_type == 'product' and item.product_obj.is_discounted %}
+                          {# نمایش قیمت با تخفیف برای محصولات #}
+                          <span class="original-price text-muted text-decoration-line-through">{{ item.product_obj.price|floatformat:0|intcomma }} تومان</span>
+                          <br />
+                          <span class="current-price text-danger fw-bold">{{ item.product_obj.get_final_price|floatformat:0|intcomma }} تومان</span>
+                        {% else %}
+                          {# قیمت عادی برای دوره‌ها یا محصولات بدون تخفیف #}
+                          <span class="current-price">{{ item.total_price|floatformat:0|intcomma }} تومان</span>
+                        {% endif %}
                       </div>
                     </div>
 
+                    <!-- Remove Button -->
                     <div class="col-lg-3 col-12 mt-3 mt-lg-0 text-center">
-                      <form method="POST" action="{% url 'cart:cart_remove' item.course_obj.id %}" class="remove-form">
+                      <form method="POST" action="{% url 'cart:cart_remove' item.product_obj.id item.product_type %}" class="remove-form" data-product-name="{{ item.product_obj.title }}">
                         {% csrf_token %}
                         <button class="btn btn-outline-danger remove-item" type="submit"><i class="bi bi-trash"></i> حذف</button>
                       </form>
@@ -92,11 +164,14 @@
 
               <div class="cart-actions">
                 <div class="row">
-                  <div class="col-lg-6 text-md-end">
-                    <a href="{% url 'courses:course_list' %}" class="btn btn-outline-heading me-2"><i class="bi bi-arrow-right"></i> ادامه خرید</a>
+                  <div class="col-12 col-md-6 mb-2 mb-md-0">
+                    <a href="{% url 'courses:course_list' %}" class="btn btn-outline-heading w-100 w-md-auto"><i class="bi bi-mortarboard"></i> مشاهده دوره‌ها</a>
+                  </div>
+                  <div class="col-12 col-md-6 text-md-end">
+                    <a href="{% url 'shop:product_list' %}" class="btn btn-outline-heading w-100 w-md-auto me-0 me-md-2 mb-2 mb-md-0"><i class="bi bi-shop"></i> مشاهده محصولات</a>
                     <form method="POST" action="{% url 'cart:cart_clear' %}" class="d-inline clear-cart-form">
                       {% csrf_token %}
-                      <button class="btn btn-outline-remove" type="submit"><i class="bi bi-trash"></i> خالی کردن سبد</button>
+                      <button class="btn btn-outline-remove w-100 w-md-auto" type="submit"><i class="bi bi-trash"></i> خالی کردن سبد</button>
                     </form>
                   </div>
                 </div>
@@ -109,13 +184,13 @@
               <h4 class="summary-title">خلاصه سفارش</h4>
 
               <div class="summary-item">
-                <span class="summary-label">تعداد دوره‌ها</span>
-                <span class="summary-value" id="cart-summary-quantity">{{ total_quantity }} دوره</span>
+                <span class="summary-label">تعداد آیتم‌ها</span>
+                <span class="summary-value" id="cart-summary-quantity">{{ total_quantity }} آیتم</span>
               </div>
 
               <div class="summary-item">
                 <span class="summary-label">جمع کل</span>
-                <span class="summary-value" id="cart-summary-subtotal">{{ total_price|floatformat:0|intcomma }} تومان</span>
+                <span class="summary-value" id="cart-summary-subtotal">{{ total_payment|floatformat:0|intcomma }} تومان</span>
               </div>
 
               <div class="summary-item discount">
@@ -125,7 +200,7 @@
 
               <div class="summary-total">
                 <span class="summary-label">مبلغ قابل پرداخت</span>
-                <span class="summary-value" id="cart-summary-total">{{ total_price|floatformat:0|intcomma }} تومان</span>
+                <span class="summary-value" id="cart-summary-total">{{ total_payment|floatformat:0|intcomma }} تومان</span>
               </div>
 
               <div class="checkout-button">
@@ -157,8 +232,11 @@
             <div class="empty-cart text-center py-5">
               <i class="bi bi-cart-x" style="font-size: 5rem; color: #ddd;"></i>
               <h3 class="mt-4">سبد خرید شما خالی است</h3>
-              <p class="text-muted">برای مشاهده دوره‌های آموزشی به صفحه دوره‌ها بروید</p>
-              <a href="{% url 'courses:course_list' %}" class="btn btn-accent mt-3"><i class="bi bi-mortarboard"></i> مشاهده دوره‌ها</a>
+              <p class="text-muted">برای مشاهده دوره‌های آموزشی و محصولات به صفحات زیر بروید</p>
+              <div class="mt-3">
+                <a href="{% url 'courses:course_list' %}" class="btn btn-accent me-2"><i class="bi bi-mortarboard"></i> مشاهده دوره‌ها</a>
+                <a href="{% url 'shop:product_list' %}" class="btn btn-outline-accent"><i class="bi bi-shop"></i> مشاهده محصولات</a>
+              </div>
             </div>
           </div>
         </div>
@@ -168,6 +246,24 @@
   <!-- /Cart Section -->
 
   {% block extra_js %}
+    <script>
+      // Pass Django context to JavaScript
+      window.CART_CONFIG = {
+        removeUrl: "{% url 'cart:cart_remove_ajax' %}",
+        clearUrl: "{% url 'cart:cart_clear' %}",
+        countUrl: "{% url 'cart:cart_count' %}",
+        csrfToken: '{{ csrf_token }}',
+        messages: {
+          removeConfirm: 'آیا از حذف این محصول از سبد خرید مطمئن هستید؟',
+          clearConfirm: 'آیا از خالی کردن کامل سبد خرید مطمئن هستید؟',
+          removeSuccess: 'محصول از سبد خرید حذف شد',
+          clearSuccess: 'سبد خرید خالی شد',
+          removeError: 'خطا در حذف محصول',
+          clearError: 'خطا در خالی کردن سبد خرید',
+          networkError: 'خطای ارتباط با سرور. لطفا دوباره تلاش کنید'
+        }
+      }
+    </script>
     <script src="{% static 'assets/js/cart.js' %}"></script>
   {% endblock %}
 {% endblock %}

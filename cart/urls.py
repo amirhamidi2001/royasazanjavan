@@ -1,17 +1,33 @@
+# cart/urls.py - نسخه بهبود یافته
+
 from django.urls import path
 from . import views
 
 app_name = "cart"
 
 urlpatterns = [
-    # Cart detail page
-    path("", views.cart_detail_view, name="cart_detail"),
-    # Cart actions
-    path("add/<int:course_id>/", views.cart_add_view, name="cart_add"),
-    path("remove/<int:course_id>/", views.cart_remove_view, name="cart_remove"),
-    path("clear/", views.cart_clear_view, name="cart_clear"),
-    # Cart sync (for logged-in users)
-    path("sync/", views.cart_sync_view, name="cart_sync"),
-    # AJAX endpoint for cart count
-    path("count/", views.cart_count_view, name="cart_count"),
+    # Cart Display
+    path("", views.cart_detail, name="cart_detail"),
+    # Add to Cart (Form-based)
+    path("add/course/<int:course_id>/", views.cart_add_course, name="cart_add_course"),
+    path(
+        "add/product/<int:product_id>/", views.cart_add_product, name="cart_add_product"
+    ),
+    # Remove from Cart
+    path(
+        "remove/<int:product_id>/<str:product_type>/",
+        views.cart_remove,
+        name="cart_remove",
+    ),
+    # Clear Cart
+    path("clear/", views.cart_clear, name="cart_clear"),
+    # AJAX Endpoints
+    path("ajax/add/", views.cart_add_ajax, name="cart_add_ajax"),
+    path("ajax/remove/", views.cart_remove_ajax, name="cart_remove_ajax"),
+    path("ajax/count/", views.cart_count, name="cart_count"),
+    path(
+        "ajax/check/<int:product_id>/<str:product_type>/",
+        views.check_item_in_cart,
+        name="check_item_in_cart",
+    ),
 ]

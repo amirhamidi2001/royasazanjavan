@@ -57,7 +57,7 @@
                   <div class="product-overlay">
                     <div class="product-actions">
                       <a href="{% url 'courses:course_detail' course.slug %}" type="button" class="action-btn" data-bs-toggle="tooltip" title="مشاهده دوره"><i class="bi bi-eye"></i></a>
-                      <form method="POST" action="{% url 'cart:cart_add' course.id %}">
+                      <form method="POST" action="{% url 'cart:cart_add_course' course.id %}">
                         {% csrf_token %}
                         <button type="submit" class="action-btn" data-bs-toggle="tooltip" title="افزودن به سبد خرید" data-course-id="{{ course.id }}"><i class="bi bi-cart-plus"></i></button>
                       </form>

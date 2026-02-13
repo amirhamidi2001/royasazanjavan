@@ -1,0 +1,9 @@
+{% extends 'dashboard/delete_template.html' %}
+
+{% block object_details %}
+    <p><strong>شناسه:</strong> {{ object.id }}</p>
+    <p><strong>محصول:</strong> {{ object.product.title }}</p>
+    <p><strong>نام ویژگی:</strong> {{ object.feature_name }}</p>
+    <p><strong>مقدار:</strong> {{ object.feature_value }}</p>
+    <p><strong>ترتیب نمایش:</strong> {{ object.order }}</p>
+{% endblock %}

@@ -1,0 +1,446 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}فروشگاه | رویا سازان جوان{% endblock %}
+
+{% block content %}
+
+<!-- Page Title -->
+<div class="page-title light-background">
+  <div class="container d-lg-flex justify-content-between align-items-center">
+    <h1 class="mb-2 mb-lg-0" dir="rtl">فروشگاه محصولات</h1>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{% url 'website:index' %}">صفحه اصلی</a></li>
+        <li class="current">فروشگاه</li>
+      </ol>
+    </nav>
+  </div>
+</div><!-- End Page Title -->
+
+<div class="container">
+  <div class="row">
+
+    <!-- Sidebar -->
+    <div class="col-lg-4 sidebar">
+      <div class="widgets-container">
+
+        <!-- Search Widget -->
+        <div class="search-widget widget-item">
+          <h3 class="widget-title" dir="rtl">جستجو</h3>
+          <form method="get" action="{% url 'shop:product_list' %}" class="search-form">
+            <div class="input-group">
+              <input type="text" 
+                     name="search" 
+                     class="form-control" 
+                     placeholder="جستجوی محصول..." 
+                     value="{{ current_search }}"
+                     dir="rtl">
+              <button class="btn search-btn" type="submit">
+                <i class="bi bi-search"></i>
+              </button>
+            </div>
+          </form>
+        </div><!--/Search Widget -->
+
+        <!-- Product Categories Widget -->
+        <div class="product-categories-widget widget-item">
+          <h3 class="widget-title" dir="rtl">دسته‌بندی‌ها</h3>
+          <ul class="category-tree list-unstyled mb-0">
+            {% for category in categories %}
+            <li class="category-item">
+              {% if category.subcategories.exists %}
+              <div class="d-flex justify-content-between align-items-center category-header collapsed" 
+                   data-bs-toggle="collapse" 
+                   data-bs-target="#category-{{ category.id }}" 
+                   aria-expanded="false" 
+                   aria-controls="category-{{ category.id }}">
+                <a href="javascript:void(0)" class="category-link" dir="rtl">{{ category.name }}</a>
+                <span class="category-toggle">
+                  <i class="bi bi-chevron-down"></i>
+                  <i class="bi bi-chevron-up"></i>
+                </span>
+              </div>
+              <ul id="category-{{ category.id }}" class="subcategory-list list-unstyled collapse ps-3 mt-2">
+                {% for subcategory in category.subcategories.all %}
+                <li>
+                  <a href="{% url 'shop:product_list' %}?category={{ subcategory.slug }}" 
+                     class="subcategory-link" dir="rtl">{{ subcategory.name }}</a>
+                </li>
+                {% endfor %}
+              </ul>
+              {% else %}
+              <div class="d-flex justify-content-between align-items-center category-header">
+                <a href="{% url 'shop:product_list' %}?category={{ category.slug }}" 
+                   class="category-link" dir="rtl">{{ category.name }}</a>
+              </div>
+              {% endif %}
+            </li>
+            {% endfor %}
+          </ul>
+        </div><!--/Product Categories Widget -->
+
+        <!-- Product Type Filter Widget -->
+        <div class="pricing-range-widget widget-item">
+          <h3 class="widget-title" dir="rtl">نوع محصول</h3>
+          <div class="price-range-container">
+            <form method="get" action="{% url 'shop:product_list' %}">
+              {% if current_search %}
+              <input type="hidden" name="search" value="{{ current_search }}">
+              {% endif %}
+              <select name="type" class="form-select" onchange="this.form.submit()" dir="rtl">
+                <option value="">همه نوع‌ها</option>
+                {% for value, label in product_types %}
+                <option value="{{ value }}" {% if current_type == value %}selected{% endif %}>
+                  {% if value == 'educational_package' %}بسته آموزشی
+                  {% elif value == 'software_package' %}بسته نرم‌افزاری
+                  {% elif value == 'book' %}کتاب
+                  {% endif %}
+                </option>
+                {% endfor %}
+              </select>
+            </form>
+          </div>
+        </div><!--/Product Type Filter Widget -->
+
+        <!-- Price Range Widget -->
+        <div class="pricing-range-widget widget-item">
+          <h3 class="widget-title" dir="rtl">محدوده قیمت</h3>
+          <div class="price-range-container">
+            <form method="get" action="{% url 'shop:product_list' %}">
+              {% if current_search %}
+              <input type="hidden" name="search" value="{{ current_search }}">
+              {% endif %}
+              {% if current_category %}
+              <input type="hidden" name="category" value="{{ current_category }}">
+              {% endif %}
+              {% if current_type %}
+              <input type="hidden" name="type" value="{{ current_type }}">
+              {% endif %}
+              
+              <div class="price-inputs mt-3">
+                <div class="row g-2">
+                  <div class="col-6">
+                    <div class="input-group input-group-sm">
+                      <input type="number" 
+                             name="min_price" 
+                             class="form-control min-price-input" 
+                             placeholder="حداقل (تومان)" 
+                             min="0" 
+                             value="{{ request.GET.min_price }}"
+                             dir="rtl">
+                      <span class="input-group-text">ت</span>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="input-group input-group-sm">
+                      <input type="number" 
+                             name="max_price" 
+                             class="form-control max-price-input" 
+                             placeholder="حداکثر (تومان)" 
+                             min="0" 
+                             value="{{ request.GET.max_price }}"
+                             dir="rtl">
+                      <span class="input-group-text">ت</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-check mt-3">
+                <input class="form-check-input" 
+                       type="checkbox" 
+                       name="is_free" 
+                       value="true" 
+                       id="freeProducts"
+                       {% if request.GET.is_free == 'true' %}checked{% endif %}>
+                <label class="form-check-label" for="freeProducts" dir="rtl">
+                  فقط محصولات رایگان
+                </label>
+              </div>
+
+              <div class="filter-actions mt-3">
+                <button type="submit" class="btn btn-sm btn-primary w-100">اعمال فیلتر</button>
+              </div>
+            </form>
+          </div>
+        </div><!--/Price Range Widget -->
+
+      </div>
+    </div><!--/Sidebar -->
+
+    <!-- Main Content -->
+    <div class="col-lg-8">
+
+      <!-- Category Header Section -->
+      <section id="category-header" class="category-header section">
+        <div class="container" data-aos="fade-up">
+          <!-- Filter and Sort Options -->
+          <div class="filter-container mb-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="row g-3">
+              <div class="col-12 col-md-6 col-lg-4">
+                <div class="filter-item search-form">
+                  <label for="productSearch" class="form-label" dir="rtl">نتایج جستجو</label>
+                  <div class="input-group">
+                    <span class="input-group-text" dir="rtl">
+                      نمایش {{ page_obj.start_index }} تا {{ page_obj.end_index }} از {{ page_obj.paginator.count }} محصول
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12 col-md-6 col-lg-4">
+                <div class="filter-item">
+                  <label for="sortBy" class="form-label" dir="rtl">مرتب‌سازی بر اساس</label>
+                  <form method="get" action="{% url 'shop:product_list' %}">
+                    {% if current_search %}
+                    <input type="hidden" name="search" value="{{ current_search }}">
+                    {% endif %}
+                    {% if current_category %}
+                    <input type="hidden" name="category" value="{{ current_category }}">
+                    {% endif %}
+                    {% if current_type %}
+                    <input type="hidden" name="type" value="{{ current_type }}">
+                    {% endif %}
+                    <select class="form-select" 
+                            name="sort" 
+                            id="sortBy" 
+                            onchange="this.form.submit()" 
+                            dir="rtl">
+                      <option value="-created_at" {% if current_sort == '-created_at' %}selected{% endif %}>جدیدترین</option>
+                      <option value="created_at" {% if current_sort == 'created_at' %}selected{% endif %}>قدیمی‌ترین</option>
+                      <option value="price" {% if current_sort == 'price' %}selected{% endif %}>ارزان‌ترین</option>
+                      <option value="-price" {% if current_sort == '-price' %}selected{% endif %}>گران‌ترین</option>
+                      <option value="title" {% if current_sort == 'title' %}selected{% endif %}>الفبایی (الف-ی)</option>
+                      <option value="-title" {% if current_sort == '-title' %}selected{% endif %}>الفبایی (ی-الف)</option>
+                    </select>
+                  </form>
+                </div>
+              </div>
+
+              <div class="col-12 col-md-6 col-lg-4">
+                <div class="filter-item">
+                  <label class="form-label" dir="rtl">نمایش</label>
+                  <div class="d-flex align-items-center">
+                    <div class="items-per-page">
+                      <select class="form-select" id="itemsPerPage" aria-label="Items per page" dir="rtl">
+                        <option value="12">12 محصول در صفحه</option>
+                        <option value="24">24 محصول در صفحه</option>
+                        <option value="48">48 محصول در صفحه</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Active Filters -->
+            {% if current_search or current_category or current_type or request.GET.min_price or request.GET.max_price or request.GET.is_free %}
+            <div class="row mt-3">
+              <div class="col-12" data-aos="fade-up" data-aos-delay="200">
+                <div class="active-filters">
+                  <span class="active-filter-label" dir="rtl">فیلترهای فعال:</span>
+                  <div class="filter-tags">
+                    {% if current_search %}
+                    <span class="filter-tag">
+                      جستجو: {{ current_search }} <button class="filter-remove" onclick="window.location.href='{% url 'shop:product_list' %}?{% if current_category %}category={{ current_category }}{% endif %}{% if current_type %}{% if current_category %}&{% endif %}type={{ current_type }}{% endif %}'"><i class="bi bi-x"></i></button>
+                    </span>
+                    {% endif %}
+                    {% if current_category %}
+                    <span class="filter-tag">
+                      دسته: {{ current_category_name }} <button class="filter-remove" onclick="window.location.href='{% url 'shop:product_list' %}?{% if current_search %}search={{ current_search }}{% endif %}{% if current_type %}{% if current_search %}&{% endif %}type={{ current_type }}{% endif %}'"><i class="bi bi-x"></i></button>
+                    </span>
+                    {% endif %}
+                    {% if current_type %}
+                    <span class="filter-tag">
+                      نوع: 
+                      {% if current_type == 'educational_package' %}بسته آموزشی
+                      {% elif current_type == 'software_package' %}بسته نرم‌افزاری
+                      {% elif current_type == 'book' %}کتاب
+                      {% endif %}
+                      <button class="filter-remove" onclick="window.location.href='{% url 'shop:product_list' %}?{% if current_search %}search={{ current_search }}{% endif %}{% if current_category %}{% if current_search %}&{% endif %}category={{ current_category }}{% endif %}'"><i class="bi bi-x"></i></button>
+                    </span>
+                    {% endif %}
+                    {% if request.GET.min_price %}
+                    <span class="filter-tag">
+                      حداقل قیمت: {{ request.GET.min_price }} تومان <button class="filter-remove" onclick="removePriceFilter()"><i class="bi bi-x"></i></button>
+                    </span>
+                    {% endif %}
+                    {% if request.GET.max_price %}
+                    <span class="filter-tag">
+                      حداکثر قیمت: {{ request.GET.max_price }} تومان <button class="filter-remove" onclick="removePriceFilter()"><i class="bi bi-x"></i></button>
+                    </span>
+                    {% endif %}
+                    {% if request.GET.is_free == 'true' %}
+                    <span class="filter-tag">
+                      فقط رایگان <button class="filter-remove" onclick="window.location.href='{% url 'shop:product_list' %}?{% if current_search %}search={{ current_search }}{% endif %}{% if current_category %}{% if current_search %}&{% endif %}category={{ current_category }}{% endif %}{% if current_type %}{% if current_search or current_category %}&{% endif %}type={{ current_type }}{% endif %}'"><i class="bi bi-x"></i></button>
+                    </span>
+                    {% endif %}
+                    <button class="clear-all-btn" onclick="window.location.href='{% url 'shop:product_list' %}'">حذف همه</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </section><!-- /Category Header Section -->
+
+      <!-- Category Product List Section -->
+      <section id="category-product-list" class="category-product-list section">
+        <div class="container" data-aos="fade-up" data-aos-delay="100">
+          <div class="row g-4">
+            {% for product in products %}
+            <div class="col-6 col-xl-4">
+              <div class="product-card" data-aos="zoom-in" data-aos-delay="{{ forloop.counter0|add:1 }}">
+                <div class="product-image">
+                  <a href="{{ product.get_absolute_url }}">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" class="main-image img-fluid" alt="{{ product.title }}">
+                    {% endif %}
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" class="hover-image img-fluid" alt="{{ product.title }}">
+                    {% endif %}
+                  </a>
+                  <div class="product-overlay">
+                    <div class="product-actions">
+                      <a href="{{ product.get_absolute_url }}" class="action-btn" data-bs-toggle="tooltip" title="مشاهده سریع">
+                        <i class="bi bi-eye"></i>
+                      </a>
+                      {% if product.is_in_stock %}
+                      <form method="post" action="{% url 'cart:cart_add_product' product.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="action-btn" data-bs-toggle="tooltip" title="افزودن به سبد خرید">
+                          <i class="bi bi-cart-plus"></i>
+                        </button>
+                      </form>
+                      {% endif %}
+                    </div>
+                  </div>
+                  
+                  <!-- Product Badges -->
+                  <div class="product-badges">
+                    {% if product.is_free %}
+                    <div class="product-badge free">رایگان</div>
+                    {% elif product.get_discount_percentage > 0 %}
+                    <div class="product-badge sale">-{{ product.get_discount_percentage }}%</div>
+                    {% endif %}
+                    
+                    {% if not product.is_in_stock %}
+                    <div class="product-badge out-of-stock">ناموجود</div>
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="product-details">
+                  <div class="product-category" dir="rtl">
+                    {% if product.category %}
+                    {{ product.category.name }}
+                    {% endif %}
+                  </div>
+                  <h4 class="product-title" dir="rtl">
+                    <a href="{{ product.get_absolute_url }}">{{ product.title }}</a>
+                  </h4>
+                  <div class="product-meta">
+                    <div class="product-price" dir="rtl">
+                      {% if product.is_free %}
+                      <span class="product-badge new">رایگان</span>
+                      {% elif product.is_discounted %}
+                      <span class="current-price">{{ product.get_final_price|floatformat:0 }} تومان</span>
+                      <span class="original-price">{{ product.price|floatformat:0 }} تومان</span>
+                      {% else %}
+                      <span class="current-price">{{ product.price|floatformat:0 }} تومان</span>
+                      {% endif %}
+                    </div>
+                  </div>
+                  
+                  {% if product.short_description %}
+                  <p class="product-description mt-2" dir="rtl">
+                    {{ product.short_description|truncatewords:10 }}
+                  </p>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+              <div class="alert alert-info text-center" role="alert" dir="rtl">
+                <i class="bi bi-info-circle"></i> هیچ محصولی یافت نشد.
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </section><!-- /Category Product List Section -->
+
+      <!-- Category Pagination Section -->
+      {% if is_paginated %}
+      <section id="category-pagination" class="category-pagination section">
+        <div class="container">
+          <nav class="d-flex justify-content-center" aria-label="Page navigation">
+            <ul>
+              {% if page_obj.has_previous %}
+              <li>
+                <a href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ page_obj.previous_page_number }}" aria-label="Previous page">
+                  <i class="bi bi-arrow-right"></i>
+                  <span class="d-none d-sm-inline">قبلی</span>
+                </a>
+              </li>
+              {% endif %}
+
+              {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li><a href="#" class="active">{{ num }}</a></li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li><a href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ num }}">{{ num }}</a></li>
+                {% elif num == page_obj.number|add:'-3' or num == page_obj.number|add:'3' %}
+                <li class="ellipsis">...</li>
+                {% endif %}
+              {% endfor %}
+
+              {% if page_obj.has_next %}
+              <li>
+                <a href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ page_obj.next_page_number }}" aria-label="Next page">
+                  <span class="d-none d-sm-inline">بعدی</span>
+                  <i class="bi bi-arrow-left"></i>
+                </a>
+              </li>
+              {% endif %}
+            </ul>
+          </nav>
+        </div>
+      </section><!-- /Category Pagination Section -->
+      {% endif %}
+
+    </div><!--/Main Content -->
+
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Function to remove price filter
+function removePriceFilter() {
+  const urlParams = new URLSearchParams(window.location.search);
+  urlParams.delete('min_price');
+  urlParams.delete('max_price');
+  window.location.href = window.location.pathname + '?' + urlParams.toString();
+}
+
+// Function to change items per page
+document.getElementById('itemsPerPage').addEventListener('change', function(e) {
+  const urlParams = new URLSearchParams(window.location.search);
+  urlParams.set('per_page', e.target.value);
+  window.location.href = window.location.pathname + '?' + urlParams.toString();
+});
+
+// Initialize tooltips
+document.addEventListener('DOMContentLoaded', function() {
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+  var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl);
+  });
+});
+</script>
+{% endblock %}

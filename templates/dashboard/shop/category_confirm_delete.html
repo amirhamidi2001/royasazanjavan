@@ -1,0 +1,19 @@
+{% extends 'dashboard/delete_template.html' %}
+
+{% block object_details %}
+    <p><strong>شناسه:</strong> {{ object.id }}</p>
+    <p><strong>نام:</strong> {{ object.name }}</p>
+    <p><strong>Slug:</strong> {{ object.slug }}</p>
+    {% if object.parent %}
+        <p><strong>دسته والد:</strong> {{ object.parent.name }}</p>
+    {% endif %}
+    <p><strong>تعداد محصولات:</strong> {{ object.products.count }}</p>
+    <p><strong>وضعیت:</strong> 
+        {% if object.is_active %}
+            <span class="text-green-600">فعال</span>
+        {% else %}
+            <span class="text-red-600">غیرفعال</span>
+        {% endif %}
+    </p>
+    <p><strong>تاریخ ایجاد:</strong> {{ object.created_at|date:"Y/m/d - H:i" }}</p>
+{% endblock %}

@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "courses.apps.CoursesConfig",
     "dashboard.apps.DashboardConfig",
     "orders.apps.OrdersConfig",
+    "shop.apps.ShopConfig",
     "website.apps.WebsiteConfig",
 ]
 

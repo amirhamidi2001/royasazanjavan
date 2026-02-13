@@ -125,7 +125,7 @@
 
               <div class="menu-footer">
                 {% if not is_enrolled %}
-                  <form method="POST" action="{% url 'cart:cart_add' course.id %}">
+                  <form method="POST" action="{% url 'cart:cart_add_course' course.id %}">
                     {% csrf_token %}
                     <button type="submit" class="btn-edit">ثبت‌نام در دوره <i class="bi bi-cart-plus"></i></button>
                   </form>
@@ -205,7 +205,7 @@
                         </div>
                         {% if not is_enrolled %}
                           <div>
-                            <form method="POST" action="{% url 'cart:cart_add' course.id %}">
+                            <form method="POST" action="{% url 'cart:cart_add_course' course.id %}">
                               {% csrf_token %}
                               <button type="submit" class="btn-edit">ثبت‌نام در دوره <i class="bi bi-cart-plus"></i></button>
                             </form>

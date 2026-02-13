@@ -1,0 +1,472 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.title }} | رویا سازان جوان{% endblock %}
+
+{% block content %}
+
+<!-- Page Title -->
+<div class="page-title light-background">
+  <div class="container d-lg-flex justify-content-between align-items-center">
+    <h1 class="mb-2 mb-lg-0" dir="rtl">{{ product.title }}</h1>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a href="{% url 'website:index' %}">صفحه اصلی</a></li>
+        <li><a href="{% url 'shop:product_list' %}">فروشگاه</a></li>
+        {% if product.category %}
+        <li><a href="{% url 'shop:product_list' %}?category={{ product.category.slug }}">{{ product.category.name }}</a></li>
+        {% endif %}
+        <li class="current">{{ product.title|truncatewords:5 }}</li>
+      </ol>
+    </nav>
+  </div>
+</div><!-- End Page Title -->
+
+<!-- Product Details Section -->
+<section id="product-details" class="product-details section">
+  <div class="container" data-aos="fade-up" data-aos-delay="100">
+    <div class="row g-4">
+      <!-- Product Gallery -->
+      <div class="col-lg-7" data-aos="zoom-in" data-aos-delay="150">
+        <div class="product-gallery">
+          <div class="main-showcase">
+            <div class="image-zoom-container">
+              {% if product.image %}
+              <img src="{{ product.image.url }}" 
+                   alt="{{ product.title }}" 
+                   class="img-fluid main-product-image drift-zoom" 
+                   id="main-product-image" 
+                   data-zoom="{{ product.image.url }}">
+              {% else %}
+              <img src="{% static 'images/default-product.jpg' %}" 
+                   alt="{{ product.title }}" 
+                   class="img-fluid main-product-image drift-zoom" 
+                   id="main-product-image" 
+                   data-zoom="{% static 'images/default-product.jpg' %}">
+              {% endif %}
+
+              <!-- Product Badges -->
+              <div class="product-badges">
+                {% if product.is_free %}
+                <div class="badge-free">رایگان</div>
+                {% elif product.get_discount_percentage > 0 %}
+                <div class="badge-sale">-{{ product.get_discount_percentage }}%</div>
+                {% endif %}
+                
+                {% if not product.is_in_stock %}
+                <div class="badge-out-of-stock">ناموجود</div>
+                {% endif %}
+              </div>
+
+              <div class="image-navigation">
+                <button class="nav-arrow prev-image image-nav-btn prev-image" type="button">
+                  <i class="bi bi-chevron-right"></i>
+                </button>
+                <button class="nav-arrow next-image image-nav-btn next-image" type="button">
+                  <i class="bi bi-chevron-left"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Thumbnails - اگر تصاویر بیشتری داشتیم -->
+          {% if product.images.all %}
+          <div class="thumbnail-grid">
+            {% for image in product.images.all %}
+            <div class="thumbnail-wrapper thumbnail-item {% if forloop.first %}active{% endif %}" 
+                 data-image="{{ image.image.url }}">
+              <img src="{{ image.image.url }}" alt="{{ product.title }} - تصویر {{ forloop.counter }}" class="img-fluid">
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Product Details -->
+      <div class="col-lg-5" data-aos="fade-left" data-aos-delay="200">
+        <div class="product-details">
+          <div class="product-badge-container">
+            {% if product.category %}
+            <span class="badge-category" dir="rtl">{{ product.category.name }}</span>
+            {% endif %}
+            <div class="rating-group">
+              <div class="stars">
+                {% if product.average_rating %}
+                  {% for i in "12345"|make_list %}
+                    {% if forloop.counter <= product.average_rating|floatformat:0|add:"0" %}
+                    <i class="bi bi-star-fill"></i>
+                    {% else %}
+                    <i class="bi bi-star"></i>
+                    {% endif %}
+                  {% endfor %}
+                {% else %}
+                <i class="bi bi-star"></i>
+                <i class="bi bi-star"></i>
+                <i class="bi bi-star"></i>
+                <i class="bi bi-star"></i>
+                <i class="bi bi-star"></i>
+                {% endif %}
+              </div>
+              {% if product.reviews_count %}
+              <span class="review-text" dir="rtl">({{ product.reviews_count }} نظر)</span>
+              {% else %}
+              <span class="review-text" dir="rtl">(بدون نظر)</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <h1 class="product-name" dir="rtl">{{ product.title }}</h1>
+
+          <div class="pricing-section">
+            <div class="price-display" dir="rtl">
+              {% if product.is_free %}
+              <span class="sale-price text-success">رایگان</span>
+              {% elif product.is_discounted %}
+              <span class="sale-price">{{ product.get_final_price|floatformat:0 }} تومان</span>
+              <span class="regular-price">{{ product.price|floatformat:0 }} تومان</span>
+              {% else %}
+              <span class="sale-price">{{ product.price|floatformat:0 }} تومان</span>
+              {% endif %}
+            </div>
+            {% if product.is_discounted %}
+            <div class="savings-info" dir="rtl">
+              <span class="save-amount">صرفه‌جویی: {{ product.get_discount_amount|floatformat:0 }} تومان</span>
+              <span class="discount-percent">({{ product.get_discount_percentage }}% تخفیف)</span>
+            </div>
+            {% endif %}
+          </div>
+
+          <div class="product-description">
+            {% if product.short_description %}
+            <p dir="rtl">{{ product.short_description }}</p>
+            {% else %}
+            <p dir="rtl">توضیح کوتاهی برای این محصول موجود نیست.</p>
+            {% endif %}
+          </div>
+
+          <div class="availability-status">
+            <div class="stock-indicator">
+              {% if product.is_in_stock %}
+              <i class="bi bi-check-circle-fill text-success"></i>
+              <span class="stock-text" dir="rtl">موجود</span>
+              {% else %}
+              <i class="bi bi-x-circle-fill text-danger"></i>
+              <span class="stock-text" dir="rtl">ناموجود</span>
+              {% endif %}
+            </div>
+            {% if product.is_in_stock and product.stock %}
+            <div class="quantity-left" dir="rtl">فقط {{ product.stock }} عدد باقی مانده</div>
+            {% endif %}
+          </div>
+
+          <!-- Product Type -->
+          <div class="variant-section">
+            <div class="color-selection">
+              <label class="variant-label" dir="rtl">نوع محصول:</label>
+              <div class="selected-variant" dir="rtl">
+                <span>
+                  {% if product.product_type == 'educational_package' %}
+                  بسته آموزشی
+                  {% elif product.product_type == 'software_package' %}
+                  بسته نرم‌افزاری
+                  {% elif product.product_type == 'book' %}
+                  کتاب
+                  {% else %}
+                  سایر
+                  {% endif %}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Purchase Options -->
+          <div class="purchase-section">
+            {% comment %} <div class="quantity-control">
+              <label class="control-label" dir="rtl">تعداد:</label>
+              <div class="quantity-input-group">
+                <div class="quantity-selector">
+                  <button class="quantity-btn decrease" type="button">
+                    <i class="bi bi-dash"></i>
+                  </button>
+                  <input type="number" class="quantity-input" value="1" min="1" {% if product.stock %}max="{{ product.stock }}"{% endif %}>
+                  <button class="quantity-btn increase" type="button">
+                    <i class="bi bi-plus"></i>
+                  </button>
+                </div>
+              </div>
+            </div> {% endcomment %}
+
+            <div class="action-buttons">
+              {% if product.is_in_stock %}
+              <form method="post" action="{% url 'cart:cart_add_product' product.id %}" class="add-to-cart-form">
+                {% csrf_token %}
+                <input type="hidden" name="quantity" value="1" id="quantity-input-hidden">
+                <button type="submit" class="btn primary-action" dir="rtl">
+                  <i class="bi bi-bag-plus"></i>
+                  افزودن به سبد خرید
+                </button>
+              </form>
+              {% else %}
+              <button class="btn primary-action" disabled dir="rtl">
+                <i class="bi bi-bag-plus"></i>
+                ناموجود
+              </button>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Benefits List -->
+          <div class="benefits-list">
+            <div class="benefit-item" dir="rtl">
+              <i class="bi bi-arrow-clockwise"></i>
+              <span>بازگشت ۷ روزه محصول</span>
+            </div>
+            <div class="benefit-item" dir="rtl">
+              <i class="bi bi-shield-check"></i>
+              <span>گارانتی ۱۸ ماهه</span>
+            </div>
+            <div class="benefit-item" dir="rtl">
+              <i class="bi bi-headset"></i>
+              <span>پشتیبانی ۲۴/۷</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Information Tabs -->
+    <div class="row mt-5" data-aos="fade-up" data-aos-delay="300">
+      <div class="col-12">
+        <div class="info-tabs-container">
+          <nav class="tabs-navigation nav">
+            <button class="nav-link active" 
+                    data-bs-toggle="tab" 
+                    data-bs-target="#product-overview" 
+                    type="button" 
+                    dir="rtl">توضیحات</button>
+            {% if features %}
+            <button class="nav-link" 
+                    data-bs-toggle="tab" 
+                    data-bs-target="#product-specifications" 
+                    type="button" 
+                    dir="rtl">مشخصات فنی</button>
+            {% endif %}
+            {% if product.reviews_count %}
+            <button class="nav-link" 
+                    data-bs-toggle="tab" 
+                    data-bs-target="#product-reviews" 
+                    type="button" 
+                    dir="rtl">نظرات ({{ product.reviews_count }})</button>
+            {% endif %}
+          </nav>
+
+          <div class="tab-content">
+            <!-- Overview Tab -->
+            <div class="tab-pane fade show active" id="product-overview">
+              <div class="overview-content">
+                <div class="row g-4">
+                  <div class="col-lg-8">
+                    <div class="content-section">
+                      <h3 dir="rtl">توضیحات محصول</h3>
+                      <div dir="rtl">{{ product.description|linebreaks }}</div>
+
+                      {% if features %}
+                      <h4 class="mt-4" dir="rtl">ویژگی‌های کلیدی</h4>
+                      <div class="highlights-grid">
+                        {% for feature in features|slice:":4" %}
+                        <div class="highlight-card" dir="rtl">
+                          <i class="bi bi-check-circle"></i>
+                          <h5>{{ feature.feature_name }}</h5>
+                          <p>{{ feature.feature_value }}</p>
+                        </div>
+                        {% endfor %}
+                      </div>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                  <div class="col-lg-4">
+                    <div class="package-contents">
+                      <h4 dir="rtl">محتوای بسته</h4>
+                      <ul class="contents-list">
+                        <li dir="rtl"><i class="bi bi-check-circle"></i>محصول اصلی</li>
+                        <li dir="rtl"><i class="bi bi-check-circle"></i>راهنمای استفاده</li>
+                        <li dir="rtl"><i class="bi bi-check-circle"></i>گارانتی محصول</li>
+                        <li dir="rtl"><i class="bi bi-check-circle"></i>پشتیبانی فنی</li>
+                        {% if product.product_type == 'software_package' %}
+                        <li dir="rtl"><i class="bi bi-check-circle"></i>لایسنس نرم‌افزار</li>
+                        <li dir="rtl"><i class="bi bi-check-circle"></i>راهنمای نصب</li>
+                        {% elif product.product_type == 'educational_package' %}
+                        <li dir="rtl"><i class="bi bi-check-circle"></i>فایل‌های آموزشی</li>
+                        <li dir="rtl"><i class="bi bi-check-circle"></i>نمونه سوالات</li>
+                        {% endif %}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Specifications Tab -->
+            {% if features %}
+            <div class="tab-pane fade" id="product-specifications">
+              <div class="technical-content">
+                <div class="row g-4">
+                  {% for feature in features %}
+                  <div class="col-md-6">
+                    <div class="tech-group">
+                      <div class="spec-table">
+                        <div class="spec-row" dir="rtl">
+                          <span class="spec-name">{{ feature.feature_name }}</span>
+                          <span class="spec-value">{{ feature.feature_value }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+            {% endif %}
+
+            <!-- Reviews Tab -->
+            {% if product.reviews_count %}
+            <div class="tab-pane fade" id="product-reviews">
+              <div class="reviews-content">
+                <div class="reviews-header">
+                  <div class="rating-overview">
+                    <div class="average-score">
+                      <div class="score-display">{{ product.average_rating|floatformat:1 }}</div>
+                      <div class="score-stars">
+                        {% for i in "12345"|make_list %}
+                          {% if forloop.counter <= product.average_rating|floatformat:0|add:"0" %}
+                          <i class="bi bi-star-fill"></i>
+                          {% else %}
+                          <i class="bi bi-star"></i>
+                          {% endif %}
+                        {% endfor %}
+                      </div>
+                      <div class="total-reviews" dir="rtl">{{ product.reviews_count }} نظر کاربران</div>
+                    </div>
+                  </div>
+
+                  <div class="write-review-cta">
+                    <h4 dir="rtl">نظر خود را ثبت کنید</h4>
+                    <p dir="rtl">به دیگران در انتخاب بهتر کمک کنید</p>
+                    <button class="btn review-btn" dir="rtl">ثبت نظر</button>
+                  </div>
+                </div>
+
+                <div class="customer-reviews-list">
+                  <!-- Reviews would go here -->
+                  <div class="alert alert-info text-center" role="alert" dir="rtl">
+                    <i class="bi bi-info-circle"></i> در حال حاضر هیچ نظری برای این محصول ثبت نشده است.
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section><!-- /Product Details Section -->
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize tooltips
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+  var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl);
+  });
+
+  // Quantity control
+  const decreaseBtn = document.querySelector('.quantity-btn.decrease');
+  const increaseBtn = document.querySelector('.quantity-btn.increase');
+  const quantityInput = document.querySelector('.quantity-input');
+  const hiddenQuantityInput = document.querySelector('#quantity-input-hidden');
+
+  if (decreaseBtn && increaseBtn && quantityInput) {
+    decreaseBtn.addEventListener('click', function() {
+      let currentValue = parseInt(quantityInput.value);
+      if (currentValue > 1) {
+        quantityInput.value = currentValue - 1;
+        if (hiddenQuantityInput) {
+          hiddenQuantityInput.value = quantityInput.value;
+        }
+      }
+    });
+
+    increaseBtn.addEventListener('click', function() {
+      let currentValue = parseInt(quantityInput.value);
+      const maxValue = parseInt(quantityInput.max) || 99;
+      if (currentValue < maxValue) {
+        quantityInput.value = currentValue + 1;
+        if (hiddenQuantityInput) {
+          hiddenQuantityInput.value = quantityInput.value;
+        }
+      }
+    });
+
+    quantityInput.addEventListener('change', function() {
+      let value = parseInt(this.value);
+      const minValue = parseInt(this.min) || 1;
+      const maxValue = parseInt(this.max) || 99;
+      
+      if (value < minValue) {
+        this.value = minValue;
+      } else if (value > maxValue) {
+        this.value = maxValue;
+      }
+      
+      if (hiddenQuantityInput) {
+        hiddenQuantityInput.value = this.value;
+      }
+    });
+  }
+
+  // Image gallery functionality (if multiple images)
+  const thumbnailItems = document.querySelectorAll('.thumbnail-item');
+  const mainImage = document.getElementById('main-product-image');
+  
+  if (thumbnailItems.length > 0 && mainImage) {
+    thumbnailItems.forEach(item => {
+      item.addEventListener('click', function() {
+        // Remove active class from all thumbnails
+        thumbnailItems.forEach(thumb => thumb.classList.remove('active'));
+        
+        // Add active class to clicked thumbnail
+        this.classList.add('active');
+        
+        // Update main image
+        const newImageSrc = this.getAttribute('data-image');
+        mainImage.src = newImageSrc;
+        mainImage.setAttribute('data-zoom', newImageSrc);
+        
+        // If using drift zoom, you might need to reinitialize
+        if (typeof Drift !== 'undefined') {
+          // Reinitialize drift zoom if needed
+        }
+      });
+    });
+  }
+
+  // Initialize drift zoom
+  if (typeof Drift !== 'undefined' && document.querySelector('.drift-zoom')) {
+    new Drift(document.querySelector('.drift-zoom'), {
+      paneContainer: document.querySelector('.image-zoom-container'),
+      inlinePane: false,
+      zoomFactor: 2.5,
+      containInline: true,
+      hoverBoundingBox: true
+    });
+  }
+});
+</script>
+{% endblock %}

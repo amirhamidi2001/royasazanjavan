@@ -9,5 +9,6 @@ urlpatterns = [
     path("courses/", include("dashboard.courses.urls")),
     path("cart/", include("dashboard.cart.urls")),
     path("orders/", include("dashboard.orders.urls")),
+    path("shop/", include("dashboard.shop.urls")),
     path("website/", include("dashboard.website.urls")),
 ]

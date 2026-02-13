@@ -1,0 +1,24 @@
+{% extends 'dashboard/delete_template.html' %}
+
+{% block object_details %}
+    <p><strong>شناسه:</strong> {{ object.id }}</p>
+    <p><strong>عنوان:</strong> {{ object.title }}</p>
+    <p><strong>دسته‌بندی:</strong> {{ object.category.name|default:"-" }}</p>
+    <p><strong>نوع:</strong> {{ object.get_product_type_display }}</p>
+    <p><strong>قیمت:</strong> 
+        {% if object.is_free %}
+            <span class="text-green-600">رایگان</span>
+        {% else %}
+            {{ object.get_final_price|floatformat:0 }} تومان
+        {% endif %}
+    </p>
+    <p><strong>موجودی:</strong> {{ object.stock }} عدد</p>
+    <p><strong>وضعیت:</strong> 
+        {% if object.is_active %}
+            <span class="text-green-600">فعال</span>
+        {% else %}
+            <span class="text-red-600">غیرفعال</span>
+        {% endif %}
+    </p>
+    <p><strong>تاریخ ایجاد:</strong> {{ object.created_at|date:"Y/m/d - H:i" }}</p>
+{% endblock %}
