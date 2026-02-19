@@ -9,12 +9,9 @@ from dashboard.mixins import (
 )
 
 
-# ==================== Category Views ====================
-
-
 class CategoryListView(DashboardMixin, ListView):
     """
-    نمایش لیست دسته‌بندی‌های محصولات
+    Displays a paginated list of product categories in the dashboard.
     """
 
     model = Category
@@ -24,6 +21,9 @@ class CategoryListView(DashboardMixin, ListView):
     ordering = ["name"]
 
     def get_queryset(self):
+        """
+        Returns filtered and annotated queryset:
+        """
         queryset = super().get_queryset().annotate(products_count=Count("products"))
         search_query = self.request.GET.get("search", "")
         status_filter = self.request.GET.get("status", "")
@@ -41,6 +41,9 @@ class CategoryListView(DashboardMixin, ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+        """
+        Adds additional context:
+        """
         context = super().get_context_data(**kwargs)
         context["search_query"] = self.request.GET.get("search", "")
         context["status_filter"] = self.request.GET.get("status", "")
@@ -51,7 +54,7 @@ class CategoryListView(DashboardMixin, ListView):
 
 class CategoryCreateView(DashboardMixin, SuccessMessageMixin, CreateView):
     """
-    ایجاد دسته‌بندی جدید
+    Handles creation of a new category.
     """
 
     model = Category
@@ -61,6 +64,9 @@ class CategoryCreateView(DashboardMixin, SuccessMessageMixin, CreateView):
     success_message = "دسته‌بندی با موفقیت ایجاد شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Adds page title and submit button text.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "ایجاد دسته‌بندی جدید"
         context["submit_text"] = "ایجاد دسته‌بندی"
@@ -69,7 +75,7 @@ class CategoryCreateView(DashboardMixin, SuccessMessageMixin, CreateView):
 
 class CategoryUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
     """
-    ویرایش دسته‌بندی
+    Handles updating an existing category.
     """
 
     model = Category
@@ -79,6 +85,9 @@ class CategoryUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
     success_message = "دسته‌بندی با موفقیت ویرایش شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Adds page title and submit button text.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "ویرایش دسته‌بندی"
         context["submit_text"] = "ذخیره تغییرات"
@@ -87,7 +96,7 @@ class CategoryUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
 
 class CategoryDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     """
-    حذف دسته‌بندی
+    Handles deletion of a category.
     """
 
     model = Category
@@ -96,17 +105,17 @@ class CategoryDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     delete_success_message = "دسته‌بندی با موفقیت حذف شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Adds page title to context.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "حذف دسته‌بندی"
         return context
 
 
-# ==================== Product Views ====================
-
-
 class ProductListView(DashboardMixin, ListView):
     """
-    نمایش لیست محصولات
+    Displays a paginated list of products.
     """
 
     model = Product
@@ -116,6 +125,9 @@ class ProductListView(DashboardMixin, ListView):
     ordering = ["-created_at"]
 
     def get_queryset(self):
+        """
+        Returns filtered queryset:
+        """
         queryset = super().get_queryset().select_related("category")
         search_query = self.request.GET.get("search", "")
         status_filter = self.request.GET.get("status", "")
@@ -143,6 +155,9 @@ class ProductListView(DashboardMixin, ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+        """
+        Adds filtering values, category list, title,
+        """
         context = super().get_context_data(**kwargs)
         context["search_query"] = self.request.GET.get("search", "")
         context["status_filter"] = self.request.GET.get("status", "")
@@ -156,7 +171,7 @@ class ProductListView(DashboardMixin, ListView):
 
 class ProductCreateView(DashboardMixin, SuccessMessageMixin, CreateView):
     """
-    ایجاد محصول جدید
+    Handles creation of a new product.
     """
 
     model = Product
@@ -180,6 +195,9 @@ class ProductCreateView(DashboardMixin, SuccessMessageMixin, CreateView):
     success_message = "محصول با موفقیت ایجاد شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Adds page title and submit button text.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "ایجاد محصول جدید"
         context["submit_text"] = "ایجاد محصول"
@@ -188,7 +206,7 @@ class ProductCreateView(DashboardMixin, SuccessMessageMixin, CreateView):
 
 class ProductUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
     """
-    ویرایش محصول
+    Handles updating an existing product.
     """
 
     model = Product
@@ -212,6 +230,9 @@ class ProductUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
     success_message = "محصول با موفقیت ویرایش شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Adds page title and submit button text.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "ویرایش محصول"
         context["submit_text"] = "ذخیره تغییرات"
@@ -220,7 +241,7 @@ class ProductUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
 
 class ProductDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     """
-    حذف محصول
+    Handles deletion of a product.
     """
 
     model = Product
@@ -229,17 +250,17 @@ class ProductDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     delete_success_message = "محصول با موفقیت حذف شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Adds page title to context.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "حذف محصول"
         return context
 
 
-# ==================== ProductFeature Views ====================
-
-
 class ProductFeatureListView(DashboardMixin, ListView):
     """
-    نمایش لیست ویژگی‌های محصولات
+    Displays a paginated list of product features.
     """
 
     model = ProductFeature
@@ -249,6 +270,9 @@ class ProductFeatureListView(DashboardMixin, ListView):
     ordering = ["product", "order"]
 
     def get_queryset(self):
+        """
+        Returns filtered queryset:
+        """
         queryset = super().get_queryset().select_related("product")
         search_query = self.request.GET.get("search", "")
         product_filter = self.request.GET.get("product", "")
@@ -266,6 +290,10 @@ class ProductFeatureListView(DashboardMixin, ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+        """
+        Adds filtering values, active product list,
+        page title, and create_url to context.
+        """
         context = super().get_context_data(**kwargs)
         context["search_query"] = self.request.GET.get("search", "")
         context["product_filter"] = self.request.GET.get("product", "")
@@ -277,7 +305,7 @@ class ProductFeatureListView(DashboardMixin, ListView):
 
 class ProductFeatureCreateView(DashboardMixin, SuccessMessageMixin, CreateView):
     """
-    ایجاد ویژگی محصول جدید
+    Handles creation of a new product feature.
     """
 
     model = ProductFeature
@@ -287,6 +315,9 @@ class ProductFeatureCreateView(DashboardMixin, SuccessMessageMixin, CreateView):
     success_message = "ویژگی محصول با موفقیت ایجاد شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Adds page title and submit button text.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "ایجاد ویژگی محصول"
         context["submit_text"] = "ایجاد ویژگی"
@@ -295,7 +326,7 @@ class ProductFeatureCreateView(DashboardMixin, SuccessMessageMixin, CreateView):
 
 class ProductFeatureUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
     """
-    ویرایش ویژگی محصول
+    Handles updating an existing product feature.
     """
 
     model = ProductFeature
@@ -305,6 +336,9 @@ class ProductFeatureUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
     success_message = "ویژگی محصول با موفقیت ویرایش شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Adds page title and submit button text.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "ویرایش ویژگی محصول"
         context["submit_text"] = "ذخیره تغییرات"
@@ -313,7 +347,7 @@ class ProductFeatureUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
 
 class ProductFeatureDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     """
-    حذف ویژگی محصول
+    Handles deletion of a product feature.
     """
 
     model = ProductFeature
@@ -322,6 +356,9 @@ class ProductFeatureDeleteView(DashboardMixin, DeleteSuccessMessageMixin, Delete
     delete_success_message = "ویژگی محصول با موفقیت حذف شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Adds page title to context.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "حذف ویژگی محصول"
         return context

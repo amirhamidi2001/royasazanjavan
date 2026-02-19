@@ -11,27 +11,49 @@ from .models import ConsultationRequest, JobApplication
 
 
 class IndexView(TemplateView):
+    """
+    View for rendering the main landing page of the website.
+    """
+
     template_name = "website/index.html"
 
 
 class AboutView(TemplateView):
+    """
+    View for rendering the about us page with company information.
+    """
+
     template_name = "website/about.html"
 
 
 class FAQView(TemplateView):
+    """
+    View for rendering the frequently asked questions page.
+    """
+
     template_name = "website/faq.html"
 
 
 class TosView(TemplateView):
+    """
+    View for rendering the terms of service and legal agreement page.
+    """
+
     template_name = "website/tos.html"
 
 
 class PageNotFoundView(TemplateView):
+    """
+    View for rendering the 404 error page when a page is not found.
+    """
+
     template_name = "website/404.html"
 
 
 class ContactView(FormView):
-    """Handles display and processing of the contact form."""
+    """
+    Handles display and processing of the contact form.
+    """
 
     template_name = "website/contact.html"
     form_class = ContactForm
@@ -48,7 +70,9 @@ class ContactView(FormView):
 
 
 class JobApplicationView(CreateView):
-    """Handles job application submissions."""
+    """
+    Handles job application submissions.
+    """
 
     model = JobApplication
     form_class = JobApplicationForm
@@ -67,7 +91,9 @@ class JobApplicationView(CreateView):
 
 
 class SupportView(CreateView):
-    """Handles consultation request submissions."""
+    """
+    Handles consultation request submissions.
+    """
 
     model = ConsultationRequest
     form_class = ConsultationRequestForm

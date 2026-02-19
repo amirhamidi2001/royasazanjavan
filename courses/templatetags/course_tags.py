@@ -1,9 +1,7 @@
 from django import template
-from ..models import Course  # Ensure correct import path
+from ..models import Course
 
 register = template.Library()
-
-# ... existing article tag ...
 
 
 @register.inclusion_tag("courses/latest_courses.html")

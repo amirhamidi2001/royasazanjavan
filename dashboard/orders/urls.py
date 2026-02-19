@@ -4,7 +4,6 @@ from . import views
 app_name = "orders"
 
 urlpatterns = [
-    # Order URLs
     path("orders/", views.OrderListView.as_view(), name="order-list"),
     path(
         "orders/<int:pk>/update/",
@@ -16,7 +15,6 @@ urlpatterns = [
         views.OrderDeleteView.as_view(),
         name="order-delete",
     ),
-    # Coupon URLs
     path("coupons/", views.CouponListView.as_view(), name="coupon-list"),
     path("coupons/create/", views.CouponCreateView.as_view(), name="coupon-create"),
     path(

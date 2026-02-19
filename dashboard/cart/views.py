@@ -11,12 +11,9 @@ from dashboard.mixins import (
 )
 
 
-# ==================== Cart Views ====================
-
-
 class CartListView(DashboardMixin, ListView):
     """
-    نمایش لیست سبدهای خرید
+    Dashboard view for listing all shopping carts
     """
 
     model = CartModel
@@ -26,6 +23,7 @@ class CartListView(DashboardMixin, ListView):
     ordering = ["-updated_date"]
 
     def get_queryset(self):
+        """Return optimized queryset with related user and items"""
         queryset = (
             super().get_queryset().select_related("user").prefetch_related("items")
         )
@@ -37,6 +35,7 @@ class CartListView(DashboardMixin, ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+        """Add search query and page title to the template context."""
         context = super().get_context_data(**kwargs)
         context["search_query"] = self.request.GET.get("search", "")
         context["title"] = "مدیریت سبدهای خرید"
@@ -45,8 +44,7 @@ class CartListView(DashboardMixin, ListView):
 
 class CartDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     """
-    حذف سبد خرید
-    """
+    Dashboard view for deleting a shopping cart"""
 
     model = CartModel
     template_name = "dashboard/cart/cart_confirm_delete.html"
@@ -54,6 +52,7 @@ class CartDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     delete_success_message = "سبد خرید با موفقیت حذف شد."
 
     def get_context_data(self, **kwargs):
+        """Add page title to the delete confirmation template context."""
         context = super().get_context_data(**kwargs)
         context["title"] = "حذف سبد خرید"
         return context

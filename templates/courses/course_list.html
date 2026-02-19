@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}
   دوره های آموزشی | رویا سازان جوان
@@ -70,7 +71,7 @@
                   <h4 class="product-title"><a href="{% url 'courses:course_detail' course.slug %}">{{ course.title }}</a></h4>
                   <div class="product-category">{{ course.instructor.user_profile.get_fullname }}</div>
                   <div class="product-meta">
-                    <div class="product-price">{{ course.price }}</div>
+                    <div class="product-price">{{ course.price|floatformat:0|intcomma }} تومان</div>
                     <div class="product-rating">
                       {% if course.avg_rating %}
                         <i class="bi bi-star-fill"></i>

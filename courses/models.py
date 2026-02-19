@@ -20,10 +20,14 @@ class Course(models.Model):
         _("duration (hours)"), help_text=_("Total duration of the course in hours")
     )
     price = models.DecimalField(
-        _("price"), max_digits=10, decimal_places=2, validators=[MinValueValidator(0)]
+        _("price"), max_digits=10, decimal_places=0, validators=[MinValueValidator(0)]
     )
     thumbnail = models.ImageField(
-        _("thumbnail"), upload_to="courses/thumbnails/", blank=True, null=True
+        _("thumbnail"),
+        upload_to="courses/thumbnails/",
+        default="courses/default.webp",
+        blank=True,
+        null=True,
     )
     is_active = models.BooleanField(_("is active"), default=True)
     students = models.ManyToManyField(

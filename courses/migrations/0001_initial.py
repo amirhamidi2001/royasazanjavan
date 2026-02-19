@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
                 (
                     "price",
                     models.DecimalField(
-                        decimal_places=2,
+                        decimal_places=0,
                         max_digits=10,
                         validators=[django.core.validators.MinValueValidator(0)],
                         verbose_name="price",

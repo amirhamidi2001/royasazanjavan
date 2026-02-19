@@ -46,26 +46,26 @@ class Order(models.Model):
 
     # Payment Information
     total_price = models.DecimalField(
-        _("مبلغ کل"), max_digits=10, decimal_places=2, validators=[MinValueValidator(0)]
+        _("مبلغ کل"), max_digits=10, decimal_places=0, validators=[MinValueValidator(0)]
     )
     discount_amount = models.DecimalField(
         _("مبلغ تخفیف"),
         max_digits=10,
-        decimal_places=2,
+        decimal_places=0,
         default=0,
         validators=[MinValueValidator(0)],
     )
     tax_amount = models.DecimalField(
         _("مبلغ مالیات"),
         max_digits=10,
-        decimal_places=2,
+        decimal_places=0,
         default=0,
         validators=[MinValueValidator(0)],
     )
     final_price = models.DecimalField(
         _("مبلغ نهایی"),
         max_digits=10,
-        decimal_places=2,
+        decimal_places=0,
         validators=[MinValueValidator(0)],
     )
 
@@ -181,7 +181,7 @@ class OrderItem(models.Model):
         verbose_name=_("دوره"),
     )
     price = models.DecimalField(
-        _("قیمت"), max_digits=10, decimal_places=2, validators=[MinValueValidator(0)]
+        _("قیمت"), max_digits=10, decimal_places=0, validators=[MinValueValidator(0)]
     )
     quantity = models.PositiveIntegerField(
         _("تعداد"), default=1, validators=[MinValueValidator(1)]
@@ -216,7 +216,7 @@ class Coupon(models.Model):
     discount_amount = models.DecimalField(
         _("مبلغ تخفیف"),
         max_digits=10,
-        decimal_places=2,
+        decimal_places=0,
         default=0,
         validators=[MinValueValidator(0)],
         help_text=_("اگر مبلغ ثابت تخفیف دارید"),
@@ -228,7 +228,7 @@ class Coupon(models.Model):
     min_purchase_amount = models.DecimalField(
         _("حداقل مبلغ خرید"),
         max_digits=10,
-        decimal_places=2,
+        decimal_places=0,
         default=0,
         validators=[MinValueValidator(0)],
     )

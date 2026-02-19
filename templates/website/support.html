@@ -40,7 +40,7 @@
             <i class="bi bi-chat-text"></i>
             <h4>چت زنده</h4>
             <p>با تیم پشتیبانی ما چت کنید</p>
-            <a href="#" class="action-button">درخواست چت</a>
+            <a href="#contact-2" class="action-button">درخواست چت</a>
           </div>
         </div>
 
@@ -58,55 +58,55 @@
             <i class="bi bi-geo-alt-fill"></i>
             <h4>حضوری</h4>
             <p>ملاقات حضوری با کارشناسان ما</p>
-            <a href="#" class="action-button">رزرو وقت مشاوره حضوری</a>
+            <a href="#contact-2" class="action-button">رزرو وقت مشاوره حضوری</a>
           </div>
         </div>
       </div>
 
       <!-- Help Topics -->
       <div class="help-categories" data-aos="fade-up" data-aos-delay="200">
-        <h3>مباحث راهنمایی محبوب</h3>
+        <h3>مباحث آموزشی پرکاربرد</h3>
         <div class="category-cards">
-          <a href="#" class="category-card" data-aos="zoom-in" data-aos-delay="100">
+          <a href="#contact-2" class="category-card" data-aos="zoom-in" data-aos-delay="100">
             <span class="icon"><i class="bi bi-box-seam"></i></span>
-            <h5>سفارش‌ها و ارسال</h5>
+            <h5>حسابداری کاربردی</h5>
             <ul>
-              <li>پیگیری سفارش</li>
-              <li>روش‌های ارسال</li>
-              <li>مرجوعی و تعویض</li>
+              <li>آموزش حسابداری مقدماتی</li>
+              <li>ثبت اسناد حسابداری</li>
+              <li>تهیه گزارش‌های مالی</li>
             </ul>
             <span class="arrow"><i class="bi bi-arrow-right"></i></span>
           </a>
 
-          <a href="#" class="category-card" data-aos="zoom-in" data-aos-delay="200">
+          <a href="#contact-2" class="category-card" data-aos="zoom-in" data-aos-delay="200">
             <span class="icon"><i class="bi bi-wallet2"></i></span>
-            <h5>صورتحساب و پرداخت‌ها</h5>
+            <h5>مالیات و تکالیف قانونی</h5>
             <ul>
-              <li>روش‌های پرداخت</li>
-              <li>فاکتورها</li>
-              <li>وضعیت بازپرداخت</li>
+              <li>آشنایی با انواع مالیات</li>
+              <li>تکالیف مؤدیان</li>
+              <li>جرائم و بخشودگی‌ها</li>
             </ul>
             <span class="arrow"><i class="bi bi-arrow-right"></i></span>
           </a>
 
-          <a href="#" class="category-card" data-aos="zoom-in" data-aos-delay="300">
+          <a href="#contact-2" class="category-card" data-aos="zoom-in" data-aos-delay="300">
             <span class="icon"><i class="bi bi-person-gear"></i></span>
-            <h5>تنظیمات حساب کاربری</h5>
+            <h5>اظهارنامه و ارزش افزوده</h5>
             <ul>
-              <li>مالیات مستقیم و غیرمستقیم</li>
-              <li>اظهارنامه مالیاتی چیست</li>
+              <li>نحوه تنظیم اظهارنامه مالیاتی</li>
               <li>مالیات بر ارزش افزوده</li>
+              <li>ارسال الکترونیکی اظهارنامه</li>
             </ul>
             <span class="arrow"><i class="bi bi-arrow-right"></i></span>
           </a>
 
-          <a href="#" class="category-card" data-aos="zoom-in" data-aos-delay="400">
+          <a href="#contact-2" class="category-card" data-aos="zoom-in" data-aos-delay="400">
             <span class="icon"><i class="bi bi-shield-check"></i></span>
-            <h5>مشاور مالیاتی</h5>
+            <h5>مشاوره و پشتیبانی تخصصی</h5>
             <ul>
-              <li>اظهارنامه مالیاتی</li>
-              <li>مالیات مستقیم و غیرمستقیم</li>
-              <li>معافیت‌های مالیاتی</li>
+              <li>مشاوره مالیاتی کسب‌وکارها</li>
+              <li>بررسی پرونده‌های مالیاتی</li>
+              <li>بهینه‌سازی ساختار مالی</li>
             </ul>
             <span class="arrow"><i class="bi bi-arrow-right"></i></span>
           </a>
@@ -121,13 +121,13 @@
               <h3>منابع آموزشی</h3>
               <p class="subtitle">با استفاده از منابع جامع ما، پاسخ‌های خود را سریع پیدا کنید</p>
               <div class="resource-links">
-                <a href="#" class="resource-link">
+                <a href="{% url 'courses:course_list' %}" class="resource-link">
                   <i class="bi bi-play-circle"></i>
                   <div class="link-content">
                     <h6>آموزش‌های ویدیویی</h6>
                   </div>
                 </a>
-                <a href="#" class="resource-link">
+                <a href="{% url 'articles:article_list' %}" class="resource-link">
                   <i class="bi bi-file-text"></i>
                   <div class="link-content">
                     <h6>مقالات</h6>
@@ -186,7 +186,6 @@
 
   <!-- Contact 2 Section -->
   <section id="contact-2" class="contact-2 section">
-
     <!-- Google Maps (Full Width) -->
     <div class="map-section"></div>
 

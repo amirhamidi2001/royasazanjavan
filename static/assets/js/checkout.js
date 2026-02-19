@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Format number with thousand separator
     function formatNumber(number) {
-        return new Intl.NumberFormat('fa-IR').format(number);
+        return new Intl.NumberFormat('en-US').format(number);
     }
     
     // Show notification

@@ -11,7 +11,7 @@ from dashboard.mixins import (
 
 class UserListView(DashboardMixin, ListView):
     """
-    نمایش لیست کاربران
+    Display a paginated list of users in the dashboard.
     """
 
     model = User
@@ -21,6 +21,9 @@ class UserListView(DashboardMixin, ListView):
     ordering = ["-created_date"]
 
     def get_queryset(self):
+        """
+        Return optimized queryset with optional search filtering.
+        """
         queryset = super().get_queryset().select_related("user_profile")
         search_query = self.request.GET.get("search", "")
 
@@ -34,6 +37,9 @@ class UserListView(DashboardMixin, ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+        """
+        Add search query and page title to context.
+        """
         context = super().get_context_data(**kwargs)
         context["search_query"] = self.request.GET.get("search", "")
         context["title"] = "مدیریت کاربران"
@@ -42,7 +48,7 @@ class UserListView(DashboardMixin, ListView):
 
 class UserCreateView(DashboardMixin, SuccessMessageMixin, CreateView):
     """
-    ایجاد کاربر جدید
+    Create a new user from the dashboard.
     """
 
     model = User
@@ -52,19 +58,25 @@ class UserCreateView(DashboardMixin, SuccessMessageMixin, CreateView):
     success_message = "کاربر با موفقیت ایجاد شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Add page title and submit button text to context.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "ایجاد کاربر جدید"
         context["submit_text"] = "ایجاد کاربر"
         return context
 
     def form_valid(self, form):
+        """
+        Set a randomly generated password before saving.
+        """
         form.instance.set_password(User.objects.make_random_password())
         return super().form_valid(form)
 
 
 class UserUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
     """
-    ویرایش کاربر
+    Update an existing user from the dashboard.
     """
 
     model = User
@@ -74,6 +86,9 @@ class UserUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
     success_message = "کاربر با موفقیت ویرایش شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Add page title and submit button text to context.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "ویرایش کاربر"
         context["submit_text"] = "ذخیره تغییرات"
@@ -82,7 +97,7 @@ class UserUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
 
 class UserDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     """
-    حذف کاربر
+    Delete a user from the dashboard.
     """
 
     model = User
@@ -91,17 +106,17 @@ class UserDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     delete_success_message = "کاربر با موفقیت حذف شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Add page title to context.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "حذف کاربر"
         return context
 
 
-# ==================== Profile Views ====================
-
-
 class ProfileListView(DashboardMixin, ListView):
     """
-    نمایش لیست پروفایل‌ها
+    Display a paginated list of user profiles in the dashboard.
     """
 
     model = Profile
@@ -111,6 +126,9 @@ class ProfileListView(DashboardMixin, ListView):
     ordering = ["-created_date"]
 
     def get_queryset(self):
+        """
+        Return optimized queryset with optional search filtering.
+        """
         queryset = super().get_queryset().select_related("user")
         search_query = self.request.GET.get("search", "")
 
@@ -125,6 +143,9 @@ class ProfileListView(DashboardMixin, ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+        """
+        Add search query and page title to context.
+        """
         context = super().get_context_data(**kwargs)
         context["search_query"] = self.request.GET.get("search", "")
         context["title"] = "مدیریت پروفایل‌ها"
@@ -133,7 +154,7 @@ class ProfileListView(DashboardMixin, ListView):
 
 class ProfileUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
     """
-    ویرایش پروفایل
+    Update an existing user profile from the dashboard.
     """
 
     model = Profile
@@ -143,6 +164,9 @@ class ProfileUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
     success_message = "پروفایل با موفقیت ویرایش شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Add page title and submit button text to context.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "ویرایش پروفایل"
         context["submit_text"] = "ذخیره تغییرات"
@@ -151,7 +175,7 @@ class ProfileUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
 
 class ProfileDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     """
-    حذف پروفایل
+    Delete a user profile from the dashboard.
     """
 
     model = Profile
@@ -160,6 +184,9 @@ class ProfileDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     delete_success_message = "پروفایل با موفقیت حذف شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Add page title to context.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "حذف پروفایل"
         return context

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}فروشگاه | رویا سازان جوان{% endblock %}
 
@@ -345,10 +346,10 @@
                       {% if product.is_free %}
                       <span class="product-badge new">رایگان</span>
                       {% elif product.is_discounted %}
-                      <span class="current-price">{{ product.get_final_price|floatformat:0 }} تومان</span>
-                      <span class="original-price">{{ product.price|floatformat:0 }} تومان</span>
+                      <span class="current-price">{{ product.get_final_price|floatformat:0|intcomma }} تومان</span>
+                      <span class="original-price">{{ product.price|floatformat:0|intcomma }} تومان</span>
                       {% else %}
-                      <span class="current-price">{{ product.price|floatformat:0 }} تومان</span>
+                      <span class="current-price">{{ product.price|floatformat:0|intcomma }} تومان</span>
                       {% endif %}
                     </div>
                   </div>
@@ -362,11 +363,18 @@
               </div>
             </div>
             {% empty %}
-            <div class="col-12">
-              <div class="alert alert-info text-center" role="alert" dir="rtl">
-                <i class="bi bi-info-circle"></i> هیچ محصولی یافت نشد.
+            <!-- Privacy Section -->
+            <section id="privacy" class="privacy section">
+              <div class="container" data-aos="fade-up">
+                <!-- Header -->
+                <div class="privacy-header" data-aos="fade-up">
+                  <div class="header-content">
+                    <h2><i class="bi bi-info-circle"></i></h2>
+                    <h4>هیچ محصولی یافت نشد.</h4>
+                  </div>
+                </div>
               </div>
-            </div>
+            </section>
             {% endfor %}
           </div>
         </div>

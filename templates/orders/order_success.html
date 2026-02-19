@@ -13,8 +13,12 @@
       <h1 class="mb-2 mb-lg-0">پرداخت موفق</h1>
       <nav class="breadcrumbs">
         <ol>
-          <li><a href="{% url 'website:index' %}">صفحه اصلی</a></li>
-          <li><a href="{% url 'orders:order_list' %}">سفارشات</a></li>
+          <li>
+            <a href="{% url 'website:index' %}">صفحه اصلی</a>
+          </li>
+          <li>
+            <a href="{% url 'orders:order_list' %}">سفارشات</a>
+          </li>
           <li class="current">پرداخت موفق</li>
         </ol>
       </nav>
@@ -32,13 +36,11 @@
             <div class="success-icon mb-4">
               <i class="bi bi-check-circle-fill text-success" style="font-size: 80px;"></i>
             </div>
-            
+
             <!-- Success Message -->
             <h2 class="mb-3">پرداخت شما با موفقیت انجام شد!</h2>
-            <p class="lead text-muted mb-4">
-              از خرید شما متشکریم. اکنون می‌توانید به دوره‌های خریداری شده دسترسی داشته باشید.
-            </p>
-            
+            <p class="lead text-muted mb-4">از خرید شما متشکریم. اکنون می‌توانید به دوره‌های خریداری شده دسترسی داشته باشید.</p>
+
             <!-- Order Details Card -->
             <div class="order-info-card mb-4">
               <div class="row">
@@ -63,49 +65,38 @@
                 <div class="col-md-6 mb-3">
                   <div class="info-item">
                     <span class="info-label">تاریخ پرداخت:</span>
-                    <span class="info-value">{{ order.payment_date|date:"Y/m/d - H:i" }}</span>
+                    <span class="info-value">{{ order.payment_date|date:'Y/m/d - H:i' }}</span>
                   </div>
                 </div>
               </div>
             </div>
-            
+
             <!-- Purchased Courses -->
             <div class="purchased-courses mb-4">
               <h4 class="mb-3">دوره‌های خریداری شده:</h4>
               <div class="row">
                 {% for item in order.items.all %}
-                <div class="col-md-6 mb-3">
-                  <div class="course-card-mini">
-                    {% if item.course.thumbnail %}
-                      <img src="{{ item.course.thumbnail.url }}" 
-                           alt="{{ item.course.title }}" 
-                           class="course-thumb" />
-                    {% endif %}
-                    <div class="course-info">
-                      <h6>{{ item.course.title }}</h6>
-                      <a href="#" 
-                         class="btn btn-sm btn-primary mt-2">
-                        <i class="bi bi-play-circle"></i> شروع یادگیری
-                      </a>
+                  <div class="col-md-6 mb-3">
+                    <div class="course-card-mini">
+                      {% if item.course.thumbnail %}
+                        <img src="{{ item.course.thumbnail.url }}" alt="{{ item.course.title }}" class="course-thumb" />
+                      {% endif %}
+                      <div class="course-info">
+                        <h6>{{ item.course.title }}</h6>
+                        <a href="#" class="btn btn-sm btn-primary mt-2"><i class="bi bi-play-circle"></i> شروع یادگیری</a>
+                      </div>
                     </div>
                   </div>
-                </div>
                 {% endfor %}
               </div>
             </div>
-            
+
             <!-- Action Buttons -->
             <div class="action-buttons">
-              <a href="{% url 'orders:order_detail' order.id %}" 
-                 class="btn btn-outline-primary me-2">
-                <i class="bi bi-receipt"></i> مشاهده جزئیات سفارش
-              </a>
-              <a href="{% url 'courses:course_list' %}" 
-                 class="btn btn-accent">
-                <i class="bi bi-mortarboard"></i> مشاهده دوره‌های بیشتر
-              </a>
+              <a href="{% url 'orders:order_detail' order.id %}" class="btn btn-outline-primary me-2"><i class="bi bi-receipt"></i> مشاهده جزئیات سفارش</a>
+              <a href="{% url 'courses:course_list' %}" class="btn btn-accent"><i class="bi bi-mortarboard"></i> مشاهده دوره‌های بیشتر</a>
             </div>
-            
+
             <!-- Email Notification -->
             <div class="alert alert-info mt-4">
               <i class="bi bi-envelope"></i>
@@ -117,13 +108,13 @@
     </div>
   </section>
   <!-- End Success Section -->
-  
+
   <style>
     .success-card {
       background: #fff;
       border-radius: 15px;
       padding: 50px 30px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
     }
     
     .order-info-card {
@@ -162,7 +153,7 @@
     
     .course-card-mini:hover {
       border-color: #e74c3c;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
     }
     
     .course-thumb {

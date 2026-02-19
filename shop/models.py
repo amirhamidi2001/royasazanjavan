@@ -97,7 +97,12 @@ class Product(models.Model):
     stock = models.PositiveIntegerField(default=0)
 
     # Media
-    image = models.ImageField(upload_to="products/%Y/%m/", blank=True, null=True)
+    image = models.ImageField(
+        upload_to="products/%Y/%m/",
+        default="products/default.webp",
+        blank=True,
+        null=True,
+    )
 
     # Status
     is_active = models.BooleanField(default=True)

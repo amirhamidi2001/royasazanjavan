@@ -1,0 +1,36 @@
+{% load humanize %}
+<div class="product-card">
+  <div class="product-image">
+    {% if product.image %}
+      <img src="{{ product.image.url }}" alt="{{ product.title }}" class="img-fluid" />
+    {% else %}
+      <div class="img-fluid" style="background: #000; height: 200px;"></div>
+    {% endif %}
+
+    <div class="product-badges">
+      {% if product.is_free %}
+        <span class="badge-limited">رایگان</span>
+      {% elif product.is_discounted %}
+        <span class="badge-sale">-{{ product.get_discount_percentage }}%</span>
+      {% elif is_new %}
+        <span class="badge-hot">جدید</span>
+      {% elif product.is_featured %}
+        <span class="badge-new">ویژه</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="product-info">
+    <h4 class="product-name"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></h4>
+    <div class="product-price">
+      {% if product.is_free %}
+        <span class="current-price">رایگان</span>
+      {% else %}
+        <span class="current-price">{{ product.get_final_price|floatformat:0|intcomma }} تومان</span>
+        {% if product.is_discounted %}
+          <span class="old-price">{{ product.price|floatformat:0|intcomma }} تومان</span>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+</div>

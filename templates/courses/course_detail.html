@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}
   {{ course.title }} | رویا سازان جوان
@@ -35,6 +36,7 @@
     }
   </style>
 {% endblock %}
+
 {% block content %}
   <!-- Page Title -->
   <div class="page-title light-background">
@@ -73,11 +75,7 @@
             <!-- Course Info -->
             <div class="user-info" data-aos="fade-right">
               <div class="user-avatar">
-                {% if course.thumbnail %}
-                  <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" loading="lazy" />
-                {% else %}
-                  <img src="{% static 'assets/img/logo.webp' %}" alt="{{ course.title }}" loading="lazy" />
-                {% endif %}
+                <img src="{{ course.instructor.user_profile.image.url }}" alt="{{ course.title }}" loading="lazy" />
                 {% if avg_rating > 0 %}
                   <span class="status-badge"><i class="bi bi-star-fill"></i></span>
                 {% endif %}
@@ -201,7 +199,7 @@
                     <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
                       <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
-                          <h3>${{ course.price }}</h3>
+                          <h3>{{ course.price|floatformat:0|intcomma }} تومان</h3>
                         </div>
                         {% if not is_enrolled %}
                           <div>

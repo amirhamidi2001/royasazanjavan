@@ -4,7 +4,9 @@ from .models import CartModel, CartItemModel
 
 
 class CartItemInline(admin.TabularInline):
-    """Inline admin for cart items"""
+    """
+    Inline representation of cart items inside the Cart admin page.
+    """
 
     model = CartItemModel
     extra = 0
@@ -24,7 +26,9 @@ class CartItemInline(admin.TabularInline):
     can_delete = True
 
     def get_product_name(self, obj):
-        """نمایش نام محصول"""
+        """
+        Return the product title if the related object exists.
+        """
         if obj.content_object:
             return getattr(obj.content_object, "title", "Unknown")
         return "-"
@@ -32,13 +36,17 @@ class CartItemInline(admin.TabularInline):
     get_product_name.short_description = "نام محصول"
 
     def get_product_type(self, obj):
-        """نمایش نوع محصول"""
+        """
+        Return the model name of the related product type.
+        """
         return obj.content_type.model if obj.content_type else "-"
 
     get_product_type.short_description = "نوع"
 
     def get_price(self, obj):
-        """نمایش قیمت"""
+        """
+        Return formatted total price for this cart item.
+        """
         return f"{obj.get_total_price():,} تومان"
 
     get_price.short_description = "قیمت کل"
@@ -46,6 +54,10 @@ class CartItemInline(admin.TabularInline):
 
 @admin.register(CartModel)
 class CartAdmin(admin.ModelAdmin):
+    """
+    Admin configuration for CartModel.
+    """
+
     list_display = (
         "user",
         "get_items_count",
@@ -73,13 +85,17 @@ class CartAdmin(admin.ModelAdmin):
     )
 
     def get_items_count(self, obj):
-        """تعداد آیتم‌های سبد"""
+        """
+        Return total number of items in the cart.
+        """
         return obj.get_items_count()
 
     get_items_count.short_description = "تعداد آیتم‌ها"
 
     def get_total_price(self, obj):
-        """مجموع قیمت سبد"""
+        """
+        Return formatted total price of the cart.
+        """
         return f"{obj.get_total_price():,} تومان"
 
     get_total_price.short_description = "مجموع قیمت"
@@ -87,6 +103,10 @@ class CartAdmin(admin.ModelAdmin):
 
 @admin.register(CartItemModel)
 class CartItemAdmin(admin.ModelAdmin):
+    """
+    Admin configuration for individual cart items.
+    """
+
     list_display = (
         "id",
         "get_user",
@@ -111,14 +131,18 @@ class CartItemAdmin(admin.ModelAdmin):
     )
 
     def get_user(self, obj):
-        """نمایش کاربر"""
+        """
+        Return email of the user who owns the cart.
+        """
         return obj.cart.user.email
 
     get_user.short_description = "کاربر"
     get_user.admin_order_field = "cart__user__email"
 
     def get_product_type(self, obj):
-        """نمایش نوع محصول"""
+        """
+        Return model name of the related product.
+        """
         if obj.content_type:
             return obj.content_type.model
         return "-"
@@ -127,7 +151,10 @@ class CartItemAdmin(admin.ModelAdmin):
     get_product_type.admin_order_field = "content_type__model"
 
     def get_product_name(self, obj):
-        """نمایش نام محصول"""
+        """
+        Return title of the related product or fallback text
+        if the product has been deleted.
+        """
         if obj.content_object:
             return getattr(obj.content_object, "title", "Unknown")
         return "محصول حذف شده"
@@ -135,7 +162,9 @@ class CartItemAdmin(admin.ModelAdmin):
     get_product_name.short_description = "نام محصول"
 
     def get_product_info(self, obj):
-        """نمایش اطلاعات کامل محصول"""
+        """
+        Return formatted HTML summary of related product details.
+        """
         if not obj.content_object:
             return "محصول موجود نیست"
 
@@ -157,11 +186,15 @@ class CartItemAdmin(admin.ModelAdmin):
     get_product_info.allow_tags = True
 
     def get_total_price_display(self, obj):
-        """نمایش قیمت کل"""
+        """
+        Return formatted total price for this cart item.
+        """
         return f"{obj.get_total_price():,} تومان"
 
     get_total_price_display.short_description = "قیمت کل"
 
     def has_add_permission(self, request):
-        """جلوگیری از افزودن دستی آیتم از ادمین"""
+        """
+        Prevent manual creation of cart items from admin.
+        """
         return False

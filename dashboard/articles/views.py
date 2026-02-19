@@ -9,12 +9,9 @@ from dashboard.mixins import (
 )
 
 
-# ==================== Article Views ====================
-
-
 class ArticleListView(DashboardMixin, ListView):
     """
-    نمایش لیست مقالات
+    Display a paginated list of articles in the dashboard.
     """
 
     model = Article
@@ -24,6 +21,9 @@ class ArticleListView(DashboardMixin, ListView):
     ordering = ["-created_at"]
 
     def get_queryset(self):
+        """
+        Return optimized queryset with filtering and searching support.
+        """
         queryset = (
             super()
             .get_queryset()
@@ -46,6 +46,9 @@ class ArticleListView(DashboardMixin, ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+        """
+        Add filter values and UI metadata to context.
+        """
         context = super().get_context_data(**kwargs)
         context["search_query"] = self.request.GET.get("search", "")
         context["status_filter"] = self.request.GET.get("status", "")
@@ -57,7 +60,7 @@ class ArticleListView(DashboardMixin, ListView):
 
 class ArticleCreateView(DashboardMixin, SuccessMessageMixin, CreateView):
     """
-    ایجاد مقاله جدید
+    Create a new article from the dashboard.
     """
 
     model = Article
@@ -76,19 +79,25 @@ class ArticleCreateView(DashboardMixin, SuccessMessageMixin, CreateView):
     success_message = "مقاله با موفقیت ایجاد شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Add UI metadata to context.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "ایجاد مقاله جدید"
         context["submit_text"] = "انتشار مقاله"
         return context
 
     def form_valid(self, form):
+        """
+        Automatically assign the current user as author.
+        """
         form.instance.author = self.request.user
         return super().form_valid(form)
 
 
 class ArticleUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
     """
-    ویرایش مقاله
+    Update an existing article.
     """
 
     model = Article
@@ -107,6 +116,9 @@ class ArticleUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
     success_message = "مقاله با موفقیت ویرایش شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Add UI metadata to context.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "ویرایش مقاله"
         context["submit_text"] = "ذخیره تغییرات"
@@ -115,7 +127,7 @@ class ArticleUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
 
 class ArticleDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     """
-    حذف مقاله
+    Delete an article from the dashboard.
     """
 
     model = Article
@@ -124,17 +136,17 @@ class ArticleDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     delete_success_message = "مقاله با موفقیت حذف شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Add UI metadata to context.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "حذف مقاله"
         return context
 
 
-# ==================== Category Views ====================
-
-
 class CategoryListView(DashboardMixin, ListView):
     """
-    نمایش لیست دسته‌بندی‌ها
+    Display a paginated list of categories.
     """
 
     model = Category
@@ -144,6 +156,9 @@ class CategoryListView(DashboardMixin, ListView):
     ordering = ["name"]
 
     def get_queryset(self):
+        """
+        Return filtered queryset based on search query.
+        """
         queryset = super().get_queryset()
         search_query = self.request.GET.get("search", "")
 
@@ -155,6 +170,9 @@ class CategoryListView(DashboardMixin, ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+        """
+        Add search and UI metadata to context.
+        """
         context = super().get_context_data(**kwargs)
         context["search_query"] = self.request.GET.get("search", "")
         context["title"] = "مدیریت دسته‌بندی‌ها"
@@ -164,7 +182,7 @@ class CategoryListView(DashboardMixin, ListView):
 
 class CategoryCreateView(DashboardMixin, SuccessMessageMixin, CreateView):
     """
-    ایجاد دسته‌بندی جدید
+    Create a new category.
     """
 
     model = Category
@@ -174,6 +192,9 @@ class CategoryCreateView(DashboardMixin, SuccessMessageMixin, CreateView):
     success_message = "دسته‌بندی با موفقیت ایجاد شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Add UI metadata to context.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "ایجاد دسته‌بندی جدید"
         context["submit_text"] = "ایجاد دسته‌بندی"
@@ -182,7 +203,7 @@ class CategoryCreateView(DashboardMixin, SuccessMessageMixin, CreateView):
 
 class CategoryUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
     """
-    ویرایش دسته‌بندی
+    Update an existing category.
     """
 
     model = Category
@@ -192,6 +213,9 @@ class CategoryUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
     success_message = "دسته‌بندی با موفقیت ویرایش شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Add UI metadata to context.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "ویرایش دسته‌بندی"
         context["submit_text"] = "ذخیره تغییرات"
@@ -200,7 +224,7 @@ class CategoryUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
 
 class CategoryDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     """
-    حذف دسته‌بندی
+    Delete a category.
     """
 
     model = Category
@@ -209,17 +233,17 @@ class CategoryDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     delete_success_message = "دسته‌بندی با موفقیت حذف شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Add UI metadata to context.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "حذف دسته‌بندی"
         return context
 
 
-# ==================== Tag Views ====================
-
-
 class TagListView(DashboardMixin, ListView):
     """
-    نمایش لیست برچسب‌ها
+    Display a paginated list of tags.
     """
 
     model = Tag
@@ -229,6 +253,9 @@ class TagListView(DashboardMixin, ListView):
     ordering = ["name"]
 
     def get_queryset(self):
+        """
+        Return filtered queryset based on search query.
+        """
         queryset = super().get_queryset()
         search_query = self.request.GET.get("search", "")
 
@@ -238,6 +265,9 @@ class TagListView(DashboardMixin, ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+        """
+        Add search and UI metadata to context.
+        """
         context = super().get_context_data(**kwargs)
         context["search_query"] = self.request.GET.get("search", "")
         context["title"] = "مدیریت برچسب‌ها"
@@ -247,7 +277,7 @@ class TagListView(DashboardMixin, ListView):
 
 class TagCreateView(DashboardMixin, SuccessMessageMixin, CreateView):
     """
-    ایجاد برچسب جدید
+    Create a new tag.
     """
 
     model = Tag
@@ -257,6 +287,9 @@ class TagCreateView(DashboardMixin, SuccessMessageMixin, CreateView):
     success_message = "برچسب با موفقیت ایجاد شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Add UI metadata to context.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "ایجاد برچسب جدید"
         context["submit_text"] = "ایجاد برچسب"
@@ -265,7 +298,7 @@ class TagCreateView(DashboardMixin, SuccessMessageMixin, CreateView):
 
 class TagUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
     """
-    ویرایش برچسب
+    Update an existing tag.
     """
 
     model = Tag
@@ -275,6 +308,9 @@ class TagUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
     success_message = "برچسب با موفقیت ویرایش شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Add UI metadata to context.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "ویرایش برچسب"
         context["submit_text"] = "ذخیره تغییرات"
@@ -283,7 +319,7 @@ class TagUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
 
 class TagDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     """
-    حذف برچسب
+    Delete a tag.
     """
 
     model = Tag
@@ -292,17 +328,19 @@ class TagDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     delete_success_message = "برچسب با موفقیت حذف شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Add UI metadata to context.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "حذف برچسب"
         return context
 
 
-# ==================== Comment Views ====================
-
-
 class CommentListView(DashboardMixin, ListView):
     """
-    نمایش لیست نظرات
+    Display a paginated list of comments.
+
+    Supports search and filtering by approval status.
     """
 
     model = Comment
@@ -312,6 +350,9 @@ class CommentListView(DashboardMixin, ListView):
     ordering = ["-created_at"]
 
     def get_queryset(self):
+        """
+        Return optimized queryset with search and approval filters.
+        """
         queryset = super().get_queryset().select_related("article")
         search_query = self.request.GET.get("search", "")
         approved_filter = self.request.GET.get("approved", "")
@@ -331,6 +372,9 @@ class CommentListView(DashboardMixin, ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+        """
+        Add filter values and UI metadata to context.
+        """
         context = super().get_context_data(**kwargs)
         context["search_query"] = self.request.GET.get("search", "")
         context["approved_filter"] = self.request.GET.get("approved", "")
@@ -340,7 +384,7 @@ class CommentListView(DashboardMixin, ListView):
 
 class CommentUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
     """
-    ویرایش نظر
+    Update an existing comment.
     """
 
     model = Comment
@@ -350,6 +394,9 @@ class CommentUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
     success_message = "نظر با موفقیت ویرایش شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Add UI metadata to context.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "ویرایش نظر"
         context["submit_text"] = "ذخیره تغییرات"
@@ -358,7 +405,7 @@ class CommentUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
 
 class CommentDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     """
-    حذف نظر
+    Delete a comment.
     """
 
     model = Comment
@@ -367,6 +414,9 @@ class CommentDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     delete_success_message = "نظر با موفقیت حذف شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Add UI metadata to context.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "حذف نظر"
         return context

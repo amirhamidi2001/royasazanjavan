@@ -37,7 +37,6 @@
             {% else %}
               info-circle
             {% endif %}">
-
           </i>
           {{ message }}
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -104,7 +103,6 @@
                           <div class="product-meta">
                             {% if item.product_type == 'course' %}
                               {# اطلاعات دوره #}
-                              <span class="product-type-badge badge bg-primary"><i class="bi bi-mortarboard"></i> دوره آموزشی</span>
                               <span class="product-instructor">
                                 <i class="bi bi-person"></i>
                                 {{ item.product_obj.instructor.get_full_name|default:item.product_obj.instructor.email }}
@@ -117,7 +115,6 @@
                               {% endif %}
                             {% elif item.product_type == 'product' %}
                               {# اطلاعات محصول #}
-                              <span class="product-type-badge badge bg-success"><i class="bi bi-box-seam"></i> محصول فروشگاه</span>
                               <span class="product-category">
                                 <i class="bi bi-tag"></i>
                                 {% if item.product_obj.category %}
@@ -164,14 +161,16 @@
 
               <div class="cart-actions">
                 <div class="row">
-                  <div class="col-12 col-md-6 mb-2 mb-md-0">
-                    <a href="{% url 'courses:course_list' %}" class="btn btn-outline-heading w-100 w-md-auto"><i class="bi bi-mortarboard"></i> مشاهده دوره‌ها</a>
+                  <div class="col-12 col-md-4 text-md-end">
+                    <a href="{% url 'courses:course_list' %}" class="btn btn-outline-heading w-100 w-md-auto me-0 me-md-2 mb-2 mb-md-0"><i class="bi bi-mortarboard"></i> مشاهده دوره‌ها</a>
                   </div>
-                  <div class="col-12 col-md-6 text-md-end">
+                  <div class="col-12 col-md-4 text-md-end">
                     <a href="{% url 'shop:product_list' %}" class="btn btn-outline-heading w-100 w-md-auto me-0 me-md-2 mb-2 mb-md-0"><i class="bi bi-shop"></i> مشاهده محصولات</a>
+                  </div>
+                  <div class="col-12 col-md-4 text-md-end">
                     <form method="POST" action="{% url 'cart:cart_clear' %}" class="d-inline clear-cart-form">
                       {% csrf_token %}
-                      <button class="btn btn-outline-remove w-100 w-md-auto" type="submit"><i class="bi bi-trash"></i> خالی کردن سبد</button>
+                      <button class="btn btn-outline-remove w-100 w-md-auto me-0 me-md-2 mb-2 mb-md-0" type="submit"><i class="bi bi-trash"></i> خالی کردن سبد</button>
                     </form>
                   </div>
                 </div>

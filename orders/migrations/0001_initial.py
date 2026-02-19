@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
                 (
                     "discount_amount",
                     models.DecimalField(
-                        decimal_places=2,
+                        decimal_places=0,
                         default=0,
                         help_text="اگر مبلغ ثابت تخفیف دارید",
                         max_digits=10,
@@ -73,7 +73,7 @@ class Migration(migrations.Migration):
                 (
                     "min_purchase_amount",
                     models.DecimalField(
-                        decimal_places=2,
+                        decimal_places=0,
                         default=0,
                         max_digits=10,
                         validators=[django.core.validators.MinValueValidator(0)],
@@ -148,7 +148,7 @@ class Migration(migrations.Migration):
                 (
                     "total_price",
                     models.DecimalField(
-                        decimal_places=2,
+                        decimal_places=0,
                         max_digits=10,
                         validators=[django.core.validators.MinValueValidator(0)],
                         verbose_name="مبلغ کل",
@@ -157,7 +157,7 @@ class Migration(migrations.Migration):
                 (
                     "discount_amount",
                     models.DecimalField(
-                        decimal_places=2,
+                        decimal_places=0,
                         default=0,
                         max_digits=10,
                         validators=[django.core.validators.MinValueValidator(0)],
@@ -167,7 +167,7 @@ class Migration(migrations.Migration):
                 (
                     "tax_amount",
                     models.DecimalField(
-                        decimal_places=2,
+                        decimal_places=0,
                         default=0,
                         max_digits=10,
                         validators=[django.core.validators.MinValueValidator(0)],
@@ -177,7 +177,7 @@ class Migration(migrations.Migration):
                 (
                     "final_price",
                     models.DecimalField(
-                        decimal_places=2,
+                        decimal_places=0,
                         max_digits=10,
                         validators=[django.core.validators.MinValueValidator(0)],
                         verbose_name="مبلغ نهایی",
@@ -267,7 +267,7 @@ class Migration(migrations.Migration):
                 (
                     "price",
                     models.DecimalField(
-                        decimal_places=2,
+                        decimal_places=0,
                         max_digits=10,
                         validators=[django.core.validators.MinValueValidator(0)],
                         verbose_name="قیمت",

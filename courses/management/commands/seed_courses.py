@@ -30,7 +30,7 @@ class Command(BaseCommand):
                 "title": "Django Web Development Masterclass",
                 "description": "Learn Django from scratch and build powerful web applications. This comprehensive course covers everything from basic concepts to advanced features like REST APIs, authentication, and deployment.",
                 "duration": 25,
-                "price": 49.99,
+                "price": 4999,
                 "videos": [
                     {
                         "title": "Introduction to Django Framework",
@@ -63,7 +63,7 @@ class Command(BaseCommand):
                 "title": "Python Programming from Zero to Hero",
                 "description": "Master Python programming from fundamentals to advanced topics. Perfect for beginners who want to learn programming or experienced developers wanting to add Python to their skillset.",
                 "duration": 18,
-                "price": 39.99,
+                "price": 3999,
                 "videos": [
                     {
                         "title": "Python Installation and Setup",
@@ -91,7 +91,7 @@ class Command(BaseCommand):
                 "title": "JavaScript ES6+ Modern Development",
                 "description": "Deep dive into modern JavaScript including ES6+ features, async programming, and best practices. Learn to write clean, efficient JavaScript code.",
                 "duration": 22,
-                "price": 44.99,
+                "price": 4499,
                 "videos": [
                     {
                         "title": "JavaScript Fundamentals Review",
@@ -119,7 +119,7 @@ class Command(BaseCommand):
                 "title": "React.js Complete Guide",
                 "description": "Build modern, reactive user interfaces with React. Learn components, hooks, state management, and how to create production-ready React applications.",
                 "duration": 30,
-                "price": 59.99,
+                "price": 5999,
                 "videos": [
                     {
                         "title": "Introduction to React",
@@ -152,7 +152,7 @@ class Command(BaseCommand):
                 "title": "Database Design and SQL Fundamentals",
                 "description": "Learn database design principles and master SQL. Understand normalization, relationships, and write efficient queries for real-world applications.",
                 "duration": 20,
-                "price": 42.99,
+                "price": 4299,
                 "videos": [
                     {
                         "title": "Introduction to Databases",

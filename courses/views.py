@@ -55,7 +55,9 @@ class CourseListView(ListView):
 
 
 class CourseDetailView(LoginRequiredMixin, DetailView):
-    """ """
+    """
+    Display detailed information about a specific course.
+    """
 
     model = Course
     template_name = "courses/course_detail.html"
@@ -64,24 +66,32 @@ class CourseDetailView(LoginRequiredMixin, DetailView):
     slug_url_kwarg = "slug"
 
     def get_context_data(self, **kwargs):
-        """ """
+        """
+        Extend default context with:
+        """
         context = super().get_context_data(**kwargs)
         course = self.object
         user = self.request.user
 
+        # Retrieve user's progress for this course (if enrolled)
         progress = CourseProgress.objects.filter(user=user, course=course).first()
 
+        # Determine enrollment status
         is_enrolled = progress is not None
 
+        # Get ordered videos for display
         videos = course.videos.all().order_by("display_order")
 
+        # Retrieve existing user rating if available
         try:
             user_rating = CourseRating.objects.get(user=user, course=course)
         except CourseRating.DoesNotExist:
             user_rating = None
 
+        # Initialize rating form (edit if exists, otherwise empty)
         rating_form = CourseRatingForm(instance=user_rating)
 
+        # Retrieve all ratings with optimized user join
         ratings = course.ratings.select_related("user").order_by("-created_date")
 
         context.update(

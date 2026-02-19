@@ -5,7 +5,6 @@ from . import views
 app_name = "website"
 
 urlpatterns = [
-    # Consultation URLs
     path(
         "consultations/",
         views.ConsultationRequestListView.as_view(),
@@ -16,21 +15,18 @@ urlpatterns = [
         views.ConsultationRequestDeleteView.as_view(),
         name="consultation-delete",
     ),
-    # Contact URLs
     path("contacts/", views.ContactListView.as_view(), name="contact-list"),
     path(
         "contacts/<int:pk>/delete/",
         views.ContactDeleteView.as_view(),
         name="contact-delete",
     ),
-    # Job Application URLs
     path("jobs/", views.JobApplicationListView.as_view(), name="job-list"),
     path(
         "jobs/<int:pk>/delete/",
         views.JobApplicationDeleteView.as_view(),
         name="job-delete",
     ),
-    # Newsletter URLs
     path(
         "newsletters/",
         views.NewsletterListView.as_view(),

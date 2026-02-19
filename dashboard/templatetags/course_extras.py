@@ -1,4 +1,3 @@
-# dashboard/templatetags/course_extras.py
 from django import template
 
 register = template.Library()

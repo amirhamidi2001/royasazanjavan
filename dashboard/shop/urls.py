@@ -4,7 +4,6 @@ from . import views
 app_name = "shop"
 
 urlpatterns = [
-    # Category URLs
     path("categories/", views.CategoryListView.as_view(), name="category-list"),
     path(
         "categories/create/", views.CategoryCreateView.as_view(), name="category-create"
@@ -19,7 +18,6 @@ urlpatterns = [
         views.CategoryDeleteView.as_view(),
         name="category-delete",
     ),
-    # Product URLs
     path("products/", views.ProductListView.as_view(), name="product-list"),
     path("products/create/", views.ProductCreateView.as_view(), name="product-create"),
     path(
@@ -32,7 +30,6 @@ urlpatterns = [
         views.ProductDeleteView.as_view(),
         name="product-delete",
     ),
-    # Product Feature URLs
     path("features/", views.ProductFeatureListView.as_view(), name="feature-list"),
     path(
         "features/create/",

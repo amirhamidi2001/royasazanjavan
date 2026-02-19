@@ -10,12 +10,10 @@ from dashboard.mixins import (
     DeleteSuccessMessageMixin,
 )
 
-# ==================== Order Views ====================
-
 
 class OrderListView(DashboardMixin, ListView):
     """
-    نمایش لیست سفارشات
+    Displays a paginated list of orders in the dashboard.
     """
 
     model = Order
@@ -25,6 +23,9 @@ class OrderListView(DashboardMixin, ListView):
     ordering = ["-created_date"]
 
     def get_queryset(self):
+        """
+        Returns filtered queryset:
+        """
         queryset = (
             super().get_queryset().select_related("user").prefetch_related("items")
         )
@@ -45,6 +46,9 @@ class OrderListView(DashboardMixin, ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+        """
+        Adds search values, status filter, and page title to context.
+        """
         context = super().get_context_data(**kwargs)
         context["search_query"] = self.request.GET.get("search", "")
         context["status_filter"] = self.request.GET.get("status", "")
@@ -54,7 +58,7 @@ class OrderListView(DashboardMixin, ListView):
 
 class OrderUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
     """
-    ویرایش سفارش
+    Handles updating an existing order.
     """
 
     model = Order
@@ -64,6 +68,9 @@ class OrderUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
     success_message = "سفارش با موفقیت ویرایش شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Adds page title and submit button text.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "ویرایش سفارش"
         context["submit_text"] = "ذخیره تغییرات"
@@ -72,7 +79,7 @@ class OrderUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
 
 class OrderDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     """
-    حذف سفارش
+    Handles deletion of an order.
     """
 
     model = Order
@@ -81,6 +88,9 @@ class OrderDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     delete_success_message = "سفارش با موفقیت حذف شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Adds page title to context.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "حذف سفارش"
         return context
@@ -88,7 +98,7 @@ class OrderDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
 
 class CouponListView(DashboardMixin, ListView):
     """
-    نمایش لیست کدهای تخفیف
+    Displays a paginated list of discount coupons.
     """
 
     model = Coupon
@@ -98,6 +108,9 @@ class CouponListView(DashboardMixin, ListView):
     ordering = ["-created_date"]
 
     def get_queryset(self):
+        """
+        Returns filtered queryset:
+        """
         queryset = super().get_queryset()
         search_query = self.request.GET.get("search", "")
         status_filter = self.request.GET.get("status", "")
@@ -113,6 +126,10 @@ class CouponListView(DashboardMixin, ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+        """
+        Adds search values, status filter,
+        and page title to context.
+        """
         context = super().get_context_data(**kwargs)
         context["search_query"] = self.request.GET.get("search", "")
         context["status_filter"] = self.request.GET.get("status", "")
@@ -122,7 +139,7 @@ class CouponListView(DashboardMixin, ListView):
 
 class CouponCreateView(DashboardMixin, SuccessMessageMixin, CreateView):
     """
-    ایجاد کد تخفیف جدید
+    Handles creation of a new coupon.
     """
 
     model = Coupon
@@ -141,6 +158,9 @@ class CouponCreateView(DashboardMixin, SuccessMessageMixin, CreateView):
     success_message = "کد تخفیف با موفقیت ایجاد شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Adds page title and submit button text.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "ایجاد کد تخفیف جدید"
         context["submit_text"] = "ایجاد کد تخفیف"
@@ -149,7 +169,7 @@ class CouponCreateView(DashboardMixin, SuccessMessageMixin, CreateView):
 
 class CouponUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
     """
-    ویرایش کد تخفیف
+    Handles updating an existing coupon.
     """
 
     model = Coupon
@@ -168,6 +188,9 @@ class CouponUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
     success_message = "کد تخفیف با موفقیت ویرایش شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Adds page title and submit button text.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "ویرایش کد تخفیف"
         context["submit_text"] = "ذخیره تغییرات"
@@ -176,7 +199,7 @@ class CouponUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
 
 class CouponDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     """
-    حذف کد تخفیف
+    Handles deletion of a coupon.
     """
 
     model = Coupon
@@ -185,6 +208,9 @@ class CouponDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     delete_success_message = "کد تخفیف با موفقیت حذف شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Adds page title to context.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "حذف کد تخفیف"
         return context

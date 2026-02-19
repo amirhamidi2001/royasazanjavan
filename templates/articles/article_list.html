@@ -61,7 +61,7 @@
             <div class="row g-4">
               {% for article in secondary_articles %}
                 <div class="col-md-6">
-                  <article class="secondary-post" data-aos="fade-up" {% if forloop.counter == 2 %}data-aos-delay="100"{% endif %}>
+<article class="secondary-post" data-aos="fade-up"  {% if forloop.counter == 2 %}data-aos-delay="100"{% endif %}                                                                              >
                     <div class="post-image">
                       <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="img-fluid" />
                     </div>
@@ -288,7 +288,6 @@
     </div>
   </section>
   <!-- Pagination Section -->
-  
 {% endblock %}
 
 {% block extra_js %}

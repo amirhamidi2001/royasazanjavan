@@ -1,5 +1,3 @@
-# cart/utils.py - توابع کمکی برای سبد خرید
-
 from django.contrib.contenttypes.models import ContentType
 from courses.models import Course
 from shop.models import Product
@@ -7,13 +5,8 @@ from shop.models import Product
 
 def get_product_model_by_type(product_type):
     """
-    دریافت مدل محصول بر اساس نوع
-
-    Args:
-        product_type (str): نوع محصول ('course' یا 'product')
-
-    Returns:
-        Model class or None
+    Return the corresponding Django model class
+    based on the provided product type string.
     """
     models_map = {
         "course": Course,
@@ -24,14 +17,7 @@ def get_product_model_by_type(product_type):
 
 def get_product_by_type_and_id(product_type, product_id):
     """
-    دریافت شیء محصول بر اساس نوع و ID
-
-    Args:
-        product_type (str): نوع محصول
-        product_id (int): شناسه محصول
-
-    Returns:
-        Product object or None
+    Retrieve an active product instance by its type and ID.
     """
     model = get_product_model_by_type(product_type)
     if not model:
@@ -45,13 +31,8 @@ def get_product_by_type_and_id(product_type, product_id):
 
 def get_content_type_for_product(product_type):
     """
-    دریافت ContentType برای نوع محصول
-
-    Args:
-        product_type (str): نوع محصول
-
-    Returns:
-        ContentType object or None
+    Return the ContentType instance associated
+    with the given product type.
     """
     model = get_product_model_by_type(product_type)
     if not model:
@@ -62,20 +43,12 @@ def get_content_type_for_product(product_type):
 
 def calculate_item_price(product_obj, product_type):
     """
-    محاسبه قیمت نهایی آیتم بر اساس نوع محصول
-
-    Args:
-        product_obj: شیء محصول
-        product_type (str): نوع محصول
-
-    Returns:
-        Decimal: قیمت نهایی
+    Calculate the final unit price of a product
+    based on its type.
     """
     if product_type == "course":
-        # برای دوره‌ها: قیمت ثابت
         return product_obj.price
     elif product_type == "product":
-        # برای محصولات: قیمت با احتساب تخفیف
         return product_obj.get_final_price()
     else:
         return 0
@@ -83,13 +56,7 @@ def calculate_item_price(product_obj, product_type):
 
 def format_price(price):
     """
-    فرمت‌دهی قیمت به صورت خوانا
-
-    Args:
-        price: قیمت (Decimal یا int)
-
-    Returns:
-        str: قیمت فرمت شده (مثال: "1,500,000 تومان")
+    Format a numeric price into a human-readable
     """
     try:
         return f"{int(price):,} تومان"
@@ -99,18 +66,8 @@ def format_price(price):
 
 def get_cart_context_processor(request):
     """
-    Context Processor برای نمایش اطلاعات سبد در تمام صفحات
-
-    استفاده:
-    در settings.py:
-    TEMPLATES = [{
-        'OPTIONS': {
-            'context_processors': [
-                ...
-                'cart.utils.get_cart_context_processor',
-            ],
-        },
-    }]
+    Context processor to inject cart summary data
+    into all templates.
     """
     from cart.cart import CartSession
 
@@ -123,21 +80,11 @@ def get_cart_context_processor(request):
 
 def validate_product_stock(product_obj, product_type, quantity=1):
     """
-    بررسی موجودی محصول (فقط برای محصولات فیزیکی)
-
-    Args:
-        product_obj: شیء محصول
-        product_type (str): نوع محصول
-        quantity (int): تعداد درخواستی
-
-    Returns:
-        tuple: (is_valid, error_message)
+    Validate stock availability for the given product.
     """
-    # دوره‌ها موجودی ندارند
     if product_type == "course":
         return (True, None)
 
-    # بررسی موجودی محصولات
     if product_type == "product":
         if hasattr(product_obj, "stock"):
             if product_obj.stock < quantity:
@@ -149,14 +96,8 @@ def validate_product_stock(product_obj, product_type, quantity=1):
 
 def get_product_url(product_obj, product_type):
     """
-    دریافت URL جزئیات محصول
-
-    Args:
-        product_obj: شیء محصول
-        product_type (str): نوع محصول
-
-    Returns:
-        str: URL محصول
+    Return the absolute URL of the product
+    if the method exists, otherwise fallback.
     """
     if hasattr(product_obj, "get_absolute_url"):
         return product_obj.get_absolute_url()
@@ -165,14 +106,8 @@ def get_product_url(product_obj, product_type):
 
 def serialize_cart_item(item):
     """
-    تبدیل آیتم سبد به دیکشنری JSON-friendly
-    برای استفاده در API ها
-
-    Args:
-        item (dict): آیتم سبد خرید
-
-    Returns:
-        dict: دیکشنری سریالایز شده
+    Convert a cart item dictionary into a serializable
+    structure suitable for JSON responses or APIs.
     """
     product_obj = item["product_obj"]
     product_type = item["product_type"]
@@ -186,7 +121,6 @@ def serialize_cart_item(item):
         "url": get_product_url(product_obj, product_type),
     }
 
-    # افزودن اطلاعات خاص دوره
     if product_type == "course":
         serialized["course_details"] = {
             "instructor": (
@@ -198,7 +132,6 @@ def serialize_cart_item(item):
             "thumbnail": product_obj.thumbnail.url if product_obj.thumbnail else None,
         }
 
-    # افزودن اطلاعات خاص محصول
     elif product_type == "product":
         serialized["product_details"] = {
             "category": product_obj.category.name if product_obj.category else None,
@@ -218,13 +151,12 @@ def serialize_cart_item(item):
 
 def get_cart_summary(cart_session):
     """
-    دریافت خلاصه کامل سبد خرید
-
-    Args:
-        cart_session: نمونه CartSession
-
-    Returns:
-        dict: خلاصه سبد شامل آیتم‌ها و محاسبات
+    Build a comprehensive cart summary including:
+    - Serialized items
+    - Total quantity
+    - Total price
+    - Formatted total
+    - Grouped items by type
     """
     items = cart_session.get_cart_items()
 
@@ -243,19 +175,20 @@ def get_cart_summary(cart_session):
 
 
 class CartValidator:
-    """کلاس کمکی برای اعتبارسنجی سبد خرید"""
+    """
+    Provides validation logic for cart items,
+    including stock checks and inactive products.
+    """
 
     @staticmethod
     def validate_cart_items(cart_session):
         """
-        اعتبارسنجی تمام آیتم‌های سبد
+        Validate all items in the cart session.
 
-        Returns:
-            dict: {
-                'is_valid': bool,
-                'errors': list,
-                'warnings': list
-            }
+        Returns a dictionary containing:
+        - is_valid (bool)
+        - errors (list)
+        - warnings (list)
         """
         errors = []
         warnings = []
@@ -266,11 +199,9 @@ class CartValidator:
             product_obj = item["product_obj"]
             product_type = item["product_type"]
 
-            # بررسی فعال بودن
             if not getattr(product_obj, "is_active", True):
                 errors.append(f"{product_obj.title} غیرفعال شده است")
 
-            # بررسی موجودی برای محصولات
             if product_type == "product":
                 is_valid, error_msg = validate_product_stock(
                     product_obj, product_type, item["quantity"]
@@ -278,7 +209,6 @@ class CartValidator:
                 if not is_valid:
                     errors.append(f"{product_obj.title}: {error_msg}")
 
-            # بررسی قیمت صفر
             if item["total_price"] == 0:
                 warnings.append(f"{product_obj.title} قیمت صفر دارد")
 
@@ -286,7 +216,10 @@ class CartValidator:
 
     @staticmethod
     def remove_invalid_items(cart_session):
-        """حذف آیتم‌های نامعتبر از سبد"""
+        """
+        Remove inactive products from the cart
+        after validation.
+        """
         validation = CartValidator.validate_cart_items(cart_session)
 
         if not validation["is_valid"]:
@@ -301,15 +234,10 @@ class CartValidator:
         return validation
 
 
-# Decorator برای بررسی خالی نبودن سبد
 def require_non_empty_cart(view_func):
     """
-    دکوریتور برای اطمینان از خالی نبودن سبد
-
-    استفاده:
-    @require_non_empty_cart
-    def checkout_view(request):
-        ...
+    Decorator that prevents access to a view
+    if the cart is empty.
     """
     from functools import wraps
     from django.shortcuts import redirect
@@ -328,14 +256,3 @@ def require_non_empty_cart(view_func):
         return view_func(request, *args, **kwargs)
 
     return wrapper
-
-
-# مثال استفاده از decorator:
-"""
-from cart.utils import require_non_empty_cart
-
-@require_non_empty_cart
-def checkout_view(request):
-    # این view فقط زمانی اجرا می‌شود که سبد خرید خالی نباشد
-    ...
-"""

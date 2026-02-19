@@ -228,9 +228,9 @@
                 <div class="social-links mt-4">
                   <h5>ارتباط با ما</h5>
                   <div class="social-icons">
-                    <a href="#" aria-label="Facebook"><i class="bi bi-telegram"></i></a>
-                    <a href="#" aria-label="TikTok"><i class="bi bi-whatsapp"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                    <a href="https://t.me/royasazanjavan/" aria-label="Telegram"><i class="bi bi-telegram"></i></a>
+                    <a href="https://wa.me/989037953318/" aria-label="Whatsapp"><i class="bi bi-whatsapp"></i></a>
+                    <a href="https://www.instagram.com/royasazanjavan/" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
                   </div>
                 </div>
               </div>
@@ -238,25 +238,25 @@
 
             <div class="col-lg-2 col-md-6 col-sm-6">
               <div class="footer-widget">
-                <h4>دوره‌ها</h4>
+                <h4>دسترسی سریع</h4>
                 <ul class="footer-links">
                   <li>
-                    <a href="category.html">New Arrivals</a>
+                    <a href="{% url 'website:index' %}">صفحه اصلی</a>
                   </li>
                   <li>
-                    <a href="category.html">Bestsellers</a>
+                    <a href="{% url 'courses:course_list' %}">دوره های آموزشی</a>
                   </li>
                   <li>
-                    <a href="category.html">Women's Clothing</a>
+                    <a href="{% url 'shop:product_list' %}">فروشگاه محصولات</a>
                   </li>
                   <li>
-                    <a href="category.html">Men's Clothing</a>
+                    <a href="{% url 'dashboard:dashboard' %}">داشبورد</a>
                   </li>
                   <li>
-                    <a href="category.html">Accessories</a>
+                    <a href="{% url 'cart:cart_detail' %}">سبد خرید</a>
                   </li>
                   <li>
-                    <a href="category.html">Sale</a>
+                    <a href="{% url 'articles:article_list' %}">مقالات</a>
                   </li>
                 </ul>
               </div>
@@ -302,7 +302,7 @@
                   </div>
                   <div class="contact-item">
                     <i class="bi bi-clock"></i>&nbsp;
-                    <span>شنبه تا پنج‌شنبه | ساعت ۱۰ تا ۱۹</span>
+                    <span>شنبه تا پنج‌شنبه | ساعت 10 تا 19</span>
                   </div>
                 </div>
               </div>

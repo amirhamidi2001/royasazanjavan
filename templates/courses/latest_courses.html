@@ -1,3 +1,4 @@
+{% load humanize %}
 <section id="best-sellers" class="best-sellers section">
   <div class="container section-title" data-aos="fade-up">
     <h2>دوره‌های ویژه</h2>
@@ -38,9 +39,9 @@
 
               <div class="product-price">
                 {% if course.price == 0 %}
-                  Free
+                  رایگان
                 {% else %}
-                  ${{ course.price }}
+                  {{ course.price|floatformat:0|intcomma }} تومان
                 {% endif %}
               </div>
             </div>

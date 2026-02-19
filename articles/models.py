@@ -8,6 +8,10 @@ User = get_user_model()
 
 
 class Category(models.Model):
+    """
+    Represents a high-level classification for organizing articles.
+    """
+
     # Main display name of the category
     name = models.CharField(max_length=100, unique=True)
 
@@ -26,16 +30,25 @@ class Category(models.Model):
         ordering = ["name"]
 
     def save(self, *args, **kwargs):
+        """
+        Override save method to automatically generate slug
+        """
         # Automatically generate slug if not provided
         if not self.slug:
             self.slug = slugify(self.name, allow_unicode=True)
         super().save(*args, **kwargs)
 
     def __str__(self):
+        """Return human-readable representation."""
         return self.name
 
 
 class Tag(models.Model):
+    """
+    Represents a keyword or label used for finer-grained
+    classification of articles.
+    """
+
     # Tag title displayed to users
     name = models.CharField(max_length=50, unique=True)
 
@@ -51,16 +64,24 @@ class Tag(models.Model):
         ordering = ["name"]
 
     def save(self, *args, **kwargs):
+        """
+        Override save method to automatically generate slug
+        """
         # Automatically generate slug if not provided
         if not self.slug:
             self.slug = slugify(self.name, allow_unicode=True)
         super().save(*args, **kwargs)
 
     def __str__(self):
+        """Return human-readable representation."""
         return self.name
 
 
 class PublishedManager(models.Manager):
+    """
+    Custom manager that limits the queryset to only published
+    """
+
     # Custom manager to return only published articles
     def get_queryset(self):
         return (
@@ -71,6 +92,10 @@ class PublishedManager(models.Manager):
 
 
 class Article(models.Model):
+    """
+    Core content model representing a blog/article entry.
+    """
+
     # Possible publication states of an article
     STATUS_CHOICES = (
         ("draft", "Draft"),
@@ -90,7 +115,9 @@ class Article(models.Model):
     content = models.TextField()
 
     # Primary image displayed with the article
-    featured_image = models.ImageField(upload_to="articles/%Y/%m/%d/")
+    featured_image = models.ImageField(
+        upload_to="articles/%Y/%m/%d/", default="articles/default.webp"
+    )
 
     # Author of the article
     author = models.ForeignKey(
@@ -145,6 +172,11 @@ class Article(models.Model):
         ]
 
     def save(self, *args, **kwargs):
+        """
+        Override save method to:
+        - Auto-generate slug from title if missing.
+        - Automatically set publication date when status becomes published.
+        """
         # Generate slug from title if missing
         if not self.slug:
             self.slug = slugify(self.title, allow_unicode=True)
@@ -156,27 +188,42 @@ class Article(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
+        """Return human-readable representation."""
         return self.title
 
     def get_absolute_url(self):
+        """
+        Return canonical URL for article detail page.
+        """
         # Canonical URL for article detail page
         return reverse("articles:article_detail", kwargs={"slug": self.slug})
 
     def increment_view_count(self):
+        """
+        Atomically increment the view counter using F expression
+        """
         # Atomically increment view counter
         self.view_count = models.F("view_count") + 1
         self.save(update_fields=["view_count"])
         self.refresh_from_db()
 
     def get_approved_comments(self):
+        """
+        Return queryset of approved comments related to this article.
+        """
         # Return only approved comments related to this article
         return self.comments.filter(is_approved=True).select_related("article")
 
     def get_comment_count(self):
+        """Return count of approved comments."""
         # Count approved comments
         return self.comments.filter(is_approved=True).count()
 
     def get_reading_time(self):
+        """
+        Estimate reading time based on average reading speed
+        of 200 words per minute.
+        """
         # Estimate reading time assuming 200 words per minute
         word_count = len(self.content.split())
         minutes = word_count // 200
@@ -184,6 +231,10 @@ class Article(models.Model):
 
 
 class Comment(models.Model):
+    """
+    Represents user-generated feedback on an article.
+    """
+
     # Article to which this comment belongs
     article = models.ForeignKey(
         Article,
@@ -225,8 +276,10 @@ class Comment(models.Model):
         ]
 
     def __str__(self):
+        """Return readable representation including article title."""
         return f"Comment by {self.name} on {self.article.title}"
 
     def get_replies(self):
+        """Return approved child comments."""
         # Return approved child comments
         return self.replies.filter(is_approved=True)

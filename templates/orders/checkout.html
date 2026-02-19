@@ -234,7 +234,7 @@
                     <div class="order-item-details">
                       <h4>{{ item.course_obj.title }}</h4>
                       <p class="order-item-variant">
-                        <i class="bi bi-person"></i> {{ item.course_obj.instructor.get_full_name|default:item.course_obj.instructor.email }}
+                        <i class="bi bi-person"></i> {{ item.course_obj.instructor.get_full_name }}
                         <br />
                         <i class="bi bi-clock"></i> {{ item.course_obj.duration }} ساعت
                       </p>

@@ -11,12 +11,9 @@ from dashboard.mixins import (
 )
 
 
-# ==================== Website Views ====================
-
-
 class ConsultationRequestListView(DashboardMixin, ListView):
     """
-    نمایش لیست درخواست‌های مشاوره
+    Displays a paginated list of consultation requests in the dashboard.
     """
 
     model = ConsultationRequest
@@ -26,6 +23,9 @@ class ConsultationRequestListView(DashboardMixin, ListView):
     ordering = ["-created_at"]
 
     def get_queryset(self):
+        """
+        Returns filtered queryset based on:
+        """
         queryset = super().get_queryset()
         search_query = self.request.GET.get("search", "")
         type_filter = self.request.GET.get("type", "")
@@ -43,6 +43,9 @@ class ConsultationRequestListView(DashboardMixin, ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+        """
+        Adds extra context variables:
+        """
         context = super().get_context_data(**kwargs)
         context["search_query"] = self.request.GET.get("search", "")
         context["type_filter"] = self.request.GET.get("type", "")
@@ -54,7 +57,7 @@ class ConsultationRequestDeleteView(
     DashboardMixin, DeleteSuccessMessageMixin, DeleteView
 ):
     """
-    حذف درخواست مشاوره
+    Handles deletion of a consultation request.
     """
 
     model = ConsultationRequest
@@ -63,6 +66,9 @@ class ConsultationRequestDeleteView(
     delete_success_message = "درخواست مشاوره با موفقیت حذف شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Adds page title to context.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "حذف درخواست مشاوره"
         return context
@@ -70,7 +76,7 @@ class ConsultationRequestDeleteView(
 
 class ContactListView(DashboardMixin, ListView):
     """
-    نمایش لیست تماس‌ها
+    Displays a paginated list of contact messages.
     """
 
     model = Contact
@@ -80,6 +86,9 @@ class ContactListView(DashboardMixin, ListView):
     ordering = ["-created_at"]
 
     def get_queryset(self):
+        """
+        Filters contacts by search query (name, email, subject).
+        """
         queryset = super().get_queryset()
         search_query = self.request.GET.get("search", "")
 
@@ -93,6 +102,9 @@ class ContactListView(DashboardMixin, ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+        """
+        Adds search query and page title to context.
+        """
         context = super().get_context_data(**kwargs)
         context["search_query"] = self.request.GET.get("search", "")
         context["title"] = "مدیریت تماس‌ها"
@@ -101,7 +113,7 @@ class ContactListView(DashboardMixin, ListView):
 
 class ContactDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     """
-    حذف تماس
+    Handles deletion of a contact message.
     """
 
     model = Contact
@@ -110,6 +122,9 @@ class ContactDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     delete_success_message = "تماس با موفقیت حذف شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Adds page title to context.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "حذف تماس"
         return context
@@ -117,7 +132,7 @@ class ContactDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
 
 class JobApplicationListView(DashboardMixin, ListView):
     """
-    نمایش لیست درخواست‌های شغلی
+    Displays a paginated list of job applications.
     """
 
     model = JobApplication
@@ -127,6 +142,9 @@ class JobApplicationListView(DashboardMixin, ListView):
     ordering = ["-created_at"]
 
     def get_queryset(self):
+        """
+        Filters job applications by search query.
+        """
         queryset = super().get_queryset()
         search_query = self.request.GET.get("search", "")
 
@@ -140,6 +158,9 @@ class JobApplicationListView(DashboardMixin, ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+        """
+        Adds search query and page title to context.
+        """
         context = super().get_context_data(**kwargs)
         context["search_query"] = self.request.GET.get("search", "")
         context["title"] = "مدیریت درخواست‌های شغلی"
@@ -148,7 +169,7 @@ class JobApplicationListView(DashboardMixin, ListView):
 
 class JobApplicationDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     """
-    حذف درخواست شغلی
+    Handles deletion of a job application.
     """
 
     model = JobApplication
@@ -157,6 +178,9 @@ class JobApplicationDeleteView(DashboardMixin, DeleteSuccessMessageMixin, Delete
     delete_success_message = "درخواست شغلی با موفقیت حذف شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Adds page title to context.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "حذف درخواست شغلی"
         return context
@@ -164,7 +188,7 @@ class JobApplicationDeleteView(DashboardMixin, DeleteSuccessMessageMixin, Delete
 
 class NewsletterListView(DashboardMixin, ListView):
     """
-    نمایش لیست مشترکین خبرنامه
+    Displays a paginated list of newsletter subscribers.
     """
 
     model = Newsletter
@@ -174,6 +198,9 @@ class NewsletterListView(DashboardMixin, ListView):
     ordering = ["email"]
 
     def get_queryset(self):
+        """
+        Filters newsletter subscribers by email search query.
+        """
         queryset = super().get_queryset()
         search_query = self.request.GET.get("search", "")
 
@@ -183,6 +210,9 @@ class NewsletterListView(DashboardMixin, ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+        """
+        Adds search query and page title to context.
+        """
         context = super().get_context_data(**kwargs)
         context["search_query"] = self.request.GET.get("search", "")
         context["title"] = "مدیریت مشترکین خبرنامه"
@@ -191,7 +221,7 @@ class NewsletterListView(DashboardMixin, ListView):
 
 class NewsletterDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
     """
-    حذف مشترک خبرنامه
+    Handles deletion of a newsletter subscriber.
     """
 
     model = Newsletter
@@ -200,6 +230,9 @@ class NewsletterDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView
     delete_success_message = "مشترک خبرنامه با موفقیت حذف شد."
 
     def get_context_data(self, **kwargs):
+        """
+        Adds page title to context.
+        """
         context = super().get_context_data(**kwargs)
         context["title"] = "حذف مشترک خبرنامه"
         return context

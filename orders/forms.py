@@ -74,12 +74,6 @@ class OrderCreateForm(forms.ModelForm):
         self.user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
-    #     # Pre-fill user information if user is authenticated
-    #     if self.user and self.user.is_authenticated:
-    #         self.fields["first_name"].initial = self.user.first_name
-    #         self.fields["last_name"].initial = self.user.last_name
-    #         self.fields["email"].initial = self.user.email
-
     def clean_email(self):
         """Validate email format."""
         email = self.cleaned_data.get("email")

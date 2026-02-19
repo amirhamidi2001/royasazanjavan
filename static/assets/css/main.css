@@ -9257,10 +9257,14 @@ section,
   overflow: hidden;
 }
 
-.about-2 .video-box img {
-  width: 100%;
+.about-2 .video-box {
+  max-width: 400px;
+  margin: 0 auto;
+  position: relative;
   border-radius: 20px;
+  overflow: hidden;
 }
+
 
 .about-2 .pulsating-play-btn {
   position: absolute;

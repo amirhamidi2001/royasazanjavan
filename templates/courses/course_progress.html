@@ -170,9 +170,17 @@
                               <div class="progress-wrapper" style="flex: 1; margin-right: 10px;">
                                 <div class="progress" style="height: 8px;">
                                   <div class="progress-bar {% if progress.completion_percentage == 100 %}
+                                      
+                                      
                                       bg-success
+
+
                                     {% else %}
+                                      
+                                      
                                       bg-primary
+
+
                                     {% endif %}"
                                     role="progressbar"
                                     style="width: {{ progress.completion_percentage }}%;"
@@ -182,9 +190,17 @@
                                 </div>
                               </div>
                               <span class="status {% if progress.completion_percentage == 100 %}
+                                  
+                                  
                                   completed
+
+
                                 {% else %}
+                                  
+                                  
                                   in-progress
+
+
                                 {% endif %}">
                                 {{ progress.completion_percentage }}%
                               </span>
@@ -302,7 +318,6 @@
                                   <div class="stat-value">{{ progress.course.get_total_videos|add:'-progress.watched_videos.count' }}</div>
                                   <div class="stat-label">ویدیو باقی‌مانده</div>
                                 </div>
-
                               </div>
                             </div>
                           </div>
