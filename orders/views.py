@@ -16,9 +16,9 @@ from .forms import OrderCreateForm, CouponApplyForm
 
 # ZarinPal Configuration
 ZARINPAL_MERCHANT_ID = getattr(settings, "ZARINPAL_MERCHANT_ID", "YOUR-MERCHANT-ID")
-ZARINPAL_WEBGATE = "https://www.zarinpal.com/pg/StartPay/"
-ZARINPAL_API_REQUEST = "https://api.zarinpal.com/pg/v4/payment/request.json"
-ZARINPAL_API_VERIFY = "https://api.zarinpal.com/pg/v4/payment/verify.json"
+ZARINPAL_WEBGATE = "https://sandbox.zarinpal.com/pg/StartPay/"
+ZARINPAL_API_REQUEST = "https://sandbox.zarinpal.com/pg/v4/payment/request.json"
+ZARINPAL_API_VERIFY = "https://sandbox.zarinpal.com/pg/v4/payment/verify.json"
 
 
 @login_required

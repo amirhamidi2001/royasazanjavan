@@ -1,6 +1,8 @@
+from django.shortcuts import render
+from django.http import HttpResponse
 from django.contrib import messages
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, FormView, TemplateView
+from django.views.generic import CreateView, FormView, TemplateView, View
 
 from .forms import (
     ConsultationRequestForm,
@@ -111,3 +113,18 @@ class SupportView(CreateView):
             "خطایی در ارسال فرم رخ داد. لطفا فیلدها را بررسی کنید.",
         )
         return super().form_invalid(form)
+
+
+class Custom404View(View):
+    """Custom 404 error page view."""
+
+    template_name = "website/404.html"
+
+    def get(self, request, exception=None):
+        """Render the custom 404 page."""
+        return render(request, self.template_name, status=404)
+
+
+def ads_txt(request):
+    content = """google.com, pub-1234567890123456, DIRECT, f08c47fec0942fa0"""
+    return HttpResponse(content, content_type="text/plain")

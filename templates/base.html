@@ -4,16 +4,40 @@
   <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
     <title>
       {% block title %}
-        رویا سازان جوان
+        رویاسازان جوان | مرجع آموزش حسابداری و مالیات
       {% endblock %}
     </title>
-    <meta name="description" content="" />
-    <meta name="keywords" content="" />
+
+    <!-- Author -->
+    <meta name="author" content="Amir Hamidi" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://royasazanjavan.com/" />
+
+    <meta name="description" content="وب‌سایت رویاسازان جوان، ارائه دهنده دوره‌های تخصصی و گام‌به‌گام آموزش حسابداری و قوانین مالیاتی از مبتدی تا پیشرفته. با اساتید مجرب حرفه‌ای شوید." />
+    <meta name="keywords" content="آموزش حسابداری, آموزش مالیات, حسابداری مالیاتی, دوره حسابداری بازار کار, رویاسازان جوان, یادگیری مالیات" />
+    <link rel="canonical" href="https://royasazanjavan.com{{ request.path }}" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph (OG) for Social Media -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="رویاسازان جوان" />
+    <meta property="og:url" content="https://royasazanjavan.com{{ request.path }}" />
+    <meta property="og:title" content="آموزش حسابداری و مالیات از صفر تا صد | رویاسازان جوان" />
+    <meta property="og:description" content="مرجع جامع آموزش‌های کاربردی حسابداری و مالیات برای ورود سریع به بازار کار." />
+    <meta property="og:image" content="{% static 'assets/img/og-share-image.jpg' %}" /> <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="رویاسازان جوان | آموزش حسابداری" />
+    <meta name="twitter:description" content="دوره‌های آموزشی گام‌به‌گام حسابداری و مالیات." />
+    <meta name="twitter:image" content="https://royasazanjavan.com/static/assets/img/logo.webp" />
 
     <!-- Favicons -->
-    <link href="{% static 'assets/img/favicon.ico' %}" rel="icon" />
+    <link href="{% static 'favicon.ico' %}" rel="icon" />
     <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon" />
 
     <!-- Fonts -->
@@ -31,6 +55,22 @@
 
     <!-- Main CSS File -->
     <link href="{% static 'assets/css/main.css' %}" rel="stylesheet" />
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "رویاسازان جوان",
+      "url": "https://royasazanjavan.com",
+      "logo": "https://royasazanjavan.com/static/assets/img/logo.webp",
+      "description": "مرجع جامع آموزش حسابداری و مالیات، دوره‌های آموزشی گام به گام از سطح مبتدی تا پیشرفته.",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+989037953318",
+        "contactType": "customer service"
+      }
+    }
+    </script>
 
     {% block extra_css %}
 
@@ -134,12 +174,6 @@
                 </div>
               </div>
 
-              <!-- Wishlist -->
-              <a href="account.html" class="header-action-btn d-none d-md-block">
-                <i class="bi bi-heart"></i>
-                <span class="badge">0</span>
-              </a>
-
               <!-- Cart -->
               <a href="{% url 'cart:cart_detail' %}" class="header-action-btn">
                 <i class="bi bi-cart3"></i>
@@ -169,7 +203,7 @@
               </li>
               <li>
                 <a href="{% url 'courses:course_list' %}">لیست دوره ها</a>
-              </li>              
+              </li>
               <li>
                 <a href="{% url 'shop:product_list' %}">فروشگاه</a>
               </li>

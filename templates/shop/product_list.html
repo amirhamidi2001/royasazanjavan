@@ -400,8 +400,6 @@
                 <li><a href="#" class="active">{{ num }}</a></li>
                 {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
                 <li><a href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ num }}">{{ num }}</a></li>
-                {% elif num == page_obj.number|add:'-3' or num == page_obj.number|add:'3' %}
-                <li class="ellipsis">...</li>
                 {% endif %}
               {% endfor %}
 

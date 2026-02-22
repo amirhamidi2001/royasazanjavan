@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
 from accounts.models import User
@@ -62,6 +63,10 @@ class Course(models.Model):
     def get_students_count(self):
         """Return the number of enrolled students."""
         return self.students.count()
+
+    def get_absolute_url(self):
+        """Return canonical URL for course detail page."""
+        return reverse("courses:course_detail", kwargs={"slug": self.slug})
 
 
 class Video(models.Model):
