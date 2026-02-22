@@ -2,7 +2,8 @@ from django.db import models
 from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.utils.translation import gettext_lazy as _
-from courses.models import Course
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 import uuid
 
 
@@ -18,7 +19,7 @@ class OrderStatusChoices(models.TextChoices):
 
 
 class Order(models.Model):
-    """Model representing a course order."""
+    """Model representing an order (courses and products)."""
 
     # Order Identification
     order_number = models.CharField(
@@ -37,7 +38,7 @@ class Order(models.Model):
     email = models.EmailField(_("ایمیل"))
     phone = models.CharField(_("تلفن"), max_length=20)
 
-    # Address Information
+    # Address Information (اختیاری برای محصولات دیجیتال، الزامی برای فیزیکی)
     address = models.TextField(_("آدرس"), blank=True)
     apartment = models.CharField(_("واحد/پلاک"), max_length=100, blank=True)
     city = models.CharField(_("شهر"), max_length=100, blank=True)
@@ -140,6 +141,20 @@ class Order(models.Model):
         """Get customer full name."""
         return f"{self.first_name} {self.last_name}"
 
+    def has_physical_products(self):
+        """Check if order contains physical products."""
+        from shop.models import Product
+
+        for item in self.items.all():
+            if item.content_type.model == "product":
+                product = item.content_object
+                if (
+                    hasattr(product, "product_type")
+                    and product.product_type != "digital"
+                ):
+                    return True
+        return False
+
     def mark_as_paid(self, ref_id):
         """Mark order as paid and update payment information."""
         from django.utils import timezone
@@ -150,18 +165,38 @@ class Order(models.Model):
         self.payment_date = timezone.now()
         self.save()
 
-        # Enroll user in courses
-        self.enroll_user_in_courses()
+        # Process paid items (enroll in courses, grant access to products)
+        self.process_paid_items()
 
-    def enroll_user_in_courses(self):
-        """Enroll user in all courses after successful payment."""
+    def process_paid_items(self):
+        """
+        Process all items after successful payment.
+        - Enroll users in courses
+        - Grant access to digital products
+        - Create shipping order for physical products
+        """
+        for item in self.items.all():
+            item_type = item.content_type.model
+
+            if item_type == "course":
+                # Enroll user in course
+                self._enroll_in_course(item.content_object)
+
+            elif item_type == "product":
+                # Grant access to product
+                self._grant_product_access(item.content_object)
+
+    def _enroll_in_course(self, course):
+        """Enroll user in a course."""
         from courses.models import CourseProgress
 
-        for item in self.items.all():
-            # Add user to course students
-            if self.user not in item.course.students.all():
-                # Create CourseProgress which adds user to students
-                CourseProgress.objects.get_or_create(user=self.user, course=item.course)
+        if self.user not in course.students.all():
+            # Create CourseProgress which adds user to students
+            CourseProgress.objects.get_or_create(user=self.user, course=course)
+
+    def _grant_product_access(self, product):
+        """Grant user access to a product (for future use)."""
+        pass
 
     def can_be_paid(self):
         """Check if order can be paid."""
@@ -169,17 +204,25 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    """Model representing items in an order."""
+    """
+    Model representing items in an order.
+    Uses Generic Foreign Keys to support both Course and Product items.
+    """
 
     order = models.ForeignKey(
         Order, on_delete=models.CASCADE, related_name="items", verbose_name=_("سفارش")
     )
-    course = models.ForeignKey(
-        Course,
+
+    # Generic Foreign Key fields
+    content_type = models.ForeignKey(
+        ContentType,
         on_delete=models.PROTECT,
-        related_name="order_items",
-        verbose_name=_("دوره"),
+        verbose_name=_("نوع محصول"),
+        limit_choices_to={"model__in": ("course", "product")},
     )
+    object_id = models.PositiveIntegerField(verbose_name=_("شناسه محصول"))
+    content_object = GenericForeignKey("content_type", "object_id")
+
     price = models.DecimalField(
         _("قیمت"), max_digits=10, decimal_places=0, validators=[MinValueValidator(0)]
     )
@@ -194,14 +237,40 @@ class OrderItem(models.Model):
     class Meta:
         verbose_name = _("آیتم سفارش")
         verbose_name_plural = _("آیتم‌های سفارش")
-        unique_together = ("order", "course")
+        unique_together = ("order", "content_type", "object_id")
+        indexes = [
+            models.Index(fields=["content_type", "object_id"]),
+        ]
 
     def __str__(self):
-        return f"{self.course.title} - Order {self.order.order_number}"
+        product_name = self.get_product_name()
+        return f"{product_name} - Order {self.order.order_number}"
+
+    def get_product_name(self):
+        """Get product title/name."""
+        if self.content_object:
+            return getattr(self.content_object, "title", "Unknown Product")
+        return "محصول حذف شده"
+
+    def get_product_type(self):
+        """Return the type of product (course or product)."""
+        return self.content_type.model
 
     def get_total_price(self):
         """Calculate total price for this item."""
         return self.quantity * self.price
+
+    def get_product_image(self):
+        """Get product image URL."""
+        if not self.content_object:
+            return None
+
+        product_type = self.content_type.model
+        if product_type == "course":
+            return getattr(self.content_object, "thumbnail", None)
+        elif product_type == "product":
+            return getattr(self.content_object, "image", None)
+        return None
 
 
 class Coupon(models.Model):
@@ -212,6 +281,7 @@ class Coupon(models.Model):
         _("درصد تخفیف"),
         validators=[MinValueValidator(1), MinValueValidator(100)],
         help_text=_("درصد تخفیف (1-100)"),
+        default=0,
     )
     discount_amount = models.DecimalField(
         _("مبلغ تخفیف"),

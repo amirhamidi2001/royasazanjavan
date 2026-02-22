@@ -1,13 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.conf import settings
 from django.urls import reverse
+from django.contrib.contenttypes.models import ContentType
 from decimal import Decimal
 import requests
-import json
 
 from cart.cart import CartSession
 from .models import Order, OrderItem, Coupon, OrderStatusChoices
@@ -25,6 +25,7 @@ ZARINPAL_API_VERIFY = "https://api.zarinpal.com/pg/v4/payment/verify.json"
 def checkout_view(request):
     """
     Display checkout page with order form and cart summary.
+    Supports both courses and products.
     """
     cart = CartSession(request.session)
     cart_items = cart.get_cart_items()
@@ -32,7 +33,7 @@ def checkout_view(request):
     # Check if cart is empty
     if not cart_items:
         messages.warning(request, "سبد خرید شما خالی است")
-        return redirect("courses:course_list")
+        return redirect("cart:cart_detail")
 
     # Calculate totals
     subtotal = cart.get_total_payment_amount()
@@ -53,41 +54,90 @@ def checkout_view(request):
 
     total = subtotal - discount_amount + tax_amount
 
+    # Check if cart has physical products (requires address)
+    has_physical_products = any(
+        item["product_type"] == "product" for item in cart_items
+    )
+
     if request.method == "POST":
         form = OrderCreateForm(request.POST, user=request.user)
+
+        # Make address fields required if there are physical products
+        if has_physical_products:
+            for field in ["address", "city", "state", "zip_code"]:
+                form.fields[field].required = True
+
         if form.is_valid():
-            # Create order
-            order = form.save(commit=False)
-            order.user = request.user
-            order.total_price = subtotal
-            order.discount_amount = discount_amount
-            order.tax_amount = tax_amount
-            order.final_price = total
-            order.save()
+            try:
+                # Create order
+                order = form.save(commit=False)
+                order.user = request.user
+                order.total_price = subtotal
+                order.discount_amount = discount_amount
+                order.tax_amount = tax_amount
+                order.final_price = total
+                order.save()
 
-            # Create order items
-            for item in cart_items:
-                OrderItem.objects.create(
-                    order=order,
-                    course=item["course_obj"],
-                    price=item["course_obj"].price,
-                    quantity=item["quantity"],
+                # Create order items with Generic Foreign Keys
+                for item in cart_items:
+                    product_obj = item["product_obj"]
+                    product_type = item["product_type"]
+
+                    # Get appropriate ContentType
+                    if product_type == "course":
+                        from courses.models import Course
+
+                        content_type = ContentType.objects.get_for_model(Course)
+                    elif product_type == "product":
+                        from shop.models import Product
+
+                        content_type = ContentType.objects.get_for_model(Product)
+                    else:
+                        continue  # Skip unknown types
+
+                    OrderItem.objects.create(
+                        order=order,
+                        content_type=content_type,
+                        object_id=product_obj.id,
+                        price=item["total_price"],  # Already calculated in cart
+                        quantity=item["quantity"],
+                    )
+
+                # Apply coupon if exists
+                if coupon_id:
+                    try:
+                        coupon = Coupon.objects.get(id=coupon_id)
+                        coupon.use_coupon()
+                        del request.session["coupon_id"]
+                    except Coupon.DoesNotExist:
+                        pass
+
+                # Redirect to payment
+                messages.success(
+                    request, f"سفارش شما با شماره {order.order_number} ثبت شد"
                 )
+                return redirect("orders:payment", order_id=order.id)
 
-            # Apply coupon if exists
-            if coupon_id:
-                try:
-                    coupon = Coupon.objects.get(id=coupon_id)
-                    coupon.use_coupon()
-                    del request.session["coupon_id"]
-                except Coupon.DoesNotExist:
-                    pass
-
-            # Redirect to payment
-            messages.success(request, f"سفارش شما با شماره {order.order_number} ثبت شد")
-            return redirect("orders:payment", order_id=order.id)
+            except Exception as e:
+                messages.error(request, f"خطا در ثبت سفارش: {str(e)}")
+                return redirect("cart:cart_detail")
     else:
-        form = OrderCreateForm(user=request.user)
+        # Pre-fill form with user data if available
+        initial_data = {}
+        # دسترسی به پروفایل از طریق related_name که در مدل تعریف کردید (user_profile)
+        user_profile = getattr(request.user, "user_profile", None)
+
+        if user_profile:
+            if user_profile.first_name:
+                initial_data["first_name"] = user_profile.first_name
+            if user_profile.last_name:
+                initial_data["last_name"] = user_profile.last_name
+
+        # ایمیل مستقیماً در مدل User هست، پس اینجا مشکلی ندارد
+        if request.user.email:
+            initial_data["email"] = request.user.email
+
+        form = OrderCreateForm(initial=initial_data, user=request.user)
 
     context = {
         "form": form,
@@ -97,6 +147,7 @@ def checkout_view(request):
         "discount_amount": discount_amount,
         "total": total,
         "cart_count": len(cart_items),
+        "has_physical_products": has_physical_products,
     }
 
     return render(request, "orders/checkout.html", context)
@@ -252,7 +303,7 @@ def order_detail_view(request, order_id):
 @login_required
 def order_list_view(request):
     """Display user's order history."""
-    orders = Order.objects.filter(user=request.user)
+    orders = Order.objects.filter(user=request.user).prefetch_related("items")
 
     context = {
         "orders": orders,
