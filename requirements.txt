@@ -7,6 +7,7 @@ defusedxml==0.7.1
 Django==5.2.9
 django-ratelimit==4.1.0
 django-redis==6.0.0
+django-robots==6.1
 Faker==39.0.0
 idna==3.11
 oauthlib==3.3.1

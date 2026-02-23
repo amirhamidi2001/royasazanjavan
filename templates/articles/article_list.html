@@ -61,7 +61,7 @@
             <div class="row g-4">
               {% for article in secondary_articles %}
                 <div class="col-md-6">
-<article class="secondary-post" data-aos="fade-up"  {% if forloop.counter == 2 %}data-aos-delay="100"{% endif %}                                                                              >
+                  <article class="secondary-post" data-aos="fade-up" {% if forloop.counter == 2 %}data-aos-delay="100"{% endif %}>
                     <div class="post-image">
                       <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="img-fluid" />
                     </div>
@@ -252,42 +252,45 @@
   <!-- /Blog Posts Section -->
 
   <!-- Pagination Section -->
-  <section id="category-pagination" class="category-pagination section">
-    <div class="container">
-      <nav class="d-flex justify-content-center" aria-label="Page navigation">
-        <ul>
-          {% if page_obj.has_previous %}
-            <li>
-              <a href="?page={{ page_obj.previous_page_number }}" aria-label="Previous page">
-                <i class="bi bi-arrow-right"></i>
-                <span class="d-none d-sm-inline">قبلی</span>
-              </a>
-            </li>
-          {% endif %}
-          {% for num in page_obj.paginator.page_range %}
-            {% if page_obj.number == num %}
+  {% if is_paginated %}
+    <section id="category-pagination" class="category-pagination section">
+      <div class="container">
+        <nav class="d-flex justify-content-center" aria-label="Page navigation">
+          <ul>
+            {% if page_obj.has_previous %}
               <li>
-                <a href="#" class="active">{{ num }}</a>
-              </li>
-            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-              <li>
-                <a href="?page={{ num }}">{{ num }}</a>
+                <a href="?page={{ page_obj.previous_page_number }}" aria-label="Previous page">
+                  <i class="bi bi-arrow-right"></i>
+                  <span class="d-none d-sm-inline">قبلی</span>
+                </a>
               </li>
             {% endif %}
-          {% endfor %}
-          {% if page_obj.has_next %}
-            <li>
-              <a href="?page={{ page_obj.next_page_number }}" aria-label="Next page">
-                <span class="d-none d-sm-inline">بعدی</span>
-                <i class="bi bi-arrow-left"></i>
-              </a>
-            </li>
-          {% endif %}
-        </ul>
-      </nav>
-    </div>
-  </section>
+            {% for num in page_obj.paginator.page_range %}
+              {% if page_obj.number == num %}
+                <li>
+                  <a href="#" class="active">{{ num }}</a>
+                </li>
+              {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li>
+                  <a href="?page={{ num }}">{{ num }}</a>
+                </li>
+              {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+              <li>
+                <a href="?page={{ page_obj.next_page_number }}" aria-label="Next page">
+                  <span class="d-none d-sm-inline">بعدی</span>
+                  <i class="bi bi-arrow-left"></i>
+                </a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+    </section>
+  {% endif %}
   <!-- Pagination Section -->
+  
 {% endblock %}
 
 {% block extra_js %}

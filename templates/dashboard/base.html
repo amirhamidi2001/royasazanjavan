@@ -91,7 +91,7 @@
               <div class="space-y-1">
                 <a href="{% url 'dashboard:shop:product-list' %}" class="sidebar-link">محصولات</a>
                 <a href="{% url 'dashboard:shop:category-list' %}" class="sidebar-link">دسته‌بندی‌ها</a>
-                <a href="{% url 'dashboard:shop:feature-list' %}" class="sidebar-link">دسترسی دوره‌ها</a>
+                <a href="{% url 'dashboard:shop:feature-list' %}" class="sidebar-link">ویژگی‌های محصولات</a>
               </div>
             </div>
 
@@ -124,56 +124,13 @@
             {% for message in messages %}
               <div class="rounded-xl p-4 border text-sm shadow-sm
                 {% if message.tags == 'success' %}
-                  
-                  
-                  
-                  
-                  
                    bg-emerald-50 border-emerald-200 text-emerald-800
-
-
-
-
-
-
                 {% elif message.tags == 'error' %}
-                  
-                  
-                  
-                  
-                  
                    bg-rose-50 border-rose-200 text-rose-800
-
-
-
-
-
-
                 {% elif message.tags == 'warning' %}
-                  
-                  
-                  
-                  
-                  
                    bg-amber-50 border-amber-200 text-amber-800
-
-
-
-
-
-
                 {% else %}
-                  
-                  
-                  
-                  
-                  
                    bg-sky-50 border-sky-200 text-sky-800
-
-
-
-
-
                 {% endif %}">{{ message }}</div>
             {% endfor %}
           </div>
