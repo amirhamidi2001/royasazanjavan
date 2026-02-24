@@ -100,3 +100,19 @@ class Newsletter(models.Model):
 
     def __str__(self) -> str:
         return self.email
+
+
+class PartnerCompany(models.Model):
+    """Represents a partner companies"""
+
+    company_name = models.CharField(max_length=200)
+    manager_name = models.CharField(max_length=200)
+    testimonial_text = models.TextField()
+    image = models.ImageField(
+        upload_to="partners/", default="partners/default.webp", null=True, blank=True
+    )
+    is_highlighted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.company_name} - {self.manager_name}"

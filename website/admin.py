@@ -5,6 +5,7 @@ from website.models import (
     Contact,
     JobApplication,
     Newsletter,
+    PartnerCompany,
 )
 
 
@@ -57,3 +58,14 @@ class NewsletterAdmin(admin.ModelAdmin):
 
     list_display = ("email",)
     search_fields = ("email",)
+
+
+@admin.register(PartnerCompany)
+class PartnerCompanyAdmin(admin.ModelAdmin):
+    """Admin interface for managing partner companies."""
+
+    list_display = ("company_name", "manager_name", "is_highlighted", "created_at")
+    list_filter = ("is_highlighted", "created_at")
+    search_fields = ("company_name", "manager_name", "testimonial_text")
+    list_editable = ("is_highlighted",)
+    ordering = ("-created_at",)

@@ -3,7 +3,13 @@ from django.urls import reverse_lazy
 from django.db.models import Q, Sum
 from cart.models import CartModel, CartItemModel
 from orders.models import Order, OrderItem, Coupon
-from website.models import ConsultationRequest, Contact, JobApplication, Newsletter
+from website.models import (
+    ConsultationRequest,
+    Contact,
+    JobApplication,
+    Newsletter,
+    PartnerCompany,
+)
 from dashboard.mixins import (
     DashboardMixin,
     SuccessMessageMixin,
@@ -235,4 +241,106 @@ class NewsletterDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView
         """
         context = super().get_context_data(**kwargs)
         context["title"] = "حذف مشترک خبرنامه"
+        return context
+
+
+class PartnerCompanyListView(DashboardMixin, ListView):
+    """
+    Displays a paginated list of partner companies in the dashboard.
+    """
+
+    model = PartnerCompany
+    template_name = "dashboard/website/partner_list.html"
+    context_object_name = "partners"
+    paginate_by = 20
+    ordering = ["-created_at"]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_query = self.request.GET.get("search", "")
+        highlight_filter = self.request.GET.get("highlighted", "")
+
+        if search_query:
+            queryset = queryset.filter(
+                Q(company_name__icontains=search_query)
+                | Q(manager_name__icontains=search_query)
+            )
+
+        if highlight_filter == "1":
+            queryset = queryset.filter(is_highlighted=True)
+        elif highlight_filter == "0":
+            queryset = queryset.filter(is_highlighted=False)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search_query"] = self.request.GET.get("search", "")
+        context["highlight_filter"] = self.request.GET.get("highlighted", "")
+        context["title"] = "مدیریت شرکت‌های همکار"
+        context["create_url"] = reverse_lazy("dashboard:website:partner-create")
+        return context
+
+
+class PartnerCompanyCreateView(DashboardMixin, SuccessMessageMixin, CreateView):
+    """
+    Creates a new partner company.
+    """
+
+    model = PartnerCompany
+    fields = [
+        "company_name",
+        "manager_name",
+        "testimonial_text",
+        "image",
+        "is_highlighted",
+    ]
+    template_name = "dashboard/website/partner_form.html"
+    success_url = reverse_lazy("dashboard:website:partner-list")
+    success_message = "شرکت همکار با موفقیت ایجاد شد."
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "ایجاد شرکت همکار"
+        context["submit_text"] = "ایجاد"
+        return context
+
+
+class PartnerCompanyUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
+    """
+    Updates an existing partner company.
+    """
+
+    model = PartnerCompany
+    fields = [
+        "company_name",
+        "manager_name",
+        "testimonial_text",
+        "image",
+        "is_highlighted",
+    ]
+    template_name = "dashboard/website/partner_form.html"
+    success_url = reverse_lazy("dashboard:website:partner-list")
+    success_message = "اطلاعات شرکت همکار با موفقیت بروزرسانی شد."
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "ویرایش شرکت همکار"
+        context["submit_text"] = "ذخیره تغییرات"
+        return context
+
+
+class PartnerCompanyDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
+    """
+    Deletes a partner company.
+    """
+
+    model = PartnerCompany
+    template_name = "dashboard/website/partner_confirm_delete.html"
+    success_url = reverse_lazy("dashboard:website:partner-list")
+    delete_success_message = "شرکت همکار با موفقیت حذف شد."
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "حذف شرکت همکار"
         return context

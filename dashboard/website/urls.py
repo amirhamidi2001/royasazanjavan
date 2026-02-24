@@ -37,4 +37,24 @@ urlpatterns = [
         views.NewsletterDeleteView.as_view(),
         name="newsletter-delete",
     ),
+    path(
+        "partners/",
+        views.PartnerCompanyListView.as_view(),
+        name="partner-list",
+    ),
+    path(
+        "partners/create/",
+        views.PartnerCompanyCreateView.as_view(),
+        name="partner-create",
+    ),
+    path(
+        "partners/<int:pk>/edit/",
+        views.PartnerCompanyUpdateView.as_view(),
+        name="partner-update",
+    ),
+    path(
+        "partners/<int:pk>/delete/",
+        views.PartnerCompanyDeleteView.as_view(),
+        name="partner-delete",
+    ),
 ]

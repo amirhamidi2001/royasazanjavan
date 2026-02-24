@@ -3,6 +3,7 @@
 {% load article_tags %}
 {% load course_tags %}
 {% load product_tags %}
+{% load company_tags %}
 
 {% block title %}
   صفحه اصلی | رویا سازان جوان
@@ -18,6 +19,7 @@
           <p class="hero-description">وب‌سایت رویاسازان جوان به عنوان مرجع جامع آموزش حسابداری و مالیات، دوره‌های آموزشی گام به گام را از سطح مبتدی تا پیشرفته ارائه می‌دهد. با این دوره‌ها، شما می‌توانید مهارت‌های کاربردی را کسب کرده و در مسیر شغلی خود پیشرفت کنید. ما با بهره‌گیری از روش‌های مدرن و اساتید مجرب، فرآیند یادگیری را برای شما لذت‌بخش و مؤثر خواهیم کرد.</p>
           <div class="hero-actions" data-aos="fade-up" data-aos-delay="200">
             <a href="{% url 'courses:course_list' %}" class="btn-secondary">مشاهده دوره‌ها</a>
+            <a href="{% url 'website:job-application' %}" class="btn-primary">ارسال رزومه</a>
           </div>
           <div class="features-list" data-aos="fade-up" data-aos-delay="300">
             <div class="feature-item">
@@ -109,4 +111,8 @@
   </section>
   <!-- Latest Articles -->
   {% show_latest_articles 8 %}
+
+  <!-- Testimonials Section -->
+  {% show_partners %}
+  <!-- /Testimonials Section -->
 {% endblock %}

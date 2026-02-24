@@ -1,0 +1,30 @@
+{% load static %}
+<section id="testimonials" class="testimonials section">
+  <div class="container">
+    <div class="testimonial-masonry">
+      {% for partner in partners %}
+        <div class="testimonial-item {% if partner.is_highlighted %}highlight{% endif %}" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+          <div class="testimonial-content">
+            <div class="quote-pattern">
+              <i class="bi bi-quote"></i>
+            </div>
+            <p>{{ partner.testimonial_text }}</p>
+            <div class="client-info">
+              <div class="client-image">
+                {% if partner.image %}
+                  <img src="{{ partner.image.url }}" alt="{{ partner.company_name }}" />
+                {% else %}
+                  <img src="{% static 'assets/img/logo.webp' %}" alt="Default" />
+                {% endif %}
+              </div>
+              <div class="client-details">
+                <h3>{{ partner.manager_name }}</h3>
+                <span class="position">{{ partner.company_name }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
