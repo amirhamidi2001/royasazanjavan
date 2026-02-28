@@ -15,17 +15,17 @@
     <meta name="author" content="Amir Hamidi" />
 
     <!-- Canonical URL -->
-    <link rel="canonical" href="https://royasazanjavan.com/" />
+    <link rel="canonical" href="https://royasazanjavan.org/" />
 
     <meta name="description" content="وب‌سایت رویاسازان جوان، ارائه دهنده دوره‌های تخصصی و گام‌به‌گام آموزش حسابداری و قوانین مالیاتی از مبتدی تا پیشرفته. با اساتید مجرب حرفه‌ای شوید." />
     <meta name="keywords" content="آموزش حسابداری, آموزش مالیات, حسابداری مالیاتی, دوره حسابداری بازار کار, رویاسازان جوان, یادگیری مالیات" />
-    <link rel="canonical" href="https://royasazanjavan.com{{ request.path }}" />
+    <link rel="canonical" href="https://royasazanjavan.org{{ request.path }}" />
     <meta name="robots" content="index, follow" />
 
     <!-- Open Graph (OG) for Social Media -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="رویاسازان جوان" />
-    <meta property="og:url" content="https://royasazanjavan.com{{ request.path }}" />
+    <meta property="og:url" content="https://royasazanjavan.org{{ request.path }}" />
     <meta property="og:title" content="آموزش حسابداری و مالیات از صفر تا صد | رویاسازان جوان" />
     <meta property="og:description" content="مرجع جامع آموزش‌های کاربردی حسابداری و مالیات برای ورود سریع به بازار کار." />
     <meta property="og:image" content="{% static 'assets/img/og-share-image.jpg' %}" /> <meta name="twitter:card" content="summary_large_image" />
@@ -34,7 +34,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="رویاسازان جوان | آموزش حسابداری" />
     <meta name="twitter:description" content="دوره‌های آموزشی گام‌به‌گام حسابداری و مالیات." />
-    <meta name="twitter:image" content="https://royasazanjavan.com/static/assets/img/logo.webp" />
+    <meta name="twitter:image" content="https://royasazanjavan.org/static/assets/img/logo.webp" />
 
     <!-- Favicons -->
     <link href="{% static 'favicon.ico' %}" rel="icon" />
@@ -61,8 +61,8 @@
       "@context": "https://schema.org",
       "@type": "EducationalOrganization",
       "name": "رویاسازان جوان",
-      "url": "https://royasazanjavan.com",
-      "logo": "https://royasazanjavan.com/static/assets/img/logo.webp",
+      "url": "https://royasazanjavan.org",
+      "logo": "https://royasazanjavan.org/static/assets/img/logo.webp",
       "description": "مرجع جامع آموزش حسابداری و مالیات، دوره‌های آموزشی گام به گام از سطح مبتدی تا پیشرفته.",
       "contactPoint": {
         "@type": "ContactPoint",
@@ -210,6 +210,9 @@
               <li>
                 <a href="{% url 'website:support' %}">درخواست مشاوره</a>
               </li>
+              <li>
+                <a href="{% url 'website:job-application' %}">همکاری با ما</a>
+              </li>
               <li class="dropdown">
                 <a href="{% url 'website:contact' %}"><span>ارتباط با ما</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
                 <ul>
@@ -220,7 +223,10 @@
                     <a href="{% url 'website:tos' %}">شرایط خدمات</a>
                   </li>
                   <li>
-                    <a href="{% url 'website:job-application' %}">همکاری با ما</a>
+                    <a href="{% url 'website:dns' %}">سامانه‌های مهم</a>
+                  </li>
+                  <li>
+                    <a href="{% url 'files:excelfile-list' %}">فایل‌های کاربردی</a>
                   </li>
                 </ul>
               </li>

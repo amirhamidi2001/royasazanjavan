@@ -45,6 +45,7 @@ urlpatterns = [
     path("cart/", include("cart.urls")),
     path("courses/", include("courses.urls")),
     path("dashboard/", include("dashboard.urls")),
+    path("files/", include("files.urls")),
     path("orders/", include("orders.urls")),
     path("shop/", include("shop.urls")),
     path("robots.txt", include("robots.urls")),

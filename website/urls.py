@@ -16,5 +16,6 @@ urlpatterns = [
     ),
     path("support/", views.SupportView.as_view(), name="support"),
     path("tos/", views.TosView.as_view(), name="tos"),
+    path("dns/", views.DnsView.as_view(), name="dns"),
     path("404/", views.PageNotFoundView.as_view(), name="404"),
 ]

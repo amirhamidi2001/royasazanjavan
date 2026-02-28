@@ -1,0 +1,335 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  سامانه‌های مهم | رویا سازان جوان
+{% endblock %}
+
+{% block content %}
+  <!-- Page Title -->
+  <div class="page-title light-background">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+      <h1 class="mb-2 mb-lg-0">سامانه‌های مهم حسابداری و مالیاتی</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li>
+            <a href="{% url 'website:index' %}">صفحه اصلی</a>
+          </li>
+          <li class="current">سامانه‌های مهم حسابداری و مالیاتی</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <!-- End Page Title -->
+
+  <section id="retun-policy" class="retun-policy section">
+    <div class="container" data-aos="fade-up">
+      <!-- Hero Section -->
+      <div class="return-hero" data-aos="fade-up">
+        <div class="hero-content">
+          <h2>معرفی سامانه‌های مهم حسابداری و مالیاتی</h2>
+          <p>
+            ویژه مدیران مالی، حسابداران و صاحبان کسب‌وکار<br />
+            تهیه‌شده برای وب‌سایت شرکت حسابداری و مالیاتی رویاسازان جوان
+          </p>
+        </div>
+        <div class="return-period-box">
+          <div class="box-content">
+            <span class="text">کیت ابزار دیجیتال حسابدار</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Overview Links -->
+      <div class="policy-overview" data-aos="fade-up" data-aos-delay="100">
+        <div class="row">
+          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="feature-card">
+              <div class="card-content">
+                <h4>سازمان امور مالیاتی کشور</h4>
+                <p>سایت رسمی سازمان امور مالیاتی</p>
+                <a href="https://www.intamedia.ir" target="_blank" class="learn-more">ورود به سامانه<i class="bi bi-arrow-right"></i></a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="feature-card">
+              <div class="card-content">
+                <h4>درگاه ملی خدمات مالیاتی (مایتکس)</h4>
+                <p>کارتابل مالیاتی و خدمات الکترونیک</p>
+                <a href="https://my.tax.gov.ir" target="_blank" class="learn-more">ورود به سامانه<i class="bi bi-arrow-right"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="feature-card">
+              <div class="card-content">
+                <h4>سامانه مؤدیان</h4>
+                <p>ارسال و مدیریت صورتحساب الکترونیکی</p>
+                <a href="https://tp.tax.gov.ir" target="_blank" class="learn-more">ورود به سامانه<i class="bi bi-arrow-right"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="return-requirements" data-aos="fade-up" data-aos-delay="200">
+        <div class="row align-items-center">
+          <div class="col-lg-6">
+            <div class="exceptions-box" data-aos="fade-left">
+              <div class="box-header">
+                <i class="bi bi-link-45deg"></i>
+                <h4>سایر لینک‌های کاربردی</h4>
+              </div>
+              <div class="exceptions-grid">
+                <div class="exception-item">
+                  <a href="https://www.intamedia.ir" target="_blank">سایت سازمان مالیاتی</a>
+                </div>
+                <div class="exception-item">
+                  <a href="https://www.ntsw.ir" target="_blank">سامانه جامع تجارت</a>
+                </div>
+                <div class="exception-item">
+                  <a href="https://eservices.tamin.ir" target="_blank">تأمین اجتماعی</a>
+                </div>
+                <div class="exception-item">
+                  <a href="https://www.rrk.ir" target="_blank">روزنامه رسمی</a>
+                </div>
+                <div class="exception-item">
+                  <a href="https://www.iacpa.ir" target="_blank">جامعه حسابداران</a>
+                </div>
+                <div class="exception-item">
+                  <a href="https://audit.org.ir" target="_blank">سازمان حسابرسی</a>
+                </div>
+                <div class="exception-item">
+                  <a href="https://www.gica.ir" target="_blank">مرکز گواهی الکترونیک</a>
+                </div>
+                <div class="exception-item">
+                  <a href="https://irsherkat.ssaa.ir" target="_blank">ثبت شرکت‌ها (پلمب)</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- بخش 1: سامانه‌های مالیاتی -->
+      <div class="return-requirements" data-aos="fade-up" data-aos-delay="200">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="requirements-content">
+              <h3>سامانه‌های سازمان امور مالیاتی کشور (مالیات)</h3>
+
+              <div class="mt-4">
+                <h4>درگاه ملی خدمات الکترونیک سازمان امور مالیاتی</h4>
+                <p>
+                  <strong>کاربرد:</strong> نقطه ورود اصلی برای بسیاری از خدمات مالیاتی: پرونده‌ها، ابلاغیه‌ها، اظهارنامه‌ها، پرداخت‌ها، درخواست‌ها و پیگیری‌ها.
+                </p>
+                <p>
+                  <strong>چه زمانی به درد می‌خورد؟</strong> تقریبا همیشه؛ هر جا صحبت از «کارتابل مالیاتی» و «ابلاغ الکترونیک» باشد، همین‌جاست.
+                </p>
+                <p>
+                  <strong>آدرس:</strong> <a href="https://my.tax.gov.ir" target="_blank">https://my.tax.gov.ir</a>
+                </p>
+                <p>
+                  <strong>کارهای رایج حسابداران در این درگاه:</strong>
+                </p>
+                <ul>
+                  <li>مشاهده و پیگیری ابلاغیه‌ها و برگ تشخیص/قطعی (ابلاغ الکترونیکی)</li>
+                  <li>مدیریت پرونده‌ها، استعلام‌ها و پرداخت بدهی</li>
+                  <li>پیگیری وضعیت ثبت‌نام و اطلاعات هویتی/کسب‌وکار</li>
+                </ul>
+              </div>
+
+              <div class="mt-4">
+                <h4>سامانه مؤدیان و پایانه‌های فروشگاهی</h4>
+                <p>
+                  <strong>کاربرد:</strong> صدور/ارسال صورتحساب الکترونیکی، مدیریت نقش‌ها و دسترسی‌ها، اتصال نرم‌افزار فروش/حسابداری به سامانه، کارپوشه مؤدی.
+                </p>
+                <p>
+                  <strong>چه زمانی حیاتی است؟</strong> برای کسب‌وکارهایی که مشمول قانون پایانه‌های فروشگاهی و سامانه مؤدیان هستند (که دامنه آن به‌مرور گسترده‌تر شده است).
+                </p>
+                <p>
+                  <strong>آدرس:</strong> <a href="https://tp.tax.gov.ir" target="_blank">https://tp.tax.gov.ir</a>
+                </p>
+                <p>
+                  <strong>نکات کلیدی برای اجرا:</strong>
+                </p>
+                <ul>
+                  <li>تعیین دقیق نقش‌ها (مودی، نماینده، شرکت معتمد/ارائه‌دهنده خدمات)</li>
+                  <li>مدیریت کلیدها/توکن‌ها و تنظیمات اتصال (اگر ارسال سیستمی انجام می‌شود)</li>
+                  <li>کنترل خطاهای صورتحساب و وضعیت پذیرش/رد</li>
+                </ul>
+              </div>
+
+              <div class="mt-4">
+                <h4>سامانه مالیات بر ارزش افزوده</h4>
+                <p>
+                  <strong>کاربرد:</strong> ثبت‌نام/مدیریت ارزش افزوده، ارسال اظهارنامه‌های ارزش افزوده، مشاهده بدهی/بستانکاری و پرداخت.
+                </p>
+                <p>
+                  <strong>چه زمانی به درد می‌خورد؟</strong> در پایان هر دوره اظهارنامه ارزش افزوده و هنگام رسیدگی‌ها.
+                </p>
+                <p>
+                  <strong>مسیر دسترسی:</strong> معمولاً از طریق درگاه ملی مالیاتی (<a href="https://my.tax.gov.ir" target="_blank">my.tax.gov.ir</a>) یا لینک‌های رسمی سازمان.
+                </p>
+              </div>
+
+              <div class="mt-4">
+                <h4>اظهارنامه عملکرد (مالیات اشخاص حقیقی/حقوقی)</h4>
+                <p>
+                  <strong>کاربرد:</strong> ارسال اظهارنامه عملکرد سالانه، پرداخت مالیات، پیگیری وضعیت پذیرش و رسیدگی.
+                </p>
+                <p>
+                  <strong>نکته کاربردی:</strong> بهتر است قبل از ارسال، صورت‌های مالی/ترازها، دفاتر، تطبیق فروش/خرید، حقوق و دستمزد و وضعیت ارزش افزوده یکپارچه کنترل شود تا ریسک مغایرت کاهش یابد.
+                </p>
+              </div>
+
+              <div class="mt-4">
+                <h4>سامانه مالیات حقوق (Payroll Tax)</h4>
+                <p>
+                  <strong>کاربرد:</strong> ارسال لیست مالیات حقوق، محاسبه و پرداخت مالیات متعلقه، دریافت گزارش‌ها.
+                </p>
+                <p>
+                  <strong>چه زمانی:</strong> ماهانه (طبق تکالیف قانونی).
+                </p>
+                <p>
+                  <strong>نکته:</strong> هماهنگی بین لیست بیمه و لیست مالیات حقوق از نقاط حساس رسیدگی‌هاست (تطبیق تعداد پرسنل، مزایا، معافیت‌ها و…).
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- بخش 2: سامانه‌های تأمین اجتماعی -->
+      <div class="return-requirements mt-5" data-aos="fade-up" data-aos-delay="250">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="requirements-content">
+              <h3>سامانه‌های سازمان تأمین اجتماعی (بیمه)</h3>
+
+              <div class="mt-4">
+                <h4>خدمات الکترونیک تأمین اجتماعی</h4>
+                <p>
+                  <strong>کاربرد:</strong> ارسال لیست بیمه، مشاهده بدهی و پرداخت، درخواست مفاصاحساب، پیگیری سوابق، مکاتبات و…
+                </p>
+                <p>
+                  <strong>آدرس:</strong> <a href="https://eservices.tamin.ir" target="_blank">https://eservices.tamin.ir</a>
+                </p>
+                <p>
+                  <strong>کارهای مهم برای حسابداران:</strong>
+                </p>
+                <ul>
+                  <li>ارسال و اصلاح لیست ماهانه بیمه</li>
+                  <li>پرداخت حق بیمه و جرایم احتمالی</li>
+                  <li>پیگیری بدهی پیمان/کارگاه و درخواست مفاصاحساب (در پروژه‌ها بسیار مهم)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- بخش 3: سامانه‌های ثبتی و حقوقی -->
+      <div class="return-requirements mt-5" data-aos="fade-up" data-aos-delay="300">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="requirements-content">
+              <h3>سامانه‌های ثبتی و حقوقی (برای امور شرکت‌ها)</h3>
+
+              <div class="mt-4">
+                <h4>سامانه ثبت شرکت‌ها (پلمپ دفاتر)</h4>
+                <p>
+                  <strong>کاربرد:</strong> ثبت تأسیس، تغییرات (مدیران، آدرس، موضوع، سرمایه)، صورتجلسات، پیگیری آگهی‌ها.
+                </p>
+                <p>
+                  <strong>آدرس:</strong> <a href="https://irsherkat.ssaa.ir" target="_blank">https://irsherkat.ssaa.ir</a>
+                </p>
+                <p>
+                  <strong>چرا برای حسابدار مهم است؟</strong> چون بسیاری از امور مالیاتی/بانکی/بیمه‌ای به آخرین وضعیت ثبتی شرکت (مدیرعامل، حق امضا، آدرس قانونی، کدپستی) گره خورده است.
+                </p>
+              </div>
+
+              <div class="mt-4">
+                <h4>روزنامه رسمی جمهوری اسلامی ایران</h4>
+                <p>
+                  <strong>کاربرد:</strong> مشاهده و دریافت آگهی‌های رسمی ثبت شرکت و تغییرات.
+                </p>
+                <p>
+                  <strong>آدرس:</strong> <a href="https://www.rrk.ir" target="_blank">https://www.rrk.ir</a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- بخش 4: سامانه‌های تجارت، گمرک و بازرگانی -->
+      <div class="return-requirements mt-5" data-aos="fade-up" data-aos-delay="350">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="requirements-content">
+              <h3>سامانه‌های تجارت، گمرک و بازرگانی (برای شرکت‌های بازرگانی)</h3>
+
+              <div class="mt-4">
+                <h4>سامانه جامع تجارت</h4>
+                <p>
+                  <strong>کاربرد:</strong> فرآیندهای بازرگانی (ثبت سفارش/رهگیری/برخی مجوزها و تعاملات زنجیره تجارت بسته به نقش کسب‌وکار).
+                </p>
+                <p>
+                  <strong>آدرس:</strong> <a href="https://www.ntsw.ir" target="_blank">https://www.ntsw.ir</a>
+                </p>
+              </div>
+
+              <div class="mt-4">
+                <h4>سامانه EPL گمرک</h4>
+                <p>
+                  <strong>کاربرد:</strong> امور گمرکی و اظهار کالا و پیگیری تشریفات (بسته به نقش شرکت/حق‌العمل‌کار).
+                </p>
+                <p>
+                  <strong>آدرس:</strong> <a href="https://epl.irica.gov.ir" target="_blank">https://epl.irica.gov.ir</a>
+                </p>
+                <p>
+                  <strong>چرا برای حسابداری مهم است؟</strong> چون اسناد واردات/صادرات مستقیماً روی بهای تمام‌شده، مالیات و عوارض، حساب‌های پرداختنی/اسنادی و کنترل‌های ارزی اثر می‌گذارند.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- توصیه‌های اجرایی -->
+      <div class="return-requirements mt-5" data-aos="fade-up" data-aos-delay="500">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="requirements-content">
+              <h3>چند توصیه اجرایی از نگاه حسابداری (برای جلوگیری از دردسرهای رایج)</h3>
+              <ol class="mt-3">
+                <li>
+                  <strong>دسترسی‌ها را درست تعریف کنید:</strong> بسیاری از خطاها از نقش/سطح دسترسی نادرست مدیرعامل، نماینده یا شرکت خدمات‌دهنده شروع می‌شود.
+                </li>
+                <li>
+                  <strong>تقویم تکالیف داشته باشید:</strong> ارزش افزوده، حقوق، بیمه، اظهارنامه عملکرد، سامانه مؤدیان… هرکدام زمان‌بندی خود را دارند.
+                </li>
+                <li>
+                  <strong>مستندسازی را جدی بگیرید:</strong> رسید ارسال، گزارش پذیرش، فایل‌ها، پیام خطا، و پرداخت‌ها را آرشیو کنید. در رسیدگی‌ها طلاست.
+                </li>
+                <li>
+                  <strong>تطبیق‌های کلیدی را ماهانه انجام دهید:</strong> فروش/صورتحساب، حقوق/بیمه، گردش بانک/دفاتر، و خرید/اعتبار مالیاتی.
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <div class="return-cta" data-aos="fade-up" data-aos-delay="500">
+        <div class="cta-content">
+          <h4>جمع‌بندی</h4>
+          <p>آشنایی و تسلط بر این سامانه‌ها برای هر مدیر مالی و حسابدار حرفه‌ای ضروری است. شرکت حسابداری و مالیاتی رویاسازان جوان آماده است در استقرار صحیح فرایندهای کار با این سامانه‌ها و کاهش ریسک‌های مالیاتی و بیمه‌ای در کنار شما باشد.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

@@ -44,6 +44,14 @@ class TosView(TemplateView):
     template_name = "website/tos.html"
 
 
+class DnsView(TemplateView):
+    """
+    View for rendering the DNS and important accounting and tax systems.
+    """
+
+    template_name = "website/dns.html"
+
+
 class PageNotFoundView(TemplateView):
     """
     View for rendering the 404 error page when a page is not found.

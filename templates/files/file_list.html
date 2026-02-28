@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  کتابخانه فایل‌های کاربردی حسابداری | رویا سازان جوان
+{% endblock %}
+
+{% block content %}
+  <!-- Page Title -->
+  <div class="page-title light-background">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+      <h1 class="mb-2 mb-lg-0">کتابخانه فایل‌های کاربردی حسابداری</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li>
+            <a href="{% url 'website:index' %}">صفحه اصلی</a>
+          </li>
+          <li class="current">کتابخانه فایل‌های کاربردی حسابداری</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <!-- End Page Title -->
+
+  <!-- Support Section -->
+  <section id="support" class="support section">
+    <div class="container" data-aos="fade-up">
+      <!-- Self Help -->
+      <div class="self-help" data-aos="fade-up" data-aos-delay="300">
+        <div class="row align-items-center">
+          <div class="col-lg-6">
+            <div class="content-box">
+              <h3>کتابخانه فایل‌های کاربردی حسابداری</h3>
+              <p class="subtitle">این بخش شامل مجموعه‌ای از فایل‌های اکسل تخصصی، فرم‌های مالی، نمونه گزارش‌ها و ابزارهای محاسباتی مورد استفاده در دوره‌های آموزشی رویاسازان جوان است.</p>
+              <p>تمامی فایل‌ها با رویکرد عملی و متناسب با نیاز بازار کار طراحی شده‌اند تا بتوانید در محیط واقعی کار از آن‌ها استفاده کنید.</p>
+              <div class="resource-links">
+                {% for file in files %}
+                  <a href="{% url 'files:download' file.id %}" class="resource-link">
+                    <i class="bi bi-file-earmark-excel"></i>
+                    <div class="link-content">
+                      <h6>{{ file.title }}</h6>
+                      <p>{{ file.description|default:'توضیحی ثبت نشده' }}</p>
+                    </div>
+                  </a>
+                {% empty %}
+                  <a href="#" class="resource-link">
+                    <i class="bi bi-file-earmark-excel"></i>
+                    <div class="link-content">
+                      <h6>در حال حاضر هیچ فایلی برای دانلود وجود ندارد.</h6>
+                    </div>
+                  </a>
+                {% endfor %}
+              </div>
+              <br>
+              <p>🔐 دسترسی به دانلود فایل‌ها فقط برای کاربران ثبت‌نام‌شده امکان‌پذیر است.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- /Support Section -->
+{% endblock %}
