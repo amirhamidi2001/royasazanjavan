@@ -9273,6 +9273,167 @@ section,
 }
 
 /*--------------------------------------------------------------
+# CEO Section
+--------------------------------------------------------------*/
+.ceo .section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-size: 0.875rem;
+  color: var(--accent-color);
+  background-color: color-mix(in srgb, var(--accent-color) 10%, transparent);
+  margin-bottom: 1rem;
+}
+
+.ceo .section-badge i {
+  font-size: 1rem;
+}
+
+.ceo .about-title {
+  font-size: 2rem;
+  margin-bottom: 0.4rem;
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+.ceo .ceo-position {
+  color: var(--accent-color);
+  font-family: var(--heading-font);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.ceo .about-description {
+  color: color-mix(in srgb, var(--default-color) 80%, transparent);
+  line-height: 1.9;
+}
+
+.ceo .ceo-photo img {
+  width: 100%;
+  max-width: 320px;
+  display: block;
+  margin: 0 auto;
+  border-radius: 20px;
+  border: 1px solid color-mix(in srgb, var(--default-color), transparent 88%);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+}
+
+/* Accordion */
+.ceo-accordion {
+  --bs-accordion-color: var(--default-color);
+  --bs-accordion-bg: transparent;
+  --bs-accordion-border-color: color-mix(in srgb, var(--default-color), transparent 90%);
+  --bs-accordion-border-radius: 10px;
+  --bs-accordion-inner-border-radius: 9px;
+  --bs-accordion-btn-color: var(--heading-color);
+  --bs-accordion-btn-bg: var(--surface-color);
+  --bs-accordion-btn-focus-box-shadow: none;
+  --bs-accordion-active-color: var(--accent-color);
+  --bs-accordion-active-bg: color-mix(in srgb, var(--accent-color) 10%, transparent);
+  --bs-accordion-btn-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffcc33'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+  --bs-accordion-btn-active-icon: var(--bs-accordion-btn-icon);
+}
+
+.ceo-accordion .accordion-item {
+  background-color: var(--surface-color);
+  border: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+  border-radius: 10px !important;
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+
+.ceo-accordion .accordion-item:last-child {
+  margin-bottom: 0;
+}
+
+.ceo-accordion .accordion-header {
+  margin: 0;
+}
+
+.ceo-accordion .accordion-button {
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 20px 30px;
+  box-shadow: none;
+}
+
+.ceo-accordion .accordion-button i {
+  color: var(--accent-color);
+  font-size: 1.1rem;
+}
+
+.ceo-accordion .accordion-button:not(.collapsed) {
+  color: var(--accent-color);
+  box-shadow: none;
+}
+
+.ceo-accordion .accordion-button:focus {
+  box-shadow: none;
+}
+
+.ceo-accordion .accordion-body {
+  padding: 5px 30px 25px;
+}
+
+.ceo-accordion .accordion-body h4 {
+  color: var(--heading-color);
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 15px 0 10px;
+}
+
+.ceo-accordion .accordion-body h4:first-child {
+  margin-top: 0;
+}
+
+.ceo-accordion .accordion-body ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px;
+}
+
+.ceo-accordion .accordion-body ul li {
+  position: relative;
+  padding-right: 22px;
+  margin-bottom: 8px;
+  line-height: 1.8;
+  color: color-mix(in srgb, var(--default-color) 85%, transparent);
+}
+
+.ceo-accordion .accordion-body ul li:last-child {
+  margin-bottom: 0;
+}
+
+.ceo-accordion .accordion-body ul li::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 10px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--accent-color);
+}
+
+.ceo-accordion .accordion-body ul li strong {
+  color: var(--heading-color);
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .ceo-accordion .accordion-button {
+    padding: 15px 20px;
+    font-size: 0.95rem;
+  }
+
+  .ceo-accordion .accordion-body {
+    padding: 5px 20px 20px;
+  }
+}
+
+/*--------------------------------------------------------------
 # Stats Section
 --------------------------------------------------------------*/
 .stats .stats-item {
@@ -9538,7 +9699,7 @@ section,
 .contact-2 .map-section {
   position: relative;
   width: 100%;
-  height: 500px;
+  height: 400px;
   overflow: hidden;
 }
 

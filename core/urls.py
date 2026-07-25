@@ -19,7 +19,7 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
-from website.views import Custom404View, ads_txt
+from website.views import Custom404View, ads_txt, enamad_txt
 from django.contrib.sitemaps.views import sitemap
 from articles.sitemaps import ArticleSitemap
 from courses.sitemaps import CourseSitemap
@@ -56,6 +56,7 @@ urlpatterns = [
         name="django.contrib.sitemaps.views.sitemap",
     ),
     path("ads.txt", ads_txt),
+    path("21278759.txt", enamad_txt),
 ]
 
 if settings.DEBUG:

@@ -15,25 +15,33 @@
     <div class="hero-container">
       <div class="hero-content">
         <div class="content-wrapper" data-aos="fade-up" data-aos-delay="100">
-          <h1 class="hero-title">آموزش حسابداری و مالیات</h1>
+          <h1 class="hero-title">آموزش حسابداری و مالیات در پاکدشت</h1>
           <p class="hero-description">وب‌سایت رویاسازان جوان به عنوان مرجع جامع آموزش حسابداری و مالیات، دوره‌های آموزشی گام به گام را از سطح مبتدی تا پیشرفته ارائه می‌دهد. با این دوره‌ها، شما می‌توانید مهارت‌های کاربردی را کسب کرده و در مسیر شغلی خود پیشرفت کنید. ما با بهره‌گیری از روش‌های مدرن و اساتید مجرب، فرآیند یادگیری را برای شما لذت‌بخش و مؤثر خواهیم کرد.</p>
           <div class="hero-actions" data-aos="fade-up" data-aos-delay="200">
             <a href="{% url 'courses:course_list' %}" class="btn-secondary">مشاهده دوره‌ها</a>
             <a href="{% url 'website:job-application' %}" class="btn-primary">ارسال رزومه</a>
           </div>
           <div class="features-list" data-aos="fade-up" data-aos-delay="300">
-            <div class="feature-item">
-              <i class="bi bi-laptop"></i>
-              <span>آموزش آنلاین و حضوری</span>
-            </div>
-            <div class="feature-item">
-              <i class="bi bi-file-earmark-text"></i>
-              <span>گواهینامه معتبر</span>
-            </div>
-            <div class="feature-item">
-              <i class="bi bi-people"></i>
-              <span>مشاوره تخصصی</span>
-            </div>
+            <a href="{% url 'courses:course_list' %}" class="feature-link">
+              <div class="feature-item">
+                <i class="bi bi-laptop"></i>
+                <span>آموزش آنلاین و حضوری</span>
+              </div>
+            </a>
+
+            <a href="#" class="feature-link">
+              <div class="feature-item">
+                <i class="bi bi-file-earmark-text"></i>
+                <span>گواهینامه معتبر</span>
+              </div>
+            </a>
+
+            <a href="{% url 'website:support' %}#contact-2" class="feature-link">
+              <div class="feature-item">
+                <i class="bi bi-people"></i>
+                <span>مشاوره تخصصی</span>
+              </div>
+            </a>
           </div>
           <div class="features-list" data-aos="fade-up" data-aos-delay="300"></div>
         </div>

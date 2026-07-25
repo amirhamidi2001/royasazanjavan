@@ -1,6 +1,10 @@
 {% load static %}
 <section id="testimonials" class="testimonials section">
   <div class="container">
+    <div class="section-title text-center" data-aos="fade-up">
+      <h2>سازمان‌هایی که به ما اعتماد کرده‌اند</h2>
+      <p>مفتخریم که در مسیر رشد و توسعه کسب‌وکارها، همراه شرکت‌ها و سازمان‌های مختلف بوده‌ایم.</p>
+    </div>
     <div class="testimonial-masonry">
       {% for partner in partners %}
         <div class="testimonial-item {% if partner.is_highlighted %}highlight{% endif %}" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">

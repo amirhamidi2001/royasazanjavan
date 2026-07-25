@@ -136,3 +136,8 @@ class Custom404View(View):
 def ads_txt(request):
     content = """google.com, pub-1234567890123456, DIRECT, f08c47fec0942fa0"""
     return HttpResponse(content, content_type="text/plain")
+
+
+def enamad_txt(request):
+    content = """21278759.txt"""
+    return HttpResponse(content, content_type="text/plain")
