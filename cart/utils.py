@@ -1,4 +1,5 @@
 from django.contrib.contenttypes.models import ContentType
+
 from courses.models import Course
 from shop.models import Product
 
@@ -240,8 +241,9 @@ def require_non_empty_cart(view_func):
     if the cart is empty.
     """
     from functools import wraps
-    from django.shortcuts import redirect
+
     from django.contrib import messages
+    from django.shortcuts import redirect
 
     @wraps(view_func)
     def wrapper(request, *args, **kwargs):

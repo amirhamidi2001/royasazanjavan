@@ -1,10 +1,9 @@
 from django import template
-from django.utils.safestring import mark_safe
+from django.contrib.auth import get_user_model
 from django.db.models import Count, Q
 
 # import markdown
 from ..models import Article, Category, Tag
-from django.contrib.auth import get_user_model
 
 User = get_user_model()
 register = template.Library()

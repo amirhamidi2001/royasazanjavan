@@ -1,6 +1,8 @@
+from datetime import timedelta
+
 from django import template
 from django.utils import timezone
-from datetime import timedelta
+
 from ..models import Product
 
 register = template.Library()

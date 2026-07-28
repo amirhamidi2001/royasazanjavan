@@ -1,13 +1,13 @@
-from django.core.paginator import EmptyPage, PageNotAnInteger
-from django.views.generic import ListView, DetailView, View
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
-from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import EmptyPage, PageNotAnInteger
 from django.db.models import Avg, Count
+from django.shortcuts import get_object_or_404, redirect
+from django.utils.translation import gettext_lazy as _
+from django.views.generic import DetailView, ListView, View
 
-from courses.models import Course, Video, CourseProgress, CourseRating
 from courses.forms import CourseRatingForm
+from courses.models import Course, CourseProgress, CourseRating, Video
 
 
 class CourseListView(ListView):

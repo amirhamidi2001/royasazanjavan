@@ -6,6 +6,7 @@ from website.models import (
     JobApplication,
     Newsletter,
     PartnerCompany,
+    Students,
 )
 
 
@@ -68,4 +69,14 @@ class PartnerCompanyAdmin(admin.ModelAdmin):
     list_filter = ("is_highlighted", "created_at")
     search_fields = ("company_name", "manager_name", "testimonial_text")
     list_editable = ("is_highlighted",)
+    ordering = ("-created_at",)
+
+
+@admin.register(Students)
+class StudentsAdmin(admin.ModelAdmin):
+    """Admin interface for students"""
+
+    list_display = ("student_name", "created_at")
+    list_filter = ("created_at",)
+    search_fields = ("student_name",)
     ordering = ("-created_at",)

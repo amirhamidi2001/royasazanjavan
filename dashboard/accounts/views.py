@@ -1,11 +1,12 @@
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from django.urls import reverse_lazy
 from django.db.models import Q
-from accounts.models import User, Profile
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+
+from accounts.models import Profile, User
 from dashboard.mixins import (
     DashboardMixin,
-    SuccessMessageMixin,
     DeleteSuccessMessageMixin,
+    SuccessMessageMixin,
 )
 
 

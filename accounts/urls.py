@@ -1,13 +1,14 @@
-from django.urls import path, include
+from django.urls import path
+
 from .views import (
-    UserRegistrationView,
+    ChangePasswordView,
+    EmailVerificationView,
+    ForgotPasswordView,
+    ResendVerificationEmailView,
+    ResetPasswordView,
     UserLoginView,
     UserLogoutView,
-    EmailVerificationView,
-    ResendVerificationEmailView,
-    ForgotPasswordView,
-    ResetPasswordView,
-    ChangePasswordView,
+    UserRegistrationView,
 )
 
 app_name = "accounts"

@@ -1,8 +1,9 @@
 from django.contrib import admin
-from django.utils.html import format_html
 from django.urls import reverse
+from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from .models import Order, OrderItem, Coupon, OrderStatusChoices
+
+from .models import Coupon, Order, OrderItem, OrderStatusChoices
 
 
 class OrderItemInline(admin.TabularInline):

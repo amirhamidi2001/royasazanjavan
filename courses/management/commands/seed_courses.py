@@ -1,7 +1,8 @@
 from django.core.management.base import BaseCommand
+from django.utils.text import slugify
+
 from accounts.models import User
 from courses.models import Course, Video
-from django.utils.text import slugify
 
 
 class Command(BaseCommand):

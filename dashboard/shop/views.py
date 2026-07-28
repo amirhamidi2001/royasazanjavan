@@ -1,12 +1,13 @@
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.db.models import Count, Q, Sum
 from django.urls import reverse_lazy
-from django.db.models import Q, Count, Sum
-from shop.models import Category, Product, ProductFeature
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+
 from dashboard.mixins import (
     DashboardMixin,
-    SuccessMessageMixin,
     DeleteSuccessMessageMixin,
+    SuccessMessageMixin,
 )
+from shop.models import Category, Product, ProductFeature
 
 
 class CategoryListView(DashboardMixin, ListView):

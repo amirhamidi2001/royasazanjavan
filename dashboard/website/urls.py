@@ -1,5 +1,6 @@
 # dashboard/website/urls.py
 from django.urls import path
+
 from . import views
 
 app_name = "website"
@@ -56,5 +57,25 @@ urlpatterns = [
         "partners/<int:pk>/delete/",
         views.PartnerCompanyDeleteView.as_view(),
         name="partner-delete",
+    ),
+    path(
+        "students/",
+        views.StudentsListView.as_view(),
+        name="student-list",
+    ),
+    path(
+        "students/create/",
+        views.StudentsCreateView.as_view(),
+        name="student-create",
+    ),
+    path(
+        "students/<int:pk>/edit/",
+        views.StudentsUpdateView.as_view(),
+        name="student-update",
+    ),
+    path(
+        "students/<int:pk>/delete/",
+        views.StudentsDeleteView.as_view(),
+        name="student-delete",
     ),
 ]

@@ -1,7 +1,8 @@
 from django.contrib.contenttypes.models import ContentType
+
+from cart.models import CartItemModel, CartModel
 from courses.models import Course
 from shop.models import Product
-from cart.models import CartModel, CartItemModel
 
 
 class CartSession:

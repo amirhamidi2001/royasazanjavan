@@ -1,11 +1,6 @@
 from django import forms
 
-from .models import (
-    ConsultationRequest,
-    Contact,
-    JobApplication,
-    Newsletter,
-)
+from .models import ConsultationRequest, Contact, JobApplication, Newsletter
 
 
 class ConsultationRequestForm(forms.ModelForm):

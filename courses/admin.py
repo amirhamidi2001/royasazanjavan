@@ -1,5 +1,6 @@
 from django.contrib import admin
-from courses.models import Course, Video, CourseProgress, CourseRating
+
+from courses.models import Course, CourseProgress, CourseRating, Video
 
 
 class VideoInline(admin.TabularInline):

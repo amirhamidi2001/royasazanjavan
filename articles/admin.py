@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Article, Category, Tag, Comment
+
+from .models import Article, Category, Comment, Tag
 
 
 @admin.register(Category)

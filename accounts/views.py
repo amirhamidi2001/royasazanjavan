@@ -1,30 +1,28 @@
-from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.contrib.auth import (
-    login,
-    logout,
-    authenticate,
     get_user_model,
+    login,
     update_session_auth_hash,
 )
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
-from django.views.generic import CreateView, FormView, View
-from django.contrib import messages
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.utils.http import urlsafe_base64_decode
-from django.utils.encoding import force_str
-from django_ratelimit.decorators import ratelimit
 from django.utils.decorators import method_decorator
+from django.utils.encoding import force_str
+from django.utils.http import urlsafe_base64_decode
+from django.views.generic import CreateView, FormView, View
+from django_ratelimit.decorators import ratelimit
 
 from .forms import (
-    UserRegistrationForm,
-    UserLoginForm,
+    ChangePasswordForm,
     ForgotPasswordForm,
     ResetPasswordForm,
-    ChangePasswordForm,
+    UserLoginForm,
+    UserRegistrationForm,
 )
-from .tokens import email_verification_token
 from .services import EmailService
+from .tokens import email_verification_token
 
 User = get_user_model()
 

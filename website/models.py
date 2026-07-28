@@ -116,3 +116,17 @@ class PartnerCompany(models.Model):
 
     def __str__(self):
         return f"{self.company_name} - {self.manager_name}"
+
+
+class Students(models.Model):
+    """Represents a Students"""
+
+    student_name = models.CharField(max_length=200)
+    comment = models.TextField()
+    image = models.ImageField(
+        upload_to="students/", default="students/default.webp", null=True, blank=True
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.student_name

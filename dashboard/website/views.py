@@ -1,19 +1,21 @@
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from django.urls import reverse_lazy
 from django.db.models import Q, Sum
-from cart.models import CartModel, CartItemModel
-from orders.models import Order, OrderItem, Coupon
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+
+from cart.models import CartItemModel, CartModel
+from dashboard.mixins import (
+    DashboardMixin,
+    DeleteSuccessMessageMixin,
+    SuccessMessageMixin,
+)
+from orders.models import Coupon, Order, OrderItem
 from website.models import (
     ConsultationRequest,
     Contact,
     JobApplication,
     Newsletter,
     PartnerCompany,
-)
-from dashboard.mixins import (
-    DashboardMixin,
-    SuccessMessageMixin,
-    DeleteSuccessMessageMixin,
+    Students,
 )
 
 
@@ -343,4 +345,92 @@ class PartnerCompanyDeleteView(DashboardMixin, DeleteSuccessMessageMixin, Delete
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = "حذف شرکت همکار"
+        return context
+
+
+class StudentsListView(DashboardMixin, ListView):
+    """
+    Displays a paginated list of student companies in the dashboard.
+    """
+
+    model = Students
+    template_name = "dashboard/website/student_list.html"
+    context_object_name = "students"
+    paginate_by = 20
+    ordering = ["-created_at"]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_query = self.request.GET.get("search", "")
+
+        if search_query:
+            queryset = queryset.filter(Q(student_name__icontains=search_query))
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search_query"] = self.request.GET.get("search", "")
+        context["title"] = "مدیریت دانش پذیران"
+        context["create_url"] = reverse_lazy("dashboard:website:student-create")
+        return context
+
+
+class StudentsCreateView(DashboardMixin, SuccessMessageMixin, CreateView):
+    """
+    Creates a new student company.
+    """
+
+    model = Students
+    fields = [
+        "student_name",
+        "comment",
+        "image",
+    ]
+    template_name = "dashboard/website/student_form.html"
+    success_url = reverse_lazy("dashboard:website:student-list")
+    success_message = "دانش پذیر با موفقیت ایجاد شد."
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "ایجاد دانش پذیر"
+        context["submit_text"] = "ایجاد"
+        return context
+
+
+class StudentsUpdateView(DashboardMixin, SuccessMessageMixin, UpdateView):
+    """
+    Updates an existing student company.
+    """
+
+    model = Students
+    fields = [
+        "student_name",
+        "comment",
+        "image",
+    ]
+    template_name = "dashboard/website/student_form.html"
+    success_url = reverse_lazy("dashboard:website:student-list")
+    success_message = "اطلاعات دانش پذیر با موفقیت بروزرسانی شد."
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "ویرایش دانش پذیر"
+        context["submit_text"] = "ذخیره تغییرات"
+        return context
+
+
+class StudentsDeleteView(DashboardMixin, DeleteSuccessMessageMixin, DeleteView):
+    """
+    Deletes a student company.
+    """
+
+    model = Students
+    template_name = "dashboard/website/student_confirm_delete.html"
+    success_url = reverse_lazy("dashboard:website:student-list")
+    delete_success_message = "دانش پذیر با موفقیت حذف شد."
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "حذف دانش پذیر"
         return context

@@ -29,7 +29,7 @@
               </div>
             </a>
 
-            <a href="#" class="feature-link">
+            <a href="{% url 'website:certificates' %}" class="feature-link">
               <div class="feature-item">
                 <i class="bi bi-file-earmark-text"></i>
                 <span>گواهینامه معتبر</span>
@@ -117,6 +117,11 @@
       </div>
     </div>
   </section>
+
+  <!-- Students Section -->
+  {% show_students %}
+  <!-- /Students Section -->
+  
   <!-- Latest Articles -->
   {% show_latest_articles 8 %}
 

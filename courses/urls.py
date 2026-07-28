@@ -1,11 +1,12 @@
 from django.urls import path
+
 from courses.views import (
-    CourseListView,
     CourseDetailView,
-    SubmitRatingView,
+    CourseListView,
     CourseProgressView,
-    MarkVideoWatchedView,
     EnrollCourseView,
+    MarkVideoWatchedView,
+    SubmitRatingView,
 )
 
 app_name = "courses"

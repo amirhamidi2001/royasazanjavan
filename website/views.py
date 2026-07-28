@@ -1,14 +1,10 @@
-from django.shortcuts import render
-from django.http import HttpResponse
 from django.contrib import messages
+from django.http import HttpResponse
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, FormView, TemplateView, View
 
-from .forms import (
-    ConsultationRequestForm,
-    ContactForm,
-    JobApplicationForm,
-)
+from .forms import ConsultationRequestForm, ContactForm, JobApplicationForm
 from .models import ConsultationRequest, JobApplication
 
 
@@ -26,6 +22,14 @@ class AboutView(TemplateView):
     """
 
     template_name = "website/about.html"
+
+
+class CertificatesView(TemplateView):
+    """
+    View for rendering the certificates page.
+    """
+
+    template_name = "website/certificates.html"
 
 
 class FAQView(TemplateView):
@@ -135,9 +139,4 @@ class Custom404View(View):
 
 def ads_txt(request):
     content = """google.com, pub-1234567890123456, DIRECT, f08c47fec0942fa0"""
-    return HttpResponse(content, content_type="text/plain")
-
-
-def enamad_txt(request):
-    content = """21278759.txt"""
     return HttpResponse(content, content_type="text/plain")

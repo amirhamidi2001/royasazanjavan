@@ -1,8 +1,10 @@
-from django.views.generic import ListView, DetailView
-from django.db.models import Q
 from decimal import Decimal
-from .models import Product, Category
+
+from django.db.models import Q
+from django.views.generic import DetailView, ListView
+
 from .forms import ProductFilterForm
+from .models import Category, Product
 
 
 class ProductListView(ListView):

@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  گواهی‌نامه‌های پایان دوره - شرکت رویاسازان جوان مهر
+{% endblock %}
+
+{% block content %}
+  <!-- Page Title / Breadcrumbs -->
+  <div class="page-title light-background py-4 mb-4">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+      <h1 class="mb-2 mb-lg-0 fw-bold h3">نمونه گواهی‌نامه‌های آموزشی</h1>
+      <nav class="breadcrumbs">
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item">
+            <a href="{% url 'website:index' %}">صفحه اصلی</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">گواهی‌نامه‌ها</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Main Certificates Section -->
+  <section class="certificates-section section py-4">
+    <div class="container">
+      <!-- Intro Text -->
+      <div class="text-center max-width-800 mx-auto mb-5" data-aos="fade-up">
+        <span class="badge bg-gold text-dark mb-2 px-3 py-2 rounded-pill fw-bold">اعتبار شغلی و مهارتی</span>
+        <h2 class="section-title text-gold mb-3 fw-bold">گواهی‌نامه‌های معتبر پایان دوره</h2>
+        <p class="text-light-50 leading-relaxed">تمامی دانش‌پذیران آموزشگاه رویاسازان جوان پس از گذراندن دوره‌های تخصصی حسابداری، مالیاتی و نرم‌افزارهای کاربردی (همکاران سیستم، سپیدار، هلو و اکسل)، موفق به دریافت گواهی‌نامه رسمی پایان دوره می‌شوند. این مدارک دارای کد پیگیری معتبر جهت استعلام کارفرمایان می‌باشد.</p>
+      </div>
+
+      <!-- Certificates Grid -->
+      <div class="row g-4 justify-content-center align-items-stretch">
+        <!-- Certificate Item 1 -->
+        <div class="col-lg-6 col-md-12 d-flex" data-aos="fade-up" data-aos-delay="100">
+          <div class="card h-100 w-100 shadow-sm border-0 rounded-4 overflow-hidden bg-dark text-white d-flex flex-column">
+            <!-- Fixed Aspect Ratio Image Container -->
+            <div class="cert-img-wrapper position-relative overflow-hidden bg-black d-flex align-items-center justify-content-center p-3">
+              <img src="{% static 'assets/img/certificates/training-cert.webp' %}" class="cert-img img-fluid" alt="گواهی‌نامه پایان دوره علوم جامع حسابداری" loading="lazy" />
+              <div class="cert-overlay d-flex align-items-center justify-content-center">
+                <a href="{% static 'assets/img/certificates/training-cert.webp' %}" class="btn btn-gold rounded-circle p-3 glightbox shadow-lg" data-gallery="certificates-gallery" title="مشاهده سایز بزرگ - علوم جامع حسابداری"><i class="bi bi-zoom-in fs-4"></i></a>
+              </div>
+            </div>
+            <!-- Card Body -->
+            <div class="card-body p-4 border-top border-secondary border-opacity-50 d-flex flex-column justify-content-between flex-grow-1">
+              <div>
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                  <span class="badge bg-gold text-dark font-mono fs-7 fw-bold">پورتال رسمی علوم و فنون</span>
+                  <span class="text-warning small"><i class="bi bi-award-fill me-1"></i>کد هولوگرام‌دار</span>
+                </div>
+                <h3 class="card-title h5 text-gold fw-bold mb-3">گواهی‌نامه پایان دوره علوم جامع حسابداری</h3>
+                <p class="card-text text-light-50 small mb-3">
+                  شامل سرفصل‌های استانداردهای حسابداری، اظهارنامه مالیاتی، ارزش افزوده، مغایرت‌گیری بانکی و صورت‌های مالی به مدت <strong>۳۰ ساعت</strong>.
+                </p>
+              </div>
+              <div class="pt-3 border-top border-secondary border-opacity-25 d-flex justify-content-between align-items-center mt-3">
+                <small class="text-muted"><i class="bi bi-shield-check me-1"></i>قابلیت استعلام آنلاین</small>
+                <a href="{% static 'assets/img/certificates/training-cert.webp' %}" class="btn btn-outline-warning btn-sm glightbox" data-gallery="certificates-gallery-btn-1"><i class="bi bi-eye me-1"></i> مشاهده نمونه</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Certificate Item 2 -->
+        <div class="col-lg-6 col-md-12 d-flex" data-aos="fade-up" data-aos-delay="200">
+          <div class="card h-100 w-100 shadow-sm border-0 rounded-4 overflow-hidden bg-dark text-white d-flex flex-column">
+            <!-- Fixed Aspect Ratio Image Container -->
+            <div class="cert-img-wrapper position-relative overflow-hidden bg-black d-flex align-items-center justify-content-center p-3">
+              <img src="{% static 'assets/img/certificates/internship-cert.webp' %}" class="cert-img img-fluid" alt="گواهی‌نامه پایان دوره کارآموزی حسابداری" loading="lazy" />
+              <div class="cert-overlay d-flex align-items-center justify-content-center">
+                <a href="{% static 'assets/img/certificates/internship-cert.webp' %}" class="btn btn-gold rounded-circle p-3 glightbox shadow-lg" data-gallery="certificates-gallery" title="مشاهده سایز بزرگ - کارآموزی"><i class="bi bi-zoom-in fs-4"></i></a>
+              </div>
+            </div>
+            <!-- Card Body -->
+            <div class="card-body p-4 border-top border-secondary border-opacity-50 d-flex flex-column justify-content-between flex-grow-1">
+              <div>
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                  <span class="badge bg-gold text-dark font-mono fs-7 fw-bold">ش ثبت: ۳۷۷۱</span>
+                  <span class="text-warning small"><i class="bi bi-patch-check-fill me-1"></i>دارای سابقه کارآموزی</span>
+                </div>
+                <h3 class="card-title h5 text-gold fw-bold mb-3">گواهی‌نامه پایان دوره کارآموزی</h3>
+                <p class="card-text text-light-50 small mb-3">
+                  مربوط به دوره‌های تخصصی مباحث حسابداری و پروژه مالی همراه با نرم‌افزارهای سپیدار همکاران سیستم، هلو و اکسل معادل <strong>۲ سال سابقه کاری</strong>.
+                </p>
+              </div>
+              <div class="pt-3 border-top border-secondary border-opacity-25 d-flex justify-content-between align-items-center mt-3">
+                <small class="text-muted"><i class="bi bi-building me-1"></i>شرکت رویاسازان جوان مهر</small>
+                <a href="{% static 'assets/img/certificates/internship-cert.webp' %}" class="btn btn-outline-warning btn-sm glightbox" data-gallery="certificates-gallery-btn-2"><i class="bi bi-eye me-1"></i> مشاهده نمونه</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Inquiry / Verification Callout Box -->
+      <div class="row mt-5">
+        <div class="col-12" data-aos="fade-up">
+          <div class="p-4 p-md-5 rounded-4 bg-gradient-dark border border-warning border-opacity-25 text-center position-relative overflow-hidden">
+            <div class="row align-items-center">
+              <div class="col-lg-8 text-lg-start mb-3 mb-lg-0">
+                <h3 class="fw-bold text-warning mb-2"><i class="bi bi-patch-check me-2"></i>راهنمای استعلام و اصالت‌سنجی مدرک</h3>
+                <p class="text-light-50 mb-0 small">کارفرمایان و دانش‌پذیران محترم می‌توانند با استفاده از شماره ثبت/سریال مندرج روی گواهی‌نامه‌ها، اصالت مدرک را آنلاین پیگیری کنند.</p>
+              </div>
+              <div class="col-lg-4 text-lg-end">
+                <a href="tel:02136041508" class="btn btn-warning fw-bold px-4 py-2 rounded-pill shadow-sm"><i class="bi bi-telephone-outbound me-2"></i>تماس جهت استعلام</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block extra_css %}
+  <style>
+    /* Color Palette Styling */
+    .text-gold {
+      color: #ffcc33 !important;
+    }
+    .bg-gold {
+      background-color: #ffcc33 !important;
+    }
+    .btn-gold {
+      background-color: #ffcc33;
+      color: #000;
+      border: none;
+    }
+    .btn-gold:hover {
+      background-color: #e6b800;
+      color: #000;
+    }
+    .text-light-50 {
+      color: rgba(255, 255, 255, 0.7) !important;
+    }
+    
+    /* Fixed Image Wrapper for Aspect Ratio Uniformity */
+    .cert-img-wrapper {
+      height: 380px; /* ارتفاع ثابت برای تمام فریم‌های عکس */
+      width: 100%;
+      position: relative;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .cert-img {
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain; /* از دفرمه شدن عکس جلوگیری کرده و کامل درون فریم جای می‌دهد */
+      transition: transform 0.4s ease;
+    }
+    
+    .cert-img-wrapper:hover .cert-img {
+      transform: scale(1.03);
+    }
+    
+    /* Hover Overlay Effect */
+    .cert-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.65);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .cert-img-wrapper:hover .cert-overlay {
+      opacity: 1;
+    }
+    
+    .bg-gradient-dark {
+      background: linear-gradient(145deg, #181818 0%, #0a0a0a 100%);
+    }
+    
+    /* Responsive Fix for Mobile */
+    @media (max-width: 576px) {
+      .cert-img-wrapper {
+        height: 260px;
+      }
+    }
+  </style>
+{% endblock %}

@@ -1,14 +1,15 @@
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from django.urls import reverse_lazy
 from django.db.models import Q, Sum
-from cart.models import CartModel, CartItemModel
-from orders.models import Order, OrderItem, Coupon
-from website.models import ConsultationRequest, Contact, JobApplication, Newsletter
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+
+from cart.models import CartItemModel, CartModel
 from dashboard.mixins import (
     DashboardMixin,
-    SuccessMessageMixin,
     DeleteSuccessMessageMixin,
+    SuccessMessageMixin,
 )
+from orders.models import Coupon, Order, OrderItem
+from website.models import ConsultationRequest, Contact, JobApplication, Newsletter
 
 
 class CartListView(DashboardMixin, ListView):

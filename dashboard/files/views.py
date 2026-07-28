@@ -1,12 +1,13 @@
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from django.urls import reverse_lazy
 from django.db.models import Q
-from files.models import ExcelFile
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+
 from dashboard.mixins import (
     DashboardMixin,
-    SuccessMessageMixin,
     DeleteSuccessMessageMixin,
+    SuccessMessageMixin,
 )
+from files.models import ExcelFile
 
 
 class ExcelFileListView(DashboardMixin, ListView):

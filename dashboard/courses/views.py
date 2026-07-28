@@ -1,11 +1,12 @@
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.db.models import Count, Q
 from django.urls import reverse_lazy
-from django.db.models import Q, Count
-from courses.models import Course, Video, CourseProgress, CourseRating
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+
+from courses.models import Course, CourseProgress, CourseRating, Video
 from dashboard.mixins import (
     DashboardMixin,
-    SuccessMessageMixin,
     DeleteSuccessMessageMixin,
+    SuccessMessageMixin,
 )
 
 

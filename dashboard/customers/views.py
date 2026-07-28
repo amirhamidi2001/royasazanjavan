@@ -1,19 +1,19 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.decorators import login_required
+from django.db.models import Avg, Count, Q
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
-from django.db.models import Q, Count, Avg
 
 from cart.cart import CartSession
-from orders.models import Order
 from courses.models import Course, CourseProgress, CourseRating
 from dashboard.customers.forms import (
-    ProfileUpdateForm,
     EmailUpdateForm,
     PasswordChangeForm,
+    ProfileUpdateForm,
 )
+from orders.models import Order
 
 
 @login_required

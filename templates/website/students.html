@@ -1,0 +1,60 @@
+{% load static %}
+<!-- Students Section -->
+<section id="students" class="students section">
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h2>دانش پذیران</h2>
+    <p>نظرات دانش پذیران درباره دوره‌های آموزشی رویاسازان جوان</p>
+  </div>
+  <!-- End Section Title -->
+
+  <div class="container" data-aos="fade-up" data-aos-delay="100">
+    <div class="swiper init-swiper">
+      <script type="application/json" class="swiper-config">
+        {
+          "loop": true,
+          "speed": 600,
+          "autoplay": {
+            "delay": 5000
+          },
+          "slidesPerView": "auto",
+          "pagination": {
+            "el": ".swiper-pagination",
+            "type": "bullets",
+            "clickable": true
+          }
+        }
+      </script>
+      <div class="swiper-wrapper">
+        {% for student in students %}
+          <div class="swiper-slide">
+            <div class="testimonial-item">
+              <div class="row gy-4 justify-content-center">
+                <div class="col-lg-6">
+                  <div class="testimonial-content">
+                    <p>
+                      <i class="bi bi-quote quote-icon-left"></i>
+                      <span>{{ student.comment }}</span>
+                      <i class="bi bi-quote quote-icon-right"></i>
+                    </p>
+                    <h3>{{ student.student_name }}</h3>
+                  </div>
+                </div>
+                <div class="col-lg-2 text-center">
+                  {% if student.image %}
+                    <img src="{{ student.image.url }}" class="img-fluid testimonial-img" alt="{{ student.student_name }}" />
+                  {% else %}
+                    <img src="{% static 'assets/img/logo.webp' %}" alt="Default" />
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- End testimonial item -->
+        {% endfor %}
+      </div>
+      <div class="swiper-pagination"></div>
+    </div>
+  </div>
+</section>
+<!-- /Students Section -->
