@@ -72,7 +72,9 @@ def cart_add_course(request, course_id):
         if added:
             messages.success(request, f'دوره "{course.title}" به سبد خرید اضافه شد.')
         else:
-            messages.info(request, f'دوره "{course.title}" قبلاً در سبد خرید موجود است.')
+            messages.info(
+                request, f'دوره "{course.title}" قبلاً در سبد خرید موجود است.'
+            )
 
         next_url = request.POST.get(
             "next", request.META.get("HTTP_REFERER", "cart:cart_detail")

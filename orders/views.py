@@ -1,7 +1,6 @@
+import logging
 from decimal import Decimal
 
-import requests
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
@@ -11,15 +10,13 @@ from django.urls import reverse
 from django.views.decorators.http import require_POST
 
 from cart.cart import CartSession
+from payments.exceptions import PaymentError
+from payments.services import PaymentService
 
 from .forms import CouponApplyForm, OrderCreateForm
 from .models import Coupon, Order, OrderItem, OrderStatusChoices
 
-# ZarinPal Configuration
-ZARINPAL_MERCHANT_ID = getattr(settings, "ZARINPAL_MERCHANT_ID", "YOUR-MERCHANT-ID")
-ZARINPAL_WEBGATE = "https://sandbox.zarinpal.com/pg/StartPay/"
-ZARINPAL_API_REQUEST = "https://sandbox.zarinpal.com/pg/v4/payment/request.json"
-ZARINPAL_API_VERIFY = "https://sandbox.zarinpal.com/pg/v4/payment/verify.json"
+logger = logging.getLogger("orders.payment")
 
 
 @login_required
@@ -157,123 +154,96 @@ def checkout_view(request):
 @login_required
 def payment_view(request, order_id):
     """
-    Initiate payment process with ZarinPal.
+    Initiate the payment process for an order using Zibal.
+
+    This view is intentionally thin - all gateway logic lives in
+    ``payments.services.PaymentService``.
     """
     order = get_object_or_404(Order, id=order_id, user=request.user)
 
-    # Check if order can be paid
     if not order.can_be_paid():
         messages.error(request, "این سفارش قابل پرداخت نیست")
         return redirect("orders:order_detail", order_id=order.id)
 
-    # Prepare payment request
-    amount = int(order.final_price)  # ZarinPal expects Toman
-    description = f"پرداخت سفارش {order.order_number}"
     callback_url = request.build_absolute_uri(reverse("orders:payment_callback"))
 
-    # Request payment from ZarinPal
-    request_data = {
-        "merchant_id": ZARINPAL_MERCHANT_ID,
-        "amount": amount,
-        "description": description,
-        "callback_url": callback_url,
-        "metadata": {"email": order.email, "mobile": order.phone},
-    }
-
     try:
-        response = requests.post(ZARINPAL_API_REQUEST, json=request_data, timeout=10)
-        response_data = response.json()
-
-        if response_data.get("data") and response_data["data"].get("code") == 100:
-            # Success - save authority and redirect to payment gateway
-            authority = response_data["data"]["authority"]
-            order.zarinpal_authority = authority
-            order.status = OrderStatusChoices.PROCESSING
-            order.save()
-
-            # Redirect to ZarinPal payment page
-            payment_url = f"{ZARINPAL_WEBGATE}{authority}"
-            return redirect(payment_url)
-        else:
-            # Error from ZarinPal
-            error_message = response_data.get("errors", {}).get(
-                "message", "خطا در اتصال به درگاه پرداخت"
-            )
-            messages.error(request, error_message)
-            order.status = OrderStatusChoices.FAILED
-            order.save()
-
-    except requests.exceptions.RequestException as e:
+        redirect_url = PaymentService().initiate_payment(order, callback_url)
+    except PaymentError as exc:
+        logger.warning(
+            "Payment initiation failed: order=%s error=%s", order.order_number, exc
+        )
+        messages.error(request, str(exc))
+        return redirect("orders:order_detail", order_id=order.id)
+    except Exception:
+        logger.exception(
+            "Unexpected error initiating payment: order=%s", order.order_number
+        )
         messages.error(request, "خطا در اتصال به درگاه پرداخت. لطفاً مجدداً تلاش کنید")
-        order.status = OrderStatusChoices.FAILED
-        order.save()
+        return redirect("orders:order_detail", order_id=order.id)
 
-    return redirect("orders:order_detail", order_id=order.id)
+    return redirect(redirect_url)
 
 
 @login_required
 def payment_callback_view(request):
     """
-    Handle payment callback from ZarinPal.
-    """
-    authority = request.GET.get("Authority")
-    status = request.GET.get("Status")
+    Handle the Zibal payment gateway callback and verify the transaction.
 
-    if not authority:
+    Verification itself is fully delegated to
+    ``payments.services.PaymentService``, which is idempotent and safe to
+    call again for duplicate/retried callbacks.
+    """
+    track_id = request.GET.get("trackId")
+
+    if not track_id:
         messages.error(request, "اطلاعات پرداخت نامعتبر است")
         return redirect("orders:order_list")
 
-    try:
-        order = Order.objects.get(zarinpal_authority=authority, user=request.user)
-    except Order.DoesNotExist:
+    order = Order.objects.filter(payment_track_id=track_id, user=request.user).first()
+
+    if order is None:
         messages.error(request, "سفارش مورد نظر یافت نشد")
         return redirect("orders:order_list")
 
-    # Check payment status
-    if status == "OK":
-        # Verify payment with ZarinPal
-        verify_data = {
-            "merchant_id": ZARINPAL_MERCHANT_ID,
-            "amount": int(order.final_price),
-            "authority": authority,
-        }
-
-        try:
-            response = requests.post(ZARINPAL_API_VERIFY, json=verify_data, timeout=10)
-            response_data = response.json()
-
-            if response_data.get("data") and response_data["data"].get("code") == 100:
-                # Payment verified successfully
-                ref_id = response_data["data"]["ref_id"]
-                order.mark_as_paid(ref_id)
-
-                # Clear cart
-                cart = CartSession(request.session)
-                cart.clear()
-
-                messages.success(
-                    request, f"پرداخت شما با موفقیت انجام شد. کد پیگیری: {ref_id}"
-                )
-                return redirect("orders:order_success", order_id=order.id)
-            else:
-                # Verification failed
-                order.status = OrderStatusChoices.FAILED
-                order.save()
-                messages.error(
-                    request,
-                    "پرداخت تایید نشد. در صورت کسر وجه، مبلغ به حساب شما بازگردانده می‌شود",
-                )
-
-        except requests.exceptions.RequestException:
-            order.status = OrderStatusChoices.FAILED
-            order.save()
-            messages.error(request, "خطا در تایید پرداخت")
-    else:
-        # Payment cancelled by user
+    # Zibal reports a user-cancelled/failed payment via success=0 before
+    # any verification is attempted.
+    if request.GET.get("success") == "0":
         order.status = OrderStatusChoices.CANCELLED
-        order.save()
+        order.save(update_fields=["status", "updated_date"])
         messages.warning(request, "پرداخت لغو شد")
+        return redirect("orders:order_detail", order_id=order.id)
 
+    service = PaymentService()
+
+    try:
+        success = service.verify_payment(order, request.GET)
+    except PaymentError as exc:
+        logger.warning(
+            "Payment verification failed: order=%s error=%s", order.order_number, exc
+        )
+        messages.error(request, str(exc))
+        return redirect("orders:order_detail", order_id=order.id)
+    except Exception:
+        logger.exception(
+            "Unexpected error verifying payment: order=%s", order.order_number
+        )
+        messages.error(request, "خطا در تایید پرداخت")
+        return redirect("orders:order_detail", order_id=order.id)
+
+    if success:
+        cart = CartSession(request.session)
+        cart.clear()
+        messages.success(
+            request,
+            f"پرداخت شما با موفقیت انجام شد. کد پیگیری: {order.payment_reference}",
+        )
+        return redirect("orders:order_success", order_id=order.id)
+
+    messages.error(
+        request,
+        "پرداخت تایید نشد. در صورت کسر وجه، مبلغ به حساب شما بازگردانده می‌شود",
+    )
     return redirect("orders:order_detail", order_id=order.id)
 
 

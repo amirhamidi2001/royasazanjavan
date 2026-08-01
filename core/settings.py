@@ -265,6 +265,36 @@ CACHES = {
 }
 
 # ====================
+# PAYMENT GATEWAY
+# ====================
+# Zibal is the only supported payment gateway, in both development and
+# production. https://docs.zibal.ir/
+#
+# ZIBAL_MERCHANT defaults to Zibal's official public test merchant ("zibal"),
+# which works out of the box for local development without registering a
+# real merchant. Production MUST override this via the environment - the
+# app refuses to start otherwise.
+ZIBAL_MERCHANT = config("ZIBAL_MERCHANT", default="zibal")
+ZIBAL_REQUEST_URL = config(
+    "ZIBAL_REQUEST_URL", default="https://gateway.zibal.ir/v1/request"
+)
+ZIBAL_VERIFY_URL = config(
+    "ZIBAL_VERIFY_URL", default="https://gateway.zibal.ir/v1/verify"
+)
+ZIBAL_STARTPAY_URL = config(
+    "ZIBAL_STARTPAY_URL", default="https://gateway.zibal.ir/start"
+)
+ZIBAL_REQUEST_TIMEOUT = config("ZIBAL_REQUEST_TIMEOUT", default=15, cast=int)
+
+if not DEBUG and ZIBAL_MERCHANT in ("", "zibal"):
+    from django.core.exceptions import ImproperlyConfigured
+
+    raise ImproperlyConfigured(
+        "ZIBAL_MERCHANT must be set to your real Zibal merchant ID via the "
+        "environment in production (the default is the public test merchant)."
+    )
+
+# ====================
 # SECURITY (Production)
 # ====================
 if not DEBUG:
@@ -293,6 +323,16 @@ LOGGING = {
         "social": {
             "handlers": ["console"],
             "level": "DEBUG" if DEBUG else "INFO",
+        },
+        "payments": {
+            "handlers": ["console"],
+            "level": "DEBUG" if DEBUG else "INFO",
+            "propagate": False,
+        },
+        "orders.payment": {
+            "handlers": ["console"],
+            "level": "DEBUG" if DEBUG else "INFO",
+            "propagate": False,
         },
     },
 }

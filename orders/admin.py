@@ -79,6 +79,7 @@ class OrderAdmin(admin.ModelAdmin):
     list_filter = (
         "status",
         "is_paid",
+        "payment_gateway",
         "created_date",
         "payment_date",
     )
@@ -91,7 +92,8 @@ class OrderAdmin(admin.ModelAdmin):
         "last_name",
         "email",
         "phone",
-        "zarinpal_ref_id",
+        "payment_track_id",
+        "payment_reference",
     )
     readonly_fields = (
         "order_number",
@@ -155,8 +157,9 @@ class OrderAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "is_paid",
-                    "zarinpal_authority",
-                    "zarinpal_ref_id",
+                    "payment_gateway",
+                    "payment_track_id",
+                    "payment_reference",
                     "payment_date",
                 )
             },

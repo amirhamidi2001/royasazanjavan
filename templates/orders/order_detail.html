@@ -6,6 +6,10 @@
   جزئیات سفارش {{ order.order_number }} | رویا سازان جوان
 {% endblock %}
 
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'assets/css/checkout.css' %}" />
+{% endblock %}
+
 {% block content %}
   <!-- Page Title -->
   <div class="page-title light-background">
@@ -60,7 +64,7 @@
               <table class="table">
                 <thead>
                   <tr>
-                    <th>دوره</th>
+                    <th>محصول / دوره</th>
                     <th class="text-center">قیمت</th>
                     <th class="text-center">تعداد</th>
                     <th class="text-center">جمع</th>
@@ -71,15 +75,21 @@
                     <tr>
                       <td>
                         <div class="d-flex align-items-center">
-                          {% if item.course.thumbnail %}
-                            <img src="{{ item.course.thumbnail.url }}" alt="{{ item.course.title }}" class="order-item-thumb me-3" />
+                          {# فراخوانی تصویر با متد get_product_image #}
+                          {% if item.get_product_image %}
+                            <img src="{{ item.get_product_image.url }}" alt="{{ item.get_product_name }}" class="order-item-thumb me-3" />
                           {% endif %}
                           <div>
-                            <h6 class="mb-1">{{ item.course.title }}</h6>
-                            <small class="text-muted">
-                              <i class="bi bi-person"></i>
-                              {{ item.course.instructor.get_full_name|default:item.course.instructor.email }}
-                            </small>
+                            {# استفاده از content_object به جای course #}
+                            <h6 class="mb-1">{{ item.content_object.title }}</h6>
+
+                            {# اگر آیتم از نوع دوره باشد، مدرس را نشان می‌دهد #}
+                            {% if item.get_product_type == 'course' and item.content_object.instructor %}
+                              <small class="text-muted">
+                                <i class="bi bi-person"></i>
+                                {{ item.content_object.instructor.get_full_name|default:item.content_object.instructor.email }}
+                              </small>
+                            {% endif %}
                           </div>
                         </div>
                       </td>
@@ -170,7 +180,7 @@
               <div class="payment-info mt-4">
                 <h6 class="mb-3">اطلاعات پرداخت</h6>
                 <p>
-                  <strong>کد پیگیری:</strong><br />{{ order.zarinpal_ref_id }}
+                  <strong>کد پیگیری:</strong><br />{{ order.payment_reference }}
                 </p>
                 <p>
                   <strong>تاریخ پرداخت:</strong><br />{{ order.payment_date|date:'Y/m/d - H:i' }}

@@ -89,6 +89,11 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET=your-google-client-secret
 # Required only in production (DEBUG=False)
 EMAIL_HOST_USER=your@gmail.com
 EMAIL_HOST_PASSWORD=your-app-password
+
+# Payment gateway (Zibal) - https://docs.zibal.ir/
+# Defaults to Zibal's public test merchant "zibal" for local development.
+# Production MUST override this with your real merchant ID.
+ZIBAL_MERCHANT=your-zibal-merchant-id
 ```
 
 ### 4. Apply migrations and run

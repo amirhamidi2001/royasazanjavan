@@ -19,6 +19,16 @@ class OrderStatusChoices(models.TextChoices):
     REFUNDED = "refunded", _("بازگشت داده شده")
 
 
+class PaymentGatewayChoices(models.TextChoices):
+    """Payment gateways supported by the project.
+
+    Zibal is the only supported payment gateway, in both development and
+    production (see payments.services.PaymentService).
+    """
+
+    ZIBAL = "zibal", _("زیبال")
+
+
 class Order(models.Model):
     """Model representing an order (courses and products)."""
 
@@ -71,13 +81,28 @@ class Order(models.Model):
         validators=[MinValueValidator(0)],
     )
 
-    # Payment Gateway Information (ZarinPal)
+    # Payment Gateway Information (gateway-agnostic; see payments app)
     is_paid = models.BooleanField(_("پرداخت شده"), default=False)
-    zarinpal_authority = models.CharField(
-        _("کد پیگیری زرین‌پال"), max_length=255, blank=True, null=True
+    payment_gateway = models.CharField(
+        _("درگاه پرداخت"),
+        max_length=20,
+        choices=PaymentGatewayChoices.choices,
+        blank=True,
+        null=True,
     )
-    zarinpal_ref_id = models.CharField(
-        _("شماره مرجع زرین‌پال"), max_length=255, blank=True, null=True
+    payment_track_id = models.CharField(
+        _("شناسه پیگیری تراکنش"),
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text=_("Track ID (زیبال) یا Authority (زرین‌پال) بازگشتی از درگاه"),
+    )
+    payment_reference = models.CharField(
+        _("شماره مرجع پرداخت"),
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text=_("شماره مرجع نهایی تراکنش پس از تایید موفق پرداخت"),
     )
     payment_date = models.DateTimeField(_("تاریخ پرداخت"), blank=True, null=True)
 
@@ -108,7 +133,7 @@ class Order(models.Model):
             models.Index(fields=["-created_date"]),
             models.Index(fields=["user", "-created_date"]),
             models.Index(fields=["order_number"]),
-            models.Index(fields=["zarinpal_authority"]),
+            models.Index(fields=["payment_track_id"]),
         ]
 
     def __str__(self):
@@ -157,13 +182,17 @@ class Order(models.Model):
                     return True
         return False
 
-    def mark_as_paid(self, ref_id):
-        """Mark order as paid and update payment information."""
+    def mark_as_paid(self, reference_id):
+        """Mark order as paid and update payment information.
+
+        ``reference_id`` is the gateway-agnostic final reference number of
+        the transaction (Zibal's ``refNumber``).
+        """
         from django.utils import timezone
 
         self.is_paid = True
         self.status = OrderStatusChoices.PAID
-        self.zarinpal_ref_id = ref_id
+        self.payment_reference = reference_id
         self.payment_date = timezone.now()
         self.save()
 

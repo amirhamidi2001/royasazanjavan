@@ -15,23 +15,23 @@ class Command(BaseCommand):
         # Create main categories
         educational_cat = Category.objects.get_or_create(
             name="بسته‌های آموزشی",
-            defaults={"slug": slugify("بسته‌های آموزشی", allow_unicode=True)},
+            defaults={"slug": slugify("educational-packages")},
         )[0]
 
         software_cat = Category.objects.get_or_create(
             name="نرم‌افزارها",
-            defaults={"slug": slugify("نرم‌افزارها", allow_unicode=True)},
+            defaults={"slug": slugify("software")},
         )[0]
 
         book_cat = Category.objects.get_or_create(
-            name="کتاب‌ها", defaults={"slug": slugify("کتاب‌ها", allow_unicode=True)}
+            name="کتاب‌ها", defaults={"slug": slugify("books")}
         )[0]
 
         # Create subcategories
         programming_cat = Category.objects.get_or_create(
             name="برنامه‌نویسی",
             defaults={
-                "slug": slugify("برنامه‌نویسی", allow_unicode=True),
+                "slug": slugify("programming"),
                 "parent": educational_cat,
             },
         )[0]
@@ -39,7 +39,7 @@ class Command(BaseCommand):
         design_cat = Category.objects.get_or_create(
             name="طراحی",
             defaults={
-                "slug": slugify("طراحی", allow_unicode=True),
+                "slug": slugify("design"),
                 "parent": educational_cat,
             },
         )[0]
@@ -50,6 +50,7 @@ class Command(BaseCommand):
         products_data = [
             {
                 "title": "دوره جامع Django",
+                "slug_base": "comprehensive-django-course",
                 "category": programming_cat,
                 "product_type": "educational_package",
                 "short_description": "آموزش کامل فریمورک Django از صفر تا صد",
@@ -65,6 +66,7 @@ class Command(BaseCommand):
             },
             {
                 "title": "دوره Python مقدماتی",
+                "slug_base": "beginner-python-course",
                 "category": programming_cat,
                 "product_type": "educational_package",
                 "short_description": "شروع برنامه‌نویسی با Python",
@@ -80,6 +82,7 @@ class Command(BaseCommand):
             },
             {
                 "title": "بسته طراحی UI/UX",
+                "slug_base": "ui-ux-design-package",
                 "category": design_cat,
                 "product_type": "educational_package",
                 "short_description": "طراحی رابط کاربری و تجربه کاربری حرفه‌ای",
@@ -95,6 +98,7 @@ class Command(BaseCommand):
             },
             {
                 "title": "نرم‌افزار مدیریت پروژه",
+                "slug_base": "project-management-software",
                 "category": software_cat,
                 "product_type": "software_package",
                 "short_description": "نرم‌افزار حرفه‌ای مدیریت پروژه",
@@ -109,6 +113,7 @@ class Command(BaseCommand):
             },
             {
                 "title": "کتاب الگوریتم‌ها و ساختمان داده",
+                "slug_base": "algorithms-and-data-structures-book",
                 "category": book_cat,
                 "product_type": "book",
                 "short_description": "مرجع کامل الگوریتم‌ها به زبان فارسی",
@@ -124,6 +129,7 @@ class Command(BaseCommand):
             },
             {
                 "title": "کتاب طراحی الگوها در Python",
+                "slug_base": "python-design-patterns-book",
                 "category": book_cat,
                 "product_type": "book",
                 "short_description": "الگوهای طراحی در Python",
@@ -142,13 +148,14 @@ class Command(BaseCommand):
 
         for product_data in products_data:
             features = product_data.pop("features", [])
+            slug_base = product_data.pop("slug_base")
 
             # Create product
             product, created = Product.objects.get_or_create(
                 title=product_data["title"],
                 defaults={
                     **product_data,
-                    "slug": slugify(product_data["title"], allow_unicode=True),
+                    "slug": slugify(slug_base),
                 },
             )
 

@@ -37,7 +37,7 @@
         <div class="col-lg-7">
           <!-- Checkout Form -->
           <div class="checkout-container" data-aos="fade-up">
-            <form class="checkout-form" method="POST" action="{% url 'orders:checkout' %}">
+            <form method="post" enctype="multipart/form-data">
               {% csrf_token %}
 
               <!-- Display form errors -->
@@ -89,7 +89,13 @@
               <div class="checkout-section" id="shipping-address">
                 <div class="section-header">
                   <div class="section-number">2</div>
-                  <h3>آدرس {% if has_physical_products %}*{% else %}(اختیاری){% endif %}</h3>
+                  <h3>
+                    آدرس{% if has_physical_products %}
+                      *
+                    {% else %}
+                      (اختیاری)
+                    {% endif %}
+                  </h3>
                   {% if has_physical_products %}
                     <p class="text-danger">
                       <i class="bi bi-info-circle"></i>
@@ -101,7 +107,7 @@
                 </div>
                 <div class="section-content">
                   <div class="form-group">
-                    <label for="id_address">آدرس کامل {% if has_physical_products %}*{% endif %}</label>
+                    <label for="id_address">آدرس کامل{% if has_physical_products %}*{% endif %}</label>
                     {{ form.address }}
                     {% if form.address.errors %}
                       <div class="invalid-feedback d-block">{{ form.address.errors.0 }}</div>
@@ -116,21 +122,21 @@
                   </div>
                   <div class="row">
                     <div class="col-md-4 form-group">
-                      <label for="id_city">شهر {% if has_physical_products %}*{% endif %}</label>
+                      <label for="id_city">شهر{% if has_physical_products %}*{% endif %}</label>
                       {{ form.city }}
                       {% if form.city.errors %}
                         <div class="invalid-feedback d-block">{{ form.city.errors.0 }}</div>
                       {% endif %}
                     </div>
                     <div class="col-md-4 form-group">
-                      <label for="id_state">استان {% if has_physical_products %}*{% endif %}</label>
+                      <label for="id_state">استان{% if has_physical_products %}*{% endif %}</label>
                       {{ form.state }}
                       {% if form.state.errors %}
                         <div class="invalid-feedback d-block">{{ form.state.errors.0 }}</div>
                       {% endif %}
                     </div>
                     <div class="col-md-4 form-group">
-                      <label for="id_zip_code">کد پستی {% if has_physical_products %}*{% endif %}</label>
+                      <label for="id_zip_code">کد پستی{% if has_physical_products %}*{% endif %}</label>
                       {{ form.zip_code }}
                       {% if form.zip_code.errors %}
                         <div class="invalid-feedback d-block">{{ form.zip_code.errors.0 }}</div>
@@ -149,18 +155,18 @@
                 <div class="section-content">
                   <div class="payment-options">
                     <div class="payment-option active">
-                      <input type="radio" name="payment-method" id="zarinpal" value="zarinpal" checked />
-                      <label for="zarinpal">
+                      <input type="radio" name="payment-method" id="online-payment" value="online" checked />
+                      <label for="online-payment">
                         <span class="payment-icon"><i class="bi bi-credit-card-2-front"></i></span>
-                        <span class="payment-label">پرداخت آنلاین (زرین‌پال)</span>
+                        <span class="payment-label">پرداخت آنلاین (زیبال)</span>
                       </label>
                     </div>
                   </div>
 
-                  <div class="payment-details" id="zarinpal-details">
+                  <div class="payment-details" id="online-payment-details">
                     <p class="payment-info">
                       <i class="bi bi-shield-check text-success"></i>
-                      پس از ثبت سفارش، به درگاه پرداخت امن زرین‌پال منتقل می‌شوید
+                      پس از ثبت سفارش، به درگاه پرداخت امن زیبال منتقل می‌شوید
                     </p>
                   </div>
                 </div>
@@ -245,22 +251,18 @@
                           <img src="{% static 'img/default-product.jpg' %}" alt="{{ item.product_obj.title }}" class="img-fluid" />
                         {% endif %}
                       {% endif %}
-                      
+
                       {# Badge for product type #}
                       {% if item.product_type == 'course' %}
-                        <span class="product-type-badge badge-course">
-                          <i class="bi bi-mortarboard"></i> دوره
-                        </span>
+                        <span class="product-type-badge badge-course"><i class="bi bi-mortarboard"></i> دوره</span>
                       {% elif item.product_type == 'product' %}
-                        <span class="product-type-badge badge-product">
-                          <i class="bi bi-box-seam"></i> محصول
-                        </span>
+                        <span class="product-type-badge badge-product"><i class="bi bi-box-seam"></i> محصول</span>
                       {% endif %}
                     </div>
-                    
+
                     <div class="order-item-details">
                       <h4>{{ item.product_obj.title }}</h4>
-                      
+
                       <p class="order-item-variant">
                         {% if item.product_type == 'course' %}
                           {# دوره #}
@@ -280,16 +282,12 @@
                           {% endif %}
                         {% endif %}
                       </p>
-                      
+
                       <div class="order-item-price">
                         <span class="quantity">{{ item.quantity }} ×</span>
                         {% if item.product_type == 'product' and item.product_obj.is_discounted %}
-                          <span class="price original-price text-decoration-line-through">
-                            {{ item.product_obj.price|floatformat:0|intcomma }} تومان
-                          </span>
-                          <span class="price discounted-price text-danger">
-                            {{ item.product_obj.get_final_price|floatformat:0|intcomma }} تومان
-                          </span>
+                          <span class="price original-price text-decoration-line-through">{{ item.product_obj.price|floatformat:0|intcomma }} تومان</span>
+                          <span class="price discounted-price text-danger">{{ item.product_obj.get_final_price|floatformat:0|intcomma }} تومان</span>
                         {% else %}
                           <span class="price">{{ item.total_price|floatformat:0|intcomma }} تومان</span>
                         {% endif %}
