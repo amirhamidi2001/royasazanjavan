@@ -242,13 +242,13 @@
                         {% if item.product_obj.thumbnail %}
                           <img src="{{ item.product_obj.thumbnail.url }}" alt="{{ item.product_obj.title }}" class="img-fluid" />
                         {% else %}
-                          <img src="{% static 'img/default-course.jpg' %}" alt="{{ item.product_obj.title }}" class="img-fluid" />
+                          <img src="{% static 'assets/img/logo.webp' %}" alt="{{ item.product_obj.title }}" class="img-fluid" />
                         {% endif %}
                       {% elif item.product_type == 'product' %}
                         {% if item.product_obj.image %}
                           <img src="{{ item.product_obj.image.url }}" alt="{{ item.product_obj.title }}" class="img-fluid" />
                         {% else %}
-                          <img src="{% static 'img/default-product.jpg' %}" alt="{{ item.product_obj.title }}" class="img-fluid" />
+                          <img src="{% static 'assets/img/logo.webp' %}" alt="{{ item.product_obj.title }}" class="img-fluid" />
                         {% endif %}
                       {% endif %}
 

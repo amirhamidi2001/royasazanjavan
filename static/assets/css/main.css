@@ -6592,6 +6592,276 @@ section,
   }
 }
 
+/* Order Confirmation - extra additions reused by the Order Detail page
+   (generic status pill in the sidebar + a per-item action button inside
+   the purchased items list). Kept inside the same section so the whole
+   order flow (checkout -> detail -> success) shares one design language. */
+.order-confirmation .sidebar .order-id .status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-top: 0.75rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background-color: rgba(255, 255, 255, 0.18);
+}
+
+.order-confirmation .sidebar .order-id .status-pill.is-pending {
+  background-color: rgba(255, 193, 7, 0.25);
+}
+
+.order-confirmation .sidebar .order-id .status-pill.is-cancelled {
+  background-color: rgba(220, 53, 69, 0.25);
+}
+
+.order-confirmation .sidebar .order-progress .stepper-item.cancelled .stepper-icon {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.order-confirmation .sidebar .order-progress .stepper-item.cancelled .stepper-text {
+  opacity: 1;
+}
+
+.order-confirmation .main-content .details-card .card-body .item .item-details .item-action {
+  margin-top: 0.75rem;
+}
+
+.order-confirmation .main-content .details-card .card-body .item .item-details .item-action .btn {
+  padding: 0.4rem 0.9rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  background-color: var(--accent-color);
+  color: var(--contrast-color);
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.25s ease;
+}
+
+.order-confirmation .main-content .details-card .card-body .item .item-details .item-action .btn:hover {
+  background-color: color-mix(in srgb, var(--accent-color), #000 10%);
+}
+
+/*--------------------------------------------------------------
+# Order List Section
+--------------------------------------------------------------*/
+.orders-list .orders-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.75rem;
+}
+
+.orders-list .orders-toolbar .orders-count {
+  font-size: 0.95rem;
+  color: color-mix(in srgb, var(--default-color), transparent 30%);
+}
+
+.orders-list .orders-toolbar .orders-count strong {
+  color: var(--heading-color);
+}
+
+.orders-list .order-card {
+  background-color: var(--surface-color);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.orders-list .order-card:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.orders-list .order-card .order-card-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px dashed color-mix(in srgb, var(--default-color), transparent 85%);
+}
+
+.orders-list .order-card .order-card-header .order-id .label {
+  font-size: 0.8rem;
+  color: color-mix(in srgb, var(--default-color), transparent 40%);
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+.orders-list .order-card .order-card-header .order-id .value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--heading-color);
+}
+
+.orders-list .order-card .order-card-header .order-date {
+  font-size: 0.85rem;
+  color: color-mix(in srgb, var(--default-color), transparent 35%);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.orders-list .order-card .order-status {
+  padding: 0.3rem 0.85rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  white-space: nowrap;
+}
+
+.orders-list .order-card .order-status.paid {
+  background-color: rgba(40, 167, 69, 0.12);
+  color: #28a745;
+}
+
+.orders-list .order-card .order-status.pending {
+  background-color: rgba(255, 193, 7, 0.15);
+  color: #b8860b;
+}
+
+.orders-list .order-card .order-status.failed,
+.orders-list .order-card .order-status.cancelled {
+  background-color: rgba(220, 53, 69, 0.12);
+  color: #dc3545;
+}
+
+.orders-list .order-card .order-card-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.orders-list .order-card .order-thumbs {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.orders-list .order-card .order-thumbs img,
+.orders-list .order-card .order-thumbs .more-count {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+}
+
+.orders-list .order-card .order-thumbs .more-count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: color-mix(in srgb, var(--surface-color), var(--background-color) 30%);
+  color: color-mix(in srgb, var(--default-color), transparent 30%);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.orders-list .order-card .order-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 2rem;
+  flex: 1;
+}
+
+.orders-list .order-card .order-meta .meta-item .meta-label {
+  display: block;
+  font-size: 0.78rem;
+  color: color-mix(in srgb, var(--default-color), transparent 40%);
+  margin-bottom: 0.2rem;
+}
+
+.orders-list .order-card .order-meta .meta-item .meta-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--default-color);
+}
+
+.orders-list .order-card .order-meta .meta-item .meta-value.price {
+  color: var(--heading-color);
+  font-size: 1.05rem;
+}
+
+.orders-list .order-card .order-card-footer {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid color-mix(in srgb, var(--default-color), transparent 92%);
+}
+
+.orders-list .order-card .order-card-footer .btn {
+  font-size: 0.875rem;
+  padding: 0.5rem 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.orders-list .empty-state {
+  background-color: var(--surface-color);
+  border-radius: 16px;
+  padding: 4rem 1.5rem;
+  text-align: center;
+}
+
+.orders-list .empty-state i {
+  font-size: 4.5rem;
+  color: color-mix(in srgb, var(--accent-color), transparent 40%);
+}
+
+.orders-list .empty-state h3 {
+  margin-top: 1.5rem;
+}
+
+.orders-list .empty-state p {
+  color: color-mix(in srgb, var(--default-color), transparent 30%);
+  margin-bottom: 1.5rem;
+}
+
+.orders-list .btn-accent {
+  color: var(--contrast-color);
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+.orders-list .btn-accent:hover,
+.orders-list .btn-accent:focus,
+.orders-list .btn-accent:active {
+  color: var(--contrast-color);
+  background-color: color-mix(in srgb, var(--accent-color), #000 15%);
+  border-color: color-mix(in srgb, var(--accent-color), #000 15%);
+}
+
+@media (max-width: 767.98px) {
+  .orders-list .order-card .order-card-body {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .orders-list .order-card .order-card-footer {
+    flex-direction: column;
+  }
+
+  .orders-list .order-card .order-card-footer .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 /*--------------------------------------------------------------
 # Search Results Header Section
 --------------------------------------------------------------*/

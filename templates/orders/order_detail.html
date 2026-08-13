@@ -6,10 +6,6 @@
   جزئیات سفارش {{ order.order_number }} | رویا سازان جوان
 {% endblock %}
 
-{% block extra_css %}
-  <link rel="stylesheet" href="{% static 'assets/css/checkout.css' %}" />
-{% endblock %}
-
 {% block content %}
   <!-- Page Title -->
   <div class="page-title light-background">
@@ -33,225 +29,217 @@
   <!-- Order Detail Section -->
   <section class="order-detail section">
     <div class="container" data-aos="fade-up">
-      <div class="row">
-        <!-- Order Information -->
-        <div class="col-lg-8">
-          <!-- Order Status -->
-          <div class="order-status-card mb-4">
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <h4>سفارش #{{ order.order_number }}</h4>
-                <p class="text-muted mb-0">ثبت شده در {{ order.created_date|date:'Y/m/d - H:i' }}</p>
-              </div>
-              <div>
-                {% if order.is_paid %}
-                  <span class="badge bg-success p-3"><i class="bi bi-check-circle"></i> پرداخت شده</span>
-                {% elif order.status == 'pending' %}
-                  <span class="badge bg-warning p-3"><i class="bi bi-clock"></i> در انتظار پرداخت</span>
-                {% elif order.status == 'failed' %}
-                  <span class="badge bg-danger p-3"><i class="bi bi-x-circle"></i> پرداخت ناموفق</span>
-                {% elif order.status == 'cancelled' %}
-                  <span class="badge bg-secondary p-3"><i class="bi bi-x-circle"></i> لغو شده</span>
-                {% endif %}
-              </div>
-            </div>
-          </div>
+      <div class="order-confirmation">
+        <div class="row g-0">
+          <!-- Sidebar -->
+          <div class="col-lg-4">
+            <div class="sidebar">
+              <div class="sidebar-content">
+                <div class="order-id">
+                  <h4>سفارش #{{ order.order_number }}</h4>
+                  <div class="order-date">ثبت شده در {{ order.created_date|date:'Y/m/d - H:i' }}</div>
+                  {% if order.is_paid %}
+                    <span class="status-pill"><i class="bi bi-check-circle"></i> پرداخت شده</span>
+                  {% elif order.status == 'pending' %}
+                    <span class="status-pill is-pending"><i class="bi bi-clock"></i> در انتظار پرداخت</span>
+                  {% elif order.status == 'cancelled' %}
+                    <span class="status-pill is-cancelled"><i class="bi bi-x-circle"></i> لغو شده</span>
+                  {% elif order.status == 'failed' %}
+                    <span class="status-pill is-cancelled"><i class="bi bi-x-circle"></i> پرداخت ناموفق</span>
+                  {% else %}
+                    <span class="status-pill">{{ order.get_status_display }}</span>
+                  {% endif %}
+                </div>
 
-          <!-- Order Items -->
-          <div class="order-items-card mb-4">
-            <h5 class="mb-3">آیتم‌های سفارش</h5>
-            <div class="table-responsive">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>محصول / دوره</th>
-                    <th class="text-center">قیمت</th>
-                    <th class="text-center">تعداد</th>
-                    <th class="text-center">جمع</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for item in order.items.all %}
-                    <tr>
-                      <td>
-                        <div class="d-flex align-items-center">
-                          {# فراخوانی تصویر با متد get_product_image #}
-                          {% if item.get_product_image %}
-                            <img src="{{ item.get_product_image.url }}" alt="{{ item.get_product_name }}" class="order-item-thumb me-3" />
-                          {% endif %}
-                          <div>
-                            {# استفاده از content_object به جای course #}
-                            <h6 class="mb-1">{{ item.content_object.title }}</h6>
-
-                            {# اگر آیتم از نوع دوره باشد، مدرس را نشان می‌دهد #}
-                            {% if item.get_product_type == 'course' and item.content_object.instructor %}
-                              <small class="text-muted">
-                                <i class="bi bi-person"></i>
-                                {{ item.content_object.instructor.get_full_name|default:item.content_object.instructor.email }}
-                              </small>
-                            {% endif %}
-                          </div>
-                        </div>
-                      </td>
-                      <td class="text-center align-middle">{{ item.price|floatformat:0|intcomma }} تومان</td>
-                      <td class="text-center align-middle">{{ item.quantity }}</td>
-                      <td class="text-center align-middle">
-                        <strong>{{ item.get_total_price|floatformat:0|intcomma }} تومان</strong>
-                      </td>
-                    </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Customer Information -->
-          <div class="customer-info-card mb-4">
-            <h5 class="mb-3">اطلاعات خریدار</h5>
-            <div class="row">
-              <div class="col-md-6">
-                <p>
-                  <strong>نام:</strong> {{ order.get_full_name }}
-                </p>
-                <p>
-                  <strong>ایمیل:</strong> {{ order.email }}
-                </p>
-                <p>
-                  <strong>تلفن:</strong> {{ order.phone }}
-                </p>
-              </div>
-              {% if order.address %}
-                <div class="col-md-6">
-                  <p>
-                    <strong>آدرس:</strong>
-                  </p>
-                  <p class="text-muted">
-                    {{ order.address }}
-                    {% if order.apartment %}
-                      , {{ order.apartment }}
+                <div class="order-progress">
+                  <div class="stepper-container">
+                    <div class="stepper-item completed">
+                      <div class="stepper-icon"><i class="bi bi-check"></i></div>
+                      <div class="stepper-text">ثبت سفارش</div>
+                    </div>
+                    {% if order.status == 'cancelled' or order.status == 'failed' %}
+                      <div class="stepper-item cancelled">
+                        <div class="stepper-icon"><i class="bi bi-x"></i></div>
+                        <div class="stepper-text">{{ order.get_status_display }}</div>
+                      </div>
+                    {% else %}
+                      <div class="stepper-item {% if order.is_paid %}completed{% else %}current{% endif %}">
+                        <div class="stepper-icon"><i class="bi bi-credit-card"></i></div>
+                        <div class="stepper-text">پرداخت</div>
+                      </div>
+                      <div class="stepper-item {% if order.is_paid %}completed{% endif %}">
+                        <div class="stepper-icon"><i class="bi bi-mortarboard"></i></div>
+                        <div class="stepper-text">دسترسی به دوره‌ها</div>
+                      </div>
                     {% endif %}
-                    <br />
-                    {{ order.city }}, {{ order.state }} {{ order.zip_code }}
-                  </p>
+                  </div>
+                </div>
+
+                <div class="price-summary">
+                  <h5>خلاصه پرداخت</h5>
+                  <ul class="summary-list">
+                    <li>
+                      <span>جمع دوره‌ها</span>
+                      <span>{{ order.total_price|floatformat:0|intcomma }} تومان</span>
+                    </li>
+                    {% if order.discount_amount > 0 %}
+                      <li>
+                        <span>تخفیف</span>
+                        <span>-{{ order.discount_amount|floatformat:0|intcomma }} تومان</span>
+                      </li>
+                    {% endif %}
+                    {% if order.tax_amount > 0 %}
+                      <li>
+                        <span>مالیات</span>
+                        <span>{{ order.tax_amount|floatformat:0|intcomma }} تومان</span>
+                      </li>
+                    {% endif %}
+                    <li class="total">
+                      <span>مبلغ کل</span>
+                      <span>{{ order.final_price|floatformat:0|intcomma }} تومان</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="delivery-info">
+                  <h5>اطلاعات خریدار</h5>
+                  <p><i class="bi bi-person"></i> {{ order.get_full_name }}</p>
+                  <p><i class="bi bi-envelope"></i> {{ order.email }}</p>
+                  <p><i class="bi bi-telephone"></i> {{ order.phone }}</p>
+                </div>
+
+                <div class="customer-service">
+                  <h5>نیاز به کمک دارید؟</h5>
+                  <a href="{% url 'website:support' %}" class="help-link"><i class="bi bi-headset"></i> تماس با پشتیبانی</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Content -->
+          <div class="col-lg-8">
+            <div class="main-content">
+              <div class="thank-you-message">
+                <h1>جزئیات سفارش</h1>
+                <p>اطلاعات کامل سفارش، آیتم‌های خریداری شده و وضعیت پرداخت شما در این صفحه نمایش داده می‌شود.</p>
+              </div>
+
+              <!-- Order Items -->
+              <div class="details-card">
+                <div class="card-header">
+                  <h3><i class="bi bi-bag-check"></i> آیتم‌های سفارش</h3>
+                </div>
+                <div class="card-body">
+                  {% for item in order.items.all %}
+                    <div class="item">
+                      <div class="item-image">
+                        {% if item.get_product_image %}
+                          <img src="{{ item.get_product_image.url }}" alt="{{ item.get_product_name }}" />
+                        {% else %}
+                          <img src="{% static 'assets/img/logo.webp' %}" alt="{{ item.get_product_name }}" />
+                        {% endif %}
+                      </div>
+                      <div class="item-details">
+                        <h4>{{ item.get_product_name }}</h4>
+                        <div class="item-meta">
+                          {% if item.get_product_type == 'course' and item.content_object.instructor %}
+                            <span><i class="bi bi-person"></i> {{ item.content_object.instructor.get_full_name|default:item.content_object.instructor.email }}</span>
+                          {% endif %}
+                        </div>
+                        <div class="item-price">
+                          <span class="quantity">{{ item.quantity }} ×</span>
+                          <span class="price">{{ item.get_total_price|floatformat:0|intcomma }} تومان</span>
+                        </div>
+                        {% if item.get_product_type == 'course' and order.is_paid %}
+                          <div class="item-action">
+                            <a href="{% url 'courses:course_detail' item.content_object.slug %}" class="btn"><i class="bi bi-play-circle"></i> شروع یادگیری</a>
+                          </div>
+                        {% endif %}
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <!-- Customer & Billing Info -->
+              <div class="details-card">
+                <div class="card-header">
+                  <h3><i class="bi bi-person-lines-fill"></i> اطلاعات خریدار و آدرس</h3>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6 contact-info">
+                      <label>اطلاعات تماس</label>
+                      <p><i class="bi bi-person"></i> {{ order.get_full_name }}</p>
+                      <p><i class="bi bi-envelope"></i> {{ order.email }}</p>
+                      <p><i class="bi bi-telephone"></i> {{ order.phone }}</p>
+                    </div>
+                    {% if order.address %}
+                      <div class="col-md-6 billing-address">
+                        <label>آدرس ارسال</label>
+                        <h5><i class="bi bi-geo-alt"></i> آدرس</h5>
+                        <address>
+                          {{ order.address }}
+                          {% if order.apartment %}
+                            , {{ order.apartment }}
+                          {% endif %}
+                          <br />
+                          {{ order.city }}, {{ order.state }} {{ order.zip_code }}
+                        </address>
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Notes -->
+              {% if order.notes %}
+                <div class="details-card">
+                  <div class="card-header">
+                    <h3><i class="bi bi-sticky"></i> یادداشت سفارش</h3>
+                  </div>
+                  <div class="card-body">
+                    <p>{{ order.notes }}</p>
+                  </div>
                 </div>
               {% endif %}
-            </div>
-          </div>
 
-          {% if order.notes %}
-            <!-- Order Notes -->
-            <div class="order-notes-card mb-4">
-              <h5 class="mb-3">یادداشت سفارش</h5>
-              <p class="text-muted">{{ order.notes }}</p>
-            </div>
-          {% endif %}
-        </div>
+              <!-- Payment Info -->
+              {% if order.is_paid %}
+                <div class="details-card">
+                  <div class="card-header">
+                    <h3><i class="bi bi-shield-check"></i> اطلاعات پرداخت</h3>
+                  </div>
+                  <div class="card-body">
+                    <div class="payment-method">
+                      <div class="payment-icon"><i class="bi bi-credit-card-2-front"></i></div>
+                      <div class="payment-details">
+                        <div class="card-type">کد پیگیری: {{ order.payment_reference }}</div>
+                        <div class="card-number">تاریخ پرداخت: {{ order.payment_date|date:'Y/m/d - H:i' }}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
 
-        <!-- Order Summary Sidebar -->
-        <div class="col-lg-4">
-          <div class="order-summary-sidebar">
-            <h5 class="mb-3">خلاصه سفارش</h5>
-
-            <div class="summary-row">
-              <span>جمع دوره‌ها:</span>
-              <span>{{ order.total_price|floatformat:0|intcomma }} تومان</span>
-            </div>
-
-            {% if order.discount_amount > 0 %}
-              <div class="summary-row text-success">
-                <span>تخفیف:</span>
-                <span>-{{ order.discount_amount|floatformat:0|intcomma }} تومان</span>
+              <!-- Actions -->
+              <div class="action-area row g-2">
+                <div class="col-md-6">
+                  <a href="{% url 'orders:order_list' %}" class="btn btn-back"><i class="bi bi-arrow-right"></i> بازگشت به لیست سفارشات</a>
+                </div>
+                <div class="col-md-6">
+                  {% if order.is_paid %}
+                    <a href="{% url 'dashboard:my_courses' %}" class="btn btn-account"><i class="bi bi-mortarboard"></i> دوره‌های من</a>
+                  {% elif order.can_be_paid %}
+                    <a href="{% url 'orders:payment' order.id %}" class="btn btn-account"><i class="bi bi-credit-card"></i> پرداخت سفارش</a>
+                  {% endif %}
+                </div>
               </div>
-            {% endif %}
-
-            {% if order.tax_amount > 0 %}
-              <div class="summary-row">
-                <span>مالیات:</span>
-                <span>{{ order.tax_amount|floatformat:0|intcomma }} تومان</span>
-              </div>
-            {% endif %}
-
-            <div class="summary-total">
-              <span>مبلغ کل:</span>
-              <span>{{ order.final_price|floatformat:0|intcomma }} تومان</span>
             </div>
-
-            {% if order.is_paid %}
-              <div class="payment-info mt-4">
-                <h6 class="mb-3">اطلاعات پرداخت</h6>
-                <p>
-                  <strong>کد پیگیری:</strong><br />{{ order.payment_reference }}
-                </p>
-                <p>
-                  <strong>تاریخ پرداخت:</strong><br />{{ order.payment_date|date:'Y/m/d - H:i' }}
-                </p>
-              </div>
-            {% elif order.status == 'pending' %}
-              <div class="mt-4">
-                <a href="{% url 'orders:payment' order.id %}" class="btn btn-accent w-100"><i class="bi bi-credit-card"></i> پرداخت سفارش</a>
-              </div>
-            {% endif %}
-
-            <div class="mt-3">
-              <a href="{% url 'orders:order_list' %}" class="btn btn-outline-primary w-100"><i class="bi bi-arrow-right"></i> بازگشت به لیست سفارشات</a>
-            </div>
-
-            {% if order.is_paid %}
-              <div class="mt-3">
-                <a href="{% url 'courses:my_courses' %}" class="btn btn-success w-100"><i class="bi bi-mortarboard"></i> دوره‌های من</a>
-              </div>
-            {% endif %}
           </div>
         </div>
       </div>
     </div>
   </section>
   <!-- End Order Detail Section -->
-
-  <style>
-    .order-status-card,
-    .order-items-card,
-    .customer-info-card,
-    .order-notes-card,
-    .order-summary-sidebar {
-      background: #fff;
-      border-radius: 10px;
-      padding: 25px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    }
-    
-    .order-item-thumb {
-      width: 60px;
-      height: 60px;
-      object-fit: cover;
-      border-radius: 8px;
-    }
-    
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 10px 0;
-      border-bottom: 1px solid #f0f0f0;
-    }
-    
-    .summary-total {
-      display: flex;
-      justify-content: space-between;
-      padding: 15px 0;
-      margin-top: 10px;
-      border-top: 2px solid #e0e0e0;
-      font-size: 18px;
-      font-weight: 700;
-    }
-    
-    .payment-info {
-      background: #f8f9fa;
-      padding: 15px;
-      border-radius: 8px;
-    }
-    
-    .payment-info p {
-      margin-bottom: 10px;
-    }
-  </style>
 {% endblock %}

@@ -28,3 +28,13 @@
 .discounted-price {
     font-weight: bold;
 }
+
+/* Checkout benefits list (used inside the order summary sidebar) */
+.checkout-benefits ul li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0;
+    font-size: 0.9rem;
+    color: var(--default-color);
+}
